@@ -1,0 +1,175 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card } from "@/components/ui/card";
+import { User, Mail, Phone, Tag, BarChart3 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface ProfileHeaderProps {
+  userId: string;
+  role: "admin" | "feirante";
+}
+
+interface ProfileData {
+  full_name: string;
+  cpf: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  feiras_por_semana?: number | null;
+  media_feirantes_por_feira?: number | null;
+}
+
+interface FeiranteData {
+  segmento: string;
+  cpf_cnpj: string;
+}
+
+export const ProfileHeader = ({ userId, role }: ProfileHeaderProps) => {
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [feirante, setFeirante] = useState<FeiranteData | null>(null);
+  const [email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadProfile();
+  }, [userId]);
+
+  const loadProfile = async () => {
+    try {
+      // Get user email
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setEmail(user.email || "");
+      }
+
+      // Get profile data
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("full_name, cpf, phone, whatsapp, feiras_por_semana, media_feirantes_por_feira")
+        .eq("id", userId)
+        .single();
+
+      if (profileData) {
+        setProfile(profileData);
+      }
+
+      // If feirante, get additional data
+      if (role === "feirante") {
+        const { data: feiranteData } = await supabase
+          .from("feirantes")
+          .select("segmento, cpf_cnpj")
+          .eq("user_id", userId)
+          .maybeSingle();
+
+        if (feiranteData) {
+          setFeirante(feiranteData);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao carregar perfil:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatSegmento = (segmento: string) => {
+    const segmentoMap: Record<string, string> = {
+      alimentacao: "Alimentação",
+      roupas: "Roupas e Acessórios",
+      artesanato: "Artesanato",
+      servicos: "Serviços",
+      outros: "Outros",
+      doces: "Doces",
+      joias: "Joias",
+      tapetes: "Tapetes",
+    };
+    return segmentoMap[segmento] || segmento;
+  };
+
+  if (loading) {
+    return (
+      <Card className="p-6 mb-6">
+        <Skeleton className="h-8 w-48 mb-4" />
+        <div className="grid gap-3 md:grid-cols-2">
+          <Skeleton className="h-6 w-full" />
+          <Skeleton className="h-6 w-full" />
+          <Skeleton className="h-6 w-full" />
+          <Skeleton className="h-6 w-full" />
+        </div>
+      </Card>
+    );
+  }
+
+  if (!profile) return null;
+
+  return (
+    <Card className="p-6 mb-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/10">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold text-lg shadow-glow">
+          {profile.full_name.charAt(0).toUpperCase()}
+        </div>
+        <div>
+          <h2 className="text-xl font-bold">{profile.full_name}</h2>
+          <p className="text-sm text-muted-foreground">
+            {role === "admin" ? "Administrador" : "Feirante"}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2 text-sm">
+        <div className="flex items-center gap-2">
+          <Mail className="w-4 h-4 text-primary" />
+          <span className="text-muted-foreground">Email:</span>
+          <span className="font-medium">{email}</span>
+        </div>
+
+        {profile.cpf && (
+          <div className="flex items-center gap-2">
+            <User className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground">CPF:</span>
+            <span className="font-medium">{profile.cpf}</span>
+          </div>
+        )}
+
+        {feirante?.cpf_cnpj && (
+          <div className="flex items-center gap-2">
+            <User className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground">CPF/CNPJ:</span>
+            <span className="font-medium">{feirante.cpf_cnpj}</span>
+          </div>
+        )}
+
+        {profile.whatsapp && (
+          <div className="flex items-center gap-2">
+            <Phone className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground">WhatsApp:</span>
+            <span className="font-medium">{profile.whatsapp}</span>
+          </div>
+        )}
+
+        {feirante?.segmento && (
+          <div className="flex items-center gap-2">
+            <Tag className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground">Segmento:</span>
+            <span className="font-medium">{formatSegmento(feirante.segmento)}</span>
+          </div>
+        )}
+
+        {role === "admin" && profile.feiras_por_semana && (
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground">Feiras/Semana:</span>
+            <span className="font-medium">{profile.feiras_por_semana}</span>
+          </div>
+        )}
+
+        {role === "admin" && profile.media_feirantes_por_feira && (
+          <div className="flex items-center gap-2">
+            <User className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground">Média Feirantes:</span>
+            <span className="font-medium">{profile.media_feirantes_por_feira}</span>
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+};

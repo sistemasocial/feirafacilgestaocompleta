@@ -224,14 +224,14 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <DollarSign className="w-4 h-4 mt-0.5 text-primary" />
+                    <DollarSign className="w-4 h-4 mt-0.5 text-success" />
                     <div>
-                      <p className="text-sm font-medium">Cancelamento</p>
+                      <p className="text-sm font-medium">Valor da Feira (Administrador)</p>
                       <p className="text-sm text-muted-foreground">
-                        Taxa: R$ {feira.taxa_cancelamento?.toFixed(2) || "0,00"}
+                        {feirantesConfirmados} feirantes × R$ 3,00
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Sem multa até {feira.horas_cancelamento_sem_multa}h antes
+                      <p className="text-sm font-semibold text-success mt-1">
+                        Total: R$ {(feirantesConfirmados * 3).toFixed(2)}
                       </p>
                     </div>
                   </div>

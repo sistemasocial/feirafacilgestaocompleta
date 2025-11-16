@@ -9,6 +9,9 @@ import { toast } from "sonner";
 import { ShoppingBag, User, Mail, Lock, Phone, UserCog } from "lucide-react";
 import { z } from "zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PRODUCT_CATEGORIES, CATEGORY_LABELS } from "@/lib/productCategories";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Email inválido" }).max(255, { message: "Email muito longo" }),
@@ -37,6 +40,7 @@ const Auth = () => {
   const [cpf, setCpf] = useState("");
   const [feiras_por_semana, setFeirasPorSemana] = useState<number>();
   const [media_feirantes, setMediaFeirantes] = useState<number>();
+  const [selectedCategories, setSelectedCategories] = useState<Record<string, string[]>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
@@ -117,6 +121,45 @@ const Auth = () => {
           },
         });
         if (error) throw error;
+        
+        // If feirante, create feirante profile and products
+        if (result.data.role === "feirante") {
+          const { data: userData } = await supabase.auth.signInWithPassword({
+            email: result.data.email,
+            password: result.data.password,
+          });
+          
+          if (userData.user) {
+            // Create feirante record
+            const { data: feiranteData } = await supabase
+              .from("feirantes")
+              .insert({
+                user_id: userData.user.id,
+                cpf_cnpj: result.data.cpf,
+                segmento: Object.keys(selectedCategories)[0] as any || "outros",
+              })
+              .select("id")
+              .single();
+            
+            // Save selected products
+            if (feiranteData && Object.keys(selectedCategories).length > 0) {
+              const produtos = Object.entries(selectedCategories).flatMap(([categoria, subcategorias]) =>
+                subcategorias.map((subcategoria) => ({
+                  feirante_id: feiranteData.id,
+                  categoria,
+                  subcategoria,
+                }))
+              );
+              
+              if (produtos.length > 0) {
+                await supabase.from("produtos_feirante").insert(produtos);
+              }
+            }
+            
+            await supabase.auth.signOut();
+          }
+        }
+        
         toast.success("Conta criada! Faça login para continuar.");
         setIsLogin(true);
       }
@@ -211,6 +254,58 @@ const Auth = () => {
                 />
                 {errors.cpf && <p className="text-sm text-destructive">{errors.cpf}</p>}
               </div>
+
+              {role === "feirante" && (
+                <div className="space-y-3">
+                  <Label>Categorias e Produtos *</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Selecione as categorias e subcategorias dos produtos que você vende
+                  </p>
+                  <Accordion type="multiple" className="w-full">
+                    {Object.entries(PRODUCT_CATEGORIES).map(([categoria, subcategorias]) => (
+                      <AccordionItem key={categoria} value={categoria}>
+                        <AccordionTrigger className="text-sm font-medium">
+                          {CATEGORY_LABELS[categoria]}
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 pl-2">
+                            {subcategorias.map((subcategoria) => (
+                              <div key={subcategoria} className="flex items-center space-x-2">
+                                <Checkbox
+                                  id={`${categoria}-${subcategoria}`}
+                                  checked={selectedCategories[categoria]?.includes(subcategoria) || false}
+                                  onCheckedChange={(checked) => {
+                                    setSelectedCategories((prev) => {
+                                      const current = prev[categoria] || [];
+                                      if (checked) {
+                                        return {
+                                          ...prev,
+                                          [categoria]: [...current, subcategoria],
+                                        };
+                                      } else {
+                                        return {
+                                          ...prev,
+                                          [categoria]: current.filter((s) => s !== subcategoria),
+                                        };
+                                      }
+                                    });
+                                  }}
+                                />
+                                <label
+                                  htmlFor={`${categoria}-${subcategoria}`}
+                                  className="text-sm cursor-pointer"
+                                >
+                                  {subcategoria}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
+              )}
 
               {role === "admin" && (
                 <>

@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { FeirasDisponiveisEnhanced } from "./feirante/FeirasDisponiveisEnhanced";
 import CompleteProfileFeirante from "@/components/profile/CompleteProfileFeirante";
 import NotificationBell from "@/components/notifications/NotificationBell";
+import { ProfileHeader } from "./ProfileHeader";
 
 interface FeiranteDashboardProps {
   user: User;
@@ -62,6 +63,8 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        <ProfileHeader userId={user.id} role="feirante" />
+        
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid grid-cols-5 w-full max-w-4xl">
             <TabsTrigger value="home" className="flex items-center gap-2">
