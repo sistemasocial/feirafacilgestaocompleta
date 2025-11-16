@@ -66,7 +66,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-5 w-full max-w-3xl">
+          <TabsList className="grid grid-cols-4 w-full max-w-3xl">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <LayoutDashboard className="w-4 h-4" />
               <span className="hidden sm:inline">Visão Geral</span>
@@ -82,10 +82,6 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             <TabsTrigger value="configuracoes" className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
               <span className="hidden sm:inline">Configurar Feiras</span>
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="flex items-center gap-2">
-              <UserCog className="w-4 h-4" />
-              <span className="hidden sm:inline">Terminar Cadastro</span>
             </TabsTrigger>
           </TabsList>
 
@@ -169,10 +165,6 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             ) : (
               <FeirasListEnhanced onAddNew={() => setShowFeiraForm(true)} />
             )}
-          </TabsContent>
-
-          <TabsContent value="profile">
-            <CompleteProfileAdmin userId={user.id} />
           </TabsContent>
         </Tabs>
       </main>

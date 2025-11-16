@@ -21,6 +21,9 @@ const signupSchema = z.object({
   email: z.string().trim().email({ message: "Email inválido" }).max(255, { message: "Email muito longo" }),
   password: z.string().min(6, { message: "Senha deve ter no mínimo 6 caracteres" }).max(100, { message: "Senha muito longa" }),
   role: z.enum(["admin", "feirante"], { message: "Selecione um tipo de usuário" }),
+  cpf: z.string().trim().min(11, { message: "CPF inválido" }).max(14, { message: "CPF inválido" }),
+  feiras_por_semana: z.number().optional(),
+  media_feirantes: z.number().optional(),
 });
 
 const Auth = () => {
@@ -31,6 +34,9 @@ const Auth = () => {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState<"admin" | "feirante">("feirante");
+  const [cpf, setCpf] = useState("");
+  const [feiras_por_semana, setFeirasPorSemana] = useState<number>();
+  const [media_feirantes, setMediaFeirantes] = useState<number>();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
@@ -72,7 +78,16 @@ const Auth = () => {
         navigate("/dashboard");
       } else {
         // Validate signup
-        const result = signupSchema.safeParse({ fullName, phone, email, password, role });
+        const result = signupSchema.safeParse({ 
+          fullName, 
+          phone, 
+          email, 
+          password, 
+          role,
+          cpf,
+          feiras_por_semana: role === "admin" ? feiras_por_semana : undefined,
+          media_feirantes: role === "admin" ? media_feirantes : undefined,
+        });
         if (!result.success) {
           const fieldErrors: Record<string, string> = {};
           result.error.errors.forEach((err) => {
@@ -95,6 +110,9 @@ const Auth = () => {
               phone: result.data.phone,
               whatsapp: result.data.phone,
               role: result.data.role,
+              cpf: result.data.cpf,
+              feiras_por_semana: result.data.feiras_por_semana,
+              media_feirantes: result.data.media_feirantes,
             },
           },
         });
@@ -178,6 +196,51 @@ const Auth = () => {
                 </div>
                 {errors.role && <p className="text-sm text-destructive">{errors.role}</p>}
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="cpf">CPF *</Label>
+                <Input
+                  id="cpf"
+                  type="text"
+                  placeholder="000.000.000-00"
+                  value={cpf}
+                  onChange={(e) => setCpf(e.target.value)}
+                  disabled={loading}
+                  className={errors.cpf ? "border-destructive" : ""}
+                  required
+                />
+                {errors.cpf && <p className="text-sm text-destructive">{errors.cpf}</p>}
+              </div>
+
+              {role === "admin" && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="feiras_por_semana">Quantidade média de feiras por semana (opcional)</Label>
+                    <Input
+                      id="feiras_por_semana"
+                      type="number"
+                      placeholder="Ex: 4"
+                      value={feiras_por_semana || ""}
+                      onChange={(e) => setFeirasPorSemana(e.target.value ? parseInt(e.target.value) : undefined)}
+                      disabled={loading}
+                      min="1"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="media_feirantes">Média de feirantes por feira (opcional)</Label>
+                    <Input
+                      id="media_feirantes"
+                      type="number"
+                      placeholder="Ex: 30"
+                      value={media_feirantes || ""}
+                      onChange={(e) => setMediaFeirantes(e.target.value ? parseInt(e.target.value) : undefined)}
+                      disabled={loading}
+                      min="1"
+                    />
+                  </div>
+                </>
+              )}
             </>
           )}
 

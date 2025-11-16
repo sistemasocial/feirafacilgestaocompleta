@@ -12,6 +12,8 @@ interface ProfileData {
   full_name: string;
   whatsapp: string;
   foto_url: string | null;
+  feiras_por_semana: number | null;
+  media_feirantes_por_feira: number | null;
 }
 
 export default function CompleteProfileAdmin({ userId }: { userId: string }) {
@@ -21,6 +23,8 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
     full_name: "",
     whatsapp: "",
     foto_url: null,
+    feiras_por_semana: null,
+    media_feirantes_por_feira: null,
   });
   const { toast } = useToast();
 
@@ -31,7 +35,7 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
   const loadProfile = async () => {
     const { data, error } = await supabase
       .from("profiles")
-      .select("full_name, whatsapp, foto_url")
+      .select("full_name, whatsapp, foto_url, feiras_por_semana, media_feirantes_por_feira")
       .eq("id", userId)
       .single();
 
@@ -83,6 +87,8 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
         full_name: profile.full_name,
         whatsapp: profile.whatsapp,
         foto_url: profile.foto_url,
+        feiras_por_semana: profile.feiras_por_semana,
+        media_feirantes_por_feira: profile.media_feirantes_por_feira,
       })
       .eq("id", userId);
 
@@ -171,6 +177,30 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
             value={profile.whatsapp}
             onChange={(e) => setProfile({ ...profile, whatsapp: e.target.value })}
             required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="feiras_por_semana">Quantidade média de feiras por semana (opcional)</Label>
+          <Input
+            id="feiras_por_semana"
+            type="number"
+            placeholder="Ex: 4"
+            value={profile.feiras_por_semana || ""}
+            onChange={(e) => setProfile({ ...profile, feiras_por_semana: e.target.value ? parseInt(e.target.value) : null })}
+            min="1"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="media_feirantes_por_feira">Média de feirantes por feira (opcional)</Label>
+          <Input
+            id="media_feirantes_por_feira"
+            type="number"
+            placeholder="Ex: 30"
+            value={profile.media_feirantes_por_feira || ""}
+            onChange={(e) => setProfile({ ...profile, media_feirantes_por_feira: e.target.value ? parseInt(e.target.value) : null })}
+            min="1"
           />
         </div>
 
