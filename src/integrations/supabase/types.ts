@@ -292,6 +292,7 @@ export type Database = {
       }
       pagamentos: {
         Row: {
+          comprovante_feirante_url: string | null
           comprovante_url: string | null
           created_at: string
           data_pagamento: string | null
@@ -309,6 +310,7 @@ export type Database = {
           valor_total: number
         }
         Insert: {
+          comprovante_feirante_url?: string | null
           comprovante_url?: string | null
           created_at?: string
           data_pagamento?: string | null
@@ -326,6 +328,7 @@ export type Database = {
           valor_total: number
         }
         Update: {
+          comprovante_feirante_url?: string | null
           comprovante_url?: string | null
           created_at?: string
           data_pagamento?: string | null
@@ -393,28 +396,37 @@ export type Database = {
       }
       profiles: {
         Row: {
+          cpf: string | null
           created_at: string
+          feiras_por_semana: number | null
           foto_url: string | null
           full_name: string
           id: string
+          media_feirantes_por_feira: number | null
           phone: string | null
           updated_at: string
           whatsapp: string | null
         }
         Insert: {
+          cpf?: string | null
           created_at?: string
+          feiras_por_semana?: number | null
           foto_url?: string | null
           full_name: string
           id: string
+          media_feirantes_por_feira?: number | null
           phone?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
         Update: {
+          cpf?: string | null
           created_at?: string
+          feiras_por_semana?: number | null
           foto_url?: string | null
           full_name?: string
           id?: string
+          media_feirantes_por_feira?: number | null
           phone?: string | null
           updated_at?: string
           whatsapp?: string | null

@@ -63,7 +63,7 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-6 w-full max-w-4xl">
+          <TabsList className="grid grid-cols-5 w-full max-w-4xl">
             <TabsTrigger value="home" className="flex items-center gap-2">
               <Home className="w-4 h-4" />
               <span className="hidden sm:inline">Início</span>
@@ -83,10 +83,6 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
             <TabsTrigger value="avaliacoes" className="flex items-center gap-2">
               <Star className="w-4 h-4" />
               <span className="hidden sm:inline">Avaliações</span>
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="flex items-center gap-2">
-              <UserCog className="w-4 h-4" />
-              <span className="hidden sm:inline">Terminar Cadastro</span>
             </TabsTrigger>
           </TabsList>
 
@@ -167,10 +163,6 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
                 Funcionalidade em desenvolvimento. Em breve você poderá avaliar sua experiência nas feiras.
               </p>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="profile">
-            <CompleteProfileFeirante userId={user.id} />
           </TabsContent>
         </Tabs>
       </main>
