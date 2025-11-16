@@ -86,7 +86,7 @@ export const FeirasDisponiveisEnhanced = () => {
 
   const handleInscreverClick = async (feira: Feira) => {
     if (!feiranteId) {
-      toast.error("Você precisa completar seu cadastro de feirante primeiro");
+      toast.error("Erro ao processar inscrição. Entre em contato com o administrador.");
       return;
     }
 
@@ -253,44 +253,44 @@ export const FeirasDisponiveisEnhanced = () => {
                   </div>
                 )}
 
-                <div className="border-t pt-4">
-                  <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-success" />
-                    Valores
-                  </h4>
-                  <div className="grid gap-2 text-sm">
-                    {feira.valor_participacao && Number(feira.valor_participacao) > 0 && (
-                      <div className="flex justify-between">
-                        <span>Valor de Participação:</span>
-                        <span className="font-medium">{formatCurrency(Number(feira.valor_participacao))}</span>
-                      </div>
-                    )}
-                    {feira.taxa_energia && Number(feira.taxa_energia) > 0 && (
-                      <div className="flex justify-between">
-                        <span>Taxa de Energia:</span>
-                        <span className="font-medium">{formatCurrency(Number(feira.taxa_energia))}</span>
-                      </div>
-                    )}
-                    {feira.taxa_limpeza && Number(feira.taxa_limpeza) > 0 && (
-                      <div className="flex justify-between">
-                        <span>Taxa de Limpeza:</span>
-                        <span className="font-medium">{formatCurrency(Number(feira.taxa_limpeza))}</span>
-                      </div>
-                    )}
-                    {feira.taxa_seguranca && Number(feira.taxa_seguranca) > 0 && (
-                      <div className="flex justify-between">
-                        <span>Taxa de Segurança:</span>
-                        <span className="font-medium">{formatCurrency(Number(feira.taxa_seguranca))}</span>
-                      </div>
-                    )}
-                    {total > 0 && (
+                {total > 0 && (
+                  <div className="border-t pt-4">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-success" />
+                      Valores
+                    </h4>
+                    <div className="grid gap-2 text-sm">
+                      {feira.valor_participacao && Number(feira.valor_participacao) > 0 && (
+                        <div className="flex justify-between">
+                          <span>Valor de Participação:</span>
+                          <span className="font-medium">{formatCurrency(Number(feira.valor_participacao))}</span>
+                        </div>
+                      )}
+                      {feira.taxa_energia && Number(feira.taxa_energia) > 0 && (
+                        <div className="flex justify-between">
+                          <span>Taxa de Energia:</span>
+                          <span className="font-medium">{formatCurrency(Number(feira.taxa_energia))}</span>
+                        </div>
+                      )}
+                      {feira.taxa_limpeza && Number(feira.taxa_limpeza) > 0 && (
+                        <div className="flex justify-between">
+                          <span>Taxa de Limpeza:</span>
+                          <span className="font-medium">{formatCurrency(Number(feira.taxa_limpeza))}</span>
+                        </div>
+                      )}
+                      {feira.taxa_seguranca && Number(feira.taxa_seguranca) > 0 && (
+                        <div className="flex justify-between">
+                          <span>Taxa de Segurança:</span>
+                          <span className="font-medium">{formatCurrency(Number(feira.taxa_seguranca))}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between pt-2 border-t font-semibold">
                         <span>Total:</span>
                         <span className="text-primary">{formatCurrency(total)}</span>
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {!status && (
                   <Button 

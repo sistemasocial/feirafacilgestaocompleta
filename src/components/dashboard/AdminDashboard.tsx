@@ -21,6 +21,7 @@ import { InscricoesList } from "./admin/InscricoesList";
 import { FeirasCalendar } from "./admin/FeirasCalendar";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import NotificationBell from "@/components/notifications/NotificationBell";
+import { ProfileHeader } from "./ProfileHeader";
 
 interface AdminDashboardProps {
   user: User;
@@ -65,6 +66,8 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        <ProfileHeader userId={user.id} role="admin" />
+        
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid grid-cols-4 w-full max-w-3xl">
             <TabsTrigger value="overview" className="flex items-center gap-2">
