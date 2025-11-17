@@ -188,6 +188,8 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
     setLoading(true);
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
       const { error } = await supabase.from("feiras").insert({
         nome: formData.nome,
         cidade: formData.cidade,
@@ -212,6 +214,7 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
         observacoes: formData.observacoes || null,
         recorrente: formData.recorrente,
         segmento_exclusivo: formData.segmento_exclusivo,
+        created_by: user?.id,
       });
 
       if (error) throw error;
