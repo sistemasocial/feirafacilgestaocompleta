@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { 
   ShoppingBag, 
   Users, 
   DollarSign, 
   TrendingUp, 
-  Shield,
+  Settings,
   Clock,
   MapPin,
-  CheckCircle
+  Check,
+  User
 } from "lucide-react";
 
 const Index = () => {
@@ -19,152 +19,305 @@ const Index = () => {
     {
       icon: Users,
       title: "Gestão de Feirantes",
-      description: "Cadastre e gerencie todos os feirantes da sua feira em um só lugar"
+      description: "Cadastre e gerencie todos os feirantes da sua feira em um só lugar",
+      bgColor: "bg-emerald-100",
+      iconColor: "text-emerald-600"
     },
     {
       icon: DollarSign,
       title: "Controle de Pagamentos",
-      description: "Acompanhe pagamentos, taxas e status financeiro de cada feirante"
+      description: "Acompanhe pagamentos, taxas e status financeiro de cada feirante",
+      bgColor: "bg-blue-100",
+      iconColor: "text-blue-600"
     },
     {
       icon: TrendingUp,
       title: "Relatórios e Análises",
-      description: "Visualize gráficos de desempenho e vendas em tempo real"
+      description: "Visualize gráficos de desempenho e vendas em tempo real",
+      bgColor: "bg-purple-100",
+      iconColor: "text-purple-600"
     },
     {
-      icon: Shield,
+      icon: Settings,
       title: "Sistema de Regras",
-      description: "Defina políticas de cancelamento e regras da feira automaticamente"
+      description: "Defina políticas de cancelamento e regras da feira automaticamente",
+      bgColor: "bg-orange-100",
+      iconColor: "text-orange-600"
     },
     {
       icon: Clock,
       title: "Gestão de Horários",
-      description: "Configure dias, horários e limite para montagem das barracas"
+      description: "Configure dias, horários e limite para montagem das barracas",
+      bgColor: "bg-red-100",
+      iconColor: "text-red-600"
     },
     {
       icon: MapPin,
       title: "Localização",
-      description: "Gerencie endereços e visualize a localização da sua feira"
+      description: "Gerencie endereços e visualize a localização da sua feira",
+      bgColor: "bg-green-100",
+      iconColor: "text-green-600"
     }
   ];
 
+  const benefits = [
+    "Interface intuitiva e fácil de usar",
+    "Controle completo de pagamentos e status",
+    "Relatórios detalhados de vendas e desempenho",
+    "Sistema de regras e políticas automatizado",
+    "Acesso diferenciado para administradores e feirantes",
+    "Suporte a múltiplas formas de pagamento"
+  ];
+
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-hero">
-        <div className="container mx-auto px-4 py-20 md:py-32">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-primary mb-6 shadow-glow">
-              <ShoppingBag className="w-10 h-10 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-yellow-50/30">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
+              <ShoppingBag className="text-white text-xl" />
             </div>
-            
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Gestão Completa de
-              <span className="bg-gradient-primary bg-clip-text text-transparent"> Feiras Livres</span>
-            </h1>
-            
-            <p className="text-lg md:text-xl text-muted-foreground mb-8">
-              A plataforma profissional para administrar sua feira livre com controle de feirantes, 
-              pagamentos, vendas e muito mais.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="shadow-glow"
-                onClick={() => navigate("/auth")}
-              >
-                Começar Agora
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                onClick={() => navigate("/auth")}
-              >
-                Já tenho conta
-              </Button>
+            <div>
+              <h1 className="text-xl font-bold text-gray-800" style={{ fontFamily: 'Pacifico, serif' }}>
+                FeiraFácil!
+              </h1>
+              <p className="text-xs text-gray-500">Gestão Completa</p>
+            </div>
+          </div>
+          <nav className="hidden md:flex items-center space-x-8">
+            <a href="#recursos" className="text-gray-600 hover:text-emerald-600 transition-colors">
+              Recursos
+            </a>
+            <a href="#vantagens" className="text-gray-600 hover:text-emerald-600 transition-colors">
+              Vantagens
+            </a>
+            <a href="#contato" className="text-gray-600 hover:text-emerald-600 transition-colors">
+              Contato
+            </a>
+          </nav>
+          <div className="flex items-center space-x-3">
+            <button 
+              onClick={() => navigate("/auth")}
+              className="text-gray-600 hover:text-emerald-600 transition-colors whitespace-nowrap"
+            >
+              Já tenho conta
+            </button>
+            <button 
+              onClick={() => navigate("/auth")}
+              className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-xl transition-all duration-300 hover:shadow-lg whitespace-nowrap"
+            >
+              Criar Cadastro
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative py-20 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h1 className="text-5xl lg:text-6xl font-light text-gray-800 leading-tight">
+                  Gestão Completa de{' '}
+                  <span className="font-semibold text-emerald-600">Feiras Livres</span>
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  A plataforma profissional para administrar sua feira livre com controle de feirantes, 
+                  pagamentos, vendas e muito mais.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button 
+                  onClick={() => navigate("/auth")}
+                  className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-medium transition-all duration-300 hover:shadow-xl hover:scale-105 whitespace-nowrap"
+                >
+                  Criar Cadastro
+                </button>
+                <button 
+                  onClick={() => navigate("/auth")}
+                  className="border-2 border-gray-200 hover:border-emerald-300 text-gray-700 px-8 py-4 rounded-2xl text-lg font-medium transition-all duration-300 hover:shadow-lg whitespace-nowrap"
+                >
+                  Já tenho conta
+                </button>
+              </div>
+              <div className="flex items-center space-x-8 pt-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-800">500+</div>
+                  <div className="text-sm text-gray-500">Feiras Ativas</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-800">2.500+</div>
+                  <div className="text-sm text-gray-500">Feirantes</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-800">98%</div>
+                  <div className="text-sm text-gray-500">Satisfação</div>
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+                <div className="aspect-[3/2] bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-2xl flex items-center justify-center">
+                  <ShoppingBag className="w-32 h-32 text-emerald-600/20" />
+                </div>
+              </div>
+              <div className="absolute -top-4 -left-4 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                    <User className="text-emerald-600 w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-gray-800">1,2 mil</div>
+                    <div className="text-xs text-gray-500">Feirantes</div>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <DollarSign className="text-yellow-600 w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-gray-800">R$ 45 mil</div>
+                    <div className="text-xs text-gray-500">Arrecadado</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+      <section id="recursos" className="py-20 px-6 bg-white/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-light text-gray-800 mb-4">
               Tudo que você precisa em um só lugar
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600">
               Sistema completo com todas as ferramentas essenciais para gerenciar sua feira livre
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <feature.icon className="w-6 h-6 text-primary" />
+              <div 
+                key={index} 
+                className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105"
+              >
+                <div className={`w-16 h-16 ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6`}>
+                  <feature.icon className={`${feature.iconColor} text-2xl`} />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </Card>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+      <section id="vantagens" className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-light text-gray-800 mb-4">
               Por que escolher nossa plataforma?
             </h2>
-
-            <div className="space-y-6">
-              {[
-                "Interface intuitiva e fácil de usar",
-                "Controle completo de pagamentos e status",
-                "Relatórios detalhados de vendas e desempenho",
-                "Sistema de regras e políticas automatizado",
-                "Acesso diferenciado para administradores e feirantes",
-                "Suporte a múltiplas formas de pagamento"
-              ].map((benefit, index) => (
-                <div key={index} className="flex items-center gap-4">
-                  <CheckCircle className="w-6 h-6 text-success flex-shrink-0" />
-                  <p className="text-lg">{benefit}</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {benefits.map((benefit, index) => (
+              <div 
+                key={index} 
+                className="flex items-center space-x-4 p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-100"
+              >
+                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="text-emerald-600 text-lg" />
                 </div>
-              ))}
-            </div>
+                <p className="text-gray-700 font-medium">{benefit}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-primary relative overflow-hidden">
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+      <section className="py-20 px-6 bg-gradient-to-r from-emerald-500 to-emerald-600">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-light text-white mb-4">
             Pronto para começar?
           </h2>
-          <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-emerald-100 mb-8">
             Transforme a gestão da sua feira livre com nossa plataforma completa
           </p>
-          <Button 
-            size="lg" 
-            variant="secondary"
-            className="shadow-lg"
-            onClick={() => navigate("/auth")}
-          >
-            Criar Conta Grátis
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={() => navigate("/auth")}
+              className="bg-white text-emerald-600 px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105 whitespace-nowrap"
+            >
+              Começar Gratuitamente
+            </button>
+            <button 
+              onClick={() => navigate("/auth")}
+              className="border-2 border-white/30 text-white px-8 py-4 rounded-2xl text-lg font-medium hover:bg-white/10 transition-all duration-300 whitespace-nowrap"
+            >
+              Agendar Demonstração
+            </button>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 border-t bg-card">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>© 2025 Sistema de Gestão de Feiras Livres. Todos os direitos reservados.</p>
+      <footer className="bg-gray-900 text-white py-12 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                  <ShoppingBag className="text-white text-xl" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold" style={{ fontFamily: 'Pacifico, serif' }}>
+                    FeiraFácil!
+                  </h3>
+                  <p className="text-xs text-gray-400">Gestão Completa</p>
+                </div>
+              </div>
+              <p className="text-gray-400">
+                A plataforma mais completa para gestão de feiras livres do Brasil.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Produto</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#recursos" className="hover:text-white transition-colors">Recursos</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Preços</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Demonstração</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Suporte</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Central de Ajuda</a></li>
+                <li><a href="#contato" className="hover:text-white transition-colors">Contato</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">WhatsApp</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Empresa</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Sobre</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Carreiras</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm">
+              © 2024 FeiraFácil!. Todos os direitos reservados.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
