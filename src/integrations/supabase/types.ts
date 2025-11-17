@@ -113,6 +113,7 @@ export type Database = {
           bairro: string
           cidade: string
           created_at: string
+          created_by: string | null
           dias_semana: string[]
           endereco: string
           formas_pagamento: string[]
@@ -143,6 +144,7 @@ export type Database = {
           bairro?: string
           cidade?: string
           created_at?: string
+          created_by?: string | null
           dias_semana: string[]
           endereco: string
           formas_pagamento?: string[]
@@ -173,6 +175,7 @@ export type Database = {
           bairro?: string
           cidade?: string
           created_at?: string
+          created_by?: string | null
           dias_semana?: string[]
           endereco?: string
           formas_pagamento?: string[]

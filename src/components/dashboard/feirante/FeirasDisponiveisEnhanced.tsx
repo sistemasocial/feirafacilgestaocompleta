@@ -17,6 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { AdminInfo } from "./AdminInfo";
 
 type Feira = Tables<"feiras">;
 
@@ -291,6 +292,8 @@ export const FeirasDisponiveisEnhanced = () => {
                     </div>
                   </div>
                 )}
+
+                <AdminInfo adminId={feira.created_by} />
 
                 {!status && (
                   <Button 
