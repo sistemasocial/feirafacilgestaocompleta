@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,12 @@ import { FeiraForm } from "./admin/FeiraForm";
 import { FeirasListEnhanced } from "./admin/FeirasListEnhanced";
 import { InscricoesList } from "./admin/InscricoesList";
 import { FeirasCalendar } from "./admin/FeirasCalendar";
+import { FeirantesAtivos } from "./admin/FeirantesAtivos";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { AdminSidebar } from "./AdminSidebar";
+import { MessageCircle, Mail } from "lucide-react";
 
 interface AdminDashboardProps {
   user: User;
@@ -21,7 +23,49 @@ interface AdminDashboardProps {
 
 const AdminDashboard = ({ user }: AdminDashboardProps) => {
   const [activeSection, setActiveSection] = useState("overview");
+  const [stats, setStats] = useState({
+    totalFeirantes: 0,
+    pagamentosPendentes: 0,
+    pagamentosEmDia: 0,
+    feirantesAtivos: 0,
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  const loadStats = async () => {
+    try {
+      // Total feirantes
+      const { count: totalFeirantes } = await supabase
+        .from("feirantes")
+        .select("*", { count: "exact", head: true });
+
+      // Feirantes ativos (não bloqueados)
+      const { count: feirantesAtivos } = await supabase
+        .from("feirantes")
+        .select("*", { count: "exact", head: true })
+        .eq("bloqueado", false);
+
+      // Pagamentos pendentes e em dia
+      const { data: pagamentos } = await supabase
+        .from("pagamentos")
+        .select("status");
+
+      const pendentes = pagamentos?.filter((p) => p.status === "pendente").length || 0;
+      const emDia = pagamentos?.filter((p) => p.status === "pago").length || 0;
+
+      setStats({
+        totalFeirantes: totalFeirantes || 0,
+        pagamentosPendentes: pendentes,
+        pagamentosEmDia: emDia,
+        feirantesAtivos: feirantesAtivos || 0,
+      });
+    } catch (error) {
+      console.error("Erro ao carregar estatísticas:", error);
+    }
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -55,7 +99,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Total Feirantes</p>
-                      <p className="text-2xl font-bold">0</p>
+                      <p className="text-2xl font-bold">{stats.totalFeirantes}</p>
                     </div>
                     <Users className="w-8 h-8 text-primary" />
                   </div>
@@ -65,7 +109,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Pagamentos Pendentes</p>
-                      <p className="text-2xl font-bold">0</p>
+                      <p className="text-2xl font-bold">{stats.pagamentosPendentes}</p>
                     </div>
                     <DollarSign className="w-8 h-8 text-warning" />
                   </div>
@@ -75,7 +119,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Pagamentos em Dia</p>
-                      <p className="text-2xl font-bold">0</p>
+                      <p className="text-2xl font-bold">{stats.pagamentosEmDia}</p>
                     </div>
                     <DollarSign className="w-8 h-8 text-success" />
                   </div>
@@ -85,7 +129,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Feirantes Ativos</p>
-                      <p className="text-2xl font-bold">0</p>
+                      <p className="text-2xl font-bold">{stats.feirantesAtivos}</p>
                     </div>
                     <Users className="w-8 h-8 text-info" />
                   </div>
@@ -100,7 +144,10 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "feirantes" && (
-            <InscricoesList />
+            <div className="space-y-6">
+              <FeirantesAtivos />
+              <InscricoesList />
+            </div>
           )}
 
           {activeSection === "pagamentos" && (
@@ -141,10 +188,40 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
           {activeSection === "suporte" && (
             <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Suporte</h2>
-              <p className="text-muted-foreground">
-                Entre em contato conosco através do email: suporte@feirafacil.com
-              </p>
+              <h2 className="text-xl font-semibold mb-6">Suporte</h2>
+              <div className="space-y-4 max-w-md">
+                <div className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center">
+                    <MessageCircle className="w-6 h-6 text-success" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">WhatsApp</p>
+                    <a 
+                      href="https://wa.me/5562991429264" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-primary"
+                    >
+                      +55 62 9 9142-9264
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Mail className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">E-mail</p>
+                    <a 
+                      href="mailto:feirafacilbrasil@gmail.com"
+                      className="text-sm text-muted-foreground hover:text-primary"
+                    >
+                      feirafacilbrasil@gmail.com
+                    </a>
+                  </div>
+                </div>
+              </div>
             </Card>
           )}
         </main>

@@ -404,6 +404,7 @@ export type Database = {
           id: string
           media_feirantes_por_feira: number | null
           phone: string | null
+          pix_key: string | null
           updated_at: string
           whatsapp: string | null
         }
@@ -416,6 +417,7 @@ export type Database = {
           id: string
           media_feirantes_por_feira?: number | null
           phone?: string | null
+          pix_key?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -428,6 +430,7 @@ export type Database = {
           id?: string
           media_feirantes_por_feira?: number | null
           phone?: string | null
+          pix_key?: string | null
           updated_at?: string
           whatsapp?: string | null
         }

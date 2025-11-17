@@ -14,6 +14,7 @@ interface ProfileData {
   foto_url: string | null;
   feiras_por_semana: number | null;
   media_feirantes_por_feira: number | null;
+  pix_key: string | null;
 }
 
 export default function CompleteProfileAdmin({ userId }: { userId: string }) {
@@ -25,6 +26,7 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
     foto_url: null,
     feiras_por_semana: null,
     media_feirantes_por_feira: null,
+    pix_key: null,
   });
   const { toast } = useToast();
 
@@ -35,7 +37,7 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
   const loadProfile = async () => {
     const { data, error } = await supabase
       .from("profiles")
-      .select("full_name, whatsapp, foto_url, feiras_por_semana, media_feirantes_por_feira")
+      .select("full_name, whatsapp, foto_url, feiras_por_semana, media_feirantes_por_feira, pix_key")
       .eq("id", userId)
       .single();
 
@@ -89,6 +91,7 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
         foto_url: profile.foto_url,
         feiras_por_semana: profile.feiras_por_semana,
         media_feirantes_por_feira: profile.media_feirantes_por_feira,
+        pix_key: profile.pix_key,
       })
       .eq("id", userId);
 
@@ -201,6 +204,17 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
             value={profile.media_feirantes_por_feira || ""}
             onChange={(e) => setProfile({ ...profile, media_feirantes_por_feira: e.target.value ? parseInt(e.target.value) : null })}
             min="1"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="pix_key">Chave PIX (opcional)</Label>
+          <Input
+            id="pix_key"
+            type="text"
+            placeholder="Digite sua chave PIX"
+            value={profile.pix_key || ""}
+            onChange={(e) => setProfile({ ...profile, pix_key: e.target.value })}
           />
         </div>
 
