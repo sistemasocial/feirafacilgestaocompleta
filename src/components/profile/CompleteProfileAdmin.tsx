@@ -51,32 +51,54 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
     if (!file) return;
 
     setUploading(true);
-    const fileExt = file.name.split(".").pop();
-    const fileName = `avatar-${Date.now()}.${fileExt}`;
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${userId}-${Date.now()}.${fileExt}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, file, {
-        cacheControl: "3600",
-        upsert: true,
+      // Delete old avatar if exists
+      if (profile.foto_url) {
+        const oldPath = profile.foto_url.split('/avatars/')[1];
+        if (oldPath) {
+          await supabase.storage.from("avatars").remove([oldPath]);
+        }
+      }
+
+      const { error: uploadError, data } = await supabase.storage
+        .from("avatars")
+        .upload(fileName, file, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+
+      if (uploadError) {
+        toast({
+          title: "Erro ao enviar foto",
+          description: uploadError.message,
+          variant: "destructive",
+        });
+        setUploading(false);
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(fileName);
+
+      setProfile({ ...profile, foto_url: publicUrl });
+      
+      toast({
+        title: "Foto carregada!",
+        description: "Agora clique em Salvar Perfil para confirmar.",
       });
-
-    if (uploadError) {
+    } catch (error: any) {
       toast({
         title: "Erro ao enviar foto",
-        description: uploadError.message,
+        description: error.message,
         variant: "destructive",
       });
+    } finally {
       setUploading(false);
-      return;
     }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from("avatars")
-      .getPublicUrl(fileName);
-
-    setProfile({ ...profile, foto_url: publicUrl });
-    setUploading(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
