@@ -3,7 +3,7 @@ import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { LogOut, DollarSign, TrendingUp, Star } from "lucide-react";
+import { LogOut, DollarSign, TrendingUp, Star, MessageCircle, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FeirasDisponiveisEnhanced } from "./feirante/FeirasDisponiveisEnhanced";
@@ -120,10 +120,40 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
 
           {activeSection === "suporte" && (
             <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Suporte</h2>
-              <p className="text-muted-foreground">
-                Entre em contato conosco através do email: suporte@feirafacil.com
-              </p>
+              <h2 className="text-xl font-semibold mb-6">Suporte</h2>
+              <div className="space-y-4 max-w-md">
+                <div className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center">
+                    <MessageCircle className="w-6 h-6 text-success" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">WhatsApp</p>
+                    <a 
+                      href="https://wa.me/5562991429264" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-primary"
+                    >
+                      +55 62 9 9142-9264
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Mail className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">E-mail</p>
+                    <a 
+                      href="mailto:feirafacilbrasil@gmail.com"
+                      className="text-sm text-muted-foreground hover:text-primary"
+                    >
+                      feirafacilbrasil@gmail.com
+                    </a>
+                  </div>
+                </div>
+              </div>
             </Card>
           )}
         </main>

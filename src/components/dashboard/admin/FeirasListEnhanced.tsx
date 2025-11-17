@@ -138,10 +138,6 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
             Total de Feiras: <span className="font-semibold text-foreground">{feiras.length}</span>
           </p>
         </div>
-        <Button onClick={onAddNew}>
-          <Plus className="w-4 h-4 mr-2" />
-          Nova Feira
-        </Button>
       </div>
 
       <div className="grid gap-4">
@@ -227,6 +223,9 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                     <DollarSign className="w-4 h-4 mt-0.5 text-success" />
                     <div>
                       <p className="text-sm font-medium">Valor da Feira (Administrador)</p>
+                      <p className="text-lg font-bold text-primary mb-1">
+                        R$ {feira.valor_participacao?.toFixed(2) || "0,00"}
+                      </p>
                       <p className="text-sm text-muted-foreground">
                         {feirantesConfirmados} feirantes × R$ 3,00
                       </p>
