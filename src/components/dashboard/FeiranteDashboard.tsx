@@ -3,7 +3,7 @@ import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { LogOut, ShoppingBag, DollarSign, TrendingUp, Star } from "lucide-react";
+import { LogOut, DollarSign, TrendingUp, Star } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FeirasDisponiveisEnhanced } from "./feirante/FeirasDisponiveisEnhanced";
@@ -11,7 +11,6 @@ import CompleteProfileFeirante from "@/components/profile/CompleteProfileFeirant
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { FeiranteSidebar } from "./FeiranteSidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 interface FeiranteDashboardProps {
   user: User;
@@ -28,128 +27,108 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen w-full flex bg-gradient-hero">
-        <FeiranteSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
-        
-        <div className="flex-1 flex flex-col">
-          {/* Header */}
-          <header className="border-b bg-card sticky top-0 z-10">
-            <div className="px-4 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <SidebarTrigger />
-                  <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center shadow-glow">
-                    <ShoppingBag className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-bold" style={{ fontFamily: 'Pacifico, serif' }}>FeiraFácil!</h1>
-                    <p className="text-sm text-muted-foreground">Área do Feirante</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <ProfileHeader userId={user.id} role="feirante" />
-                  <NotificationBell userId={user.id} />
-                  <Button variant="outline" onClick={handleLogout}>
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Sair
-                  </Button>
-                </div>
-              </div>
+    <div className="min-h-screen w-full flex bg-gradient-hero">
+      <FeiranteSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+      
+      <div className="flex-1 flex flex-col ml-[280px]">
+        <header className="border-b bg-card sticky top-0 z-10">
+          <div className="px-4 py-4">
+            <div className="flex items-center justify-end gap-4">
+              <ProfileHeader userId={user.id} role="feirante" />
+              <NotificationBell userId={user.id} />
+              <Button variant="outline" onClick={handleLogout}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sair
+              </Button>
             </div>
-          </header>
+          </div>
+        </header>
 
-          {/* Main Content */}
-          <main className="flex-1 px-4 py-8 overflow-auto">
-            {activeSection === "home" && (
-              <div className="space-y-6">
-                <div className="grid gap-4 md:grid-cols-3">
-                  <Card className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Status Pagamento</p>
-                        <p className="text-2xl font-bold text-success">Em Dia</p>
-                      </div>
-                      <DollarSign className="w-8 h-8 text-success" />
+        <main className="flex-1 px-4 py-8 overflow-auto">
+          {activeSection === "home" && (
+            <div className="space-y-6">
+              <div className="grid gap-4 md:grid-cols-3">
+                <Card className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Status Pagamento</p>
+                      <p className="text-2xl font-bold text-success">Em Dia</p>
                     </div>
-                  </Card>
-
-                  <Card className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Vendas do Mês</p>
-                        <p className="text-2xl font-bold">R$ 0,00</p>
-                      </div>
-                      <TrendingUp className="w-8 h-8 text-primary" />
-                    </div>
-                  </Card>
-
-                  <Card className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Avaliação Média</p>
-                        <p className="text-2xl font-bold">-</p>
-                      </div>
-                      <Star className="w-8 h-8 text-accent" />
-                    </div>
-                  </Card>
-                </div>
+                    <DollarSign className="w-8 h-8 text-success" />
+                  </div>
+                </Card>
 
                 <Card className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Bem-vindo!</h2>
-                  <p className="text-muted-foreground">
-                    Este é o seu espaço para gerenciar suas atividades na feira. Aqui você pode conferir
-                    pagamentos, registrar vendas e avaliar sua experiência.
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Vendas do Mês</p>
+                      <p className="text-2xl font-bold">R$ 0,00</p>
+                    </div>
+                    <TrendingUp className="w-8 h-8 text-primary" />
+                  </div>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Avaliação Média</p>
+                      <p className="text-2xl font-bold">-</p>
+                    </div>
+                    <Star className="w-8 h-8 text-accent" />
+                  </div>
                 </Card>
               </div>
-            )}
 
-            {activeSection === "feiras" && (
-              <FeirasDisponiveisEnhanced />
-            )}
-
-            {activeSection === "pagamentos" && (
               <Card className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Bem-vindo!</h2>
                 <p className="text-muted-foreground">
-                  Funcionalidade de gestão de pagamentos em desenvolvimento
+                  Este é o seu espaço para gerenciar suas atividades na feira. Aqui você pode conferir
+                  pagamentos, registrar vendas e avaliar sua experiência.
                 </p>
               </Card>
-            )}
+            </div>
+          )}
 
-            {activeSection === "vendas" && (
-              <Card className="p-6">
-                <p className="text-muted-foreground">
-                  Funcionalidade de registro de vendas em desenvolvimento
-                </p>
-              </Card>
-            )}
+          {activeSection === "feiras" && (
+            <FeirasDisponiveisEnhanced />
+          )}
 
-            {activeSection === "segmentos" && (
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Meus Segmentos</h2>
-                <p className="text-muted-foreground">
-                  Funcionalidade de gerenciamento de segmentos em desenvolvimento
-                </p>
-              </Card>
-            )}
+          {activeSection === "pagamentos" && (
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Meus Pagamentos</h2>
+              <p className="text-muted-foreground">Sistema de pagamentos em desenvolvimento...</p>
+            </Card>
+          )}
 
-            {activeSection === "perfil" && (
-              <CompleteProfileFeirante userId={user.id} />
-            )}
+          {activeSection === "vendas" && (
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Registrar Vendas</h2>
+              <p className="text-muted-foreground">Sistema de vendas em desenvolvimento...</p>
+            </Card>
+          )}
 
-            {activeSection === "suporte" && (
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Suporte</h2>
-                <p className="text-muted-foreground">
-                  Entre em contato conosco através do email: suporte@feirafacil.com
-                </p>
-              </Card>
-            )}
-          </main>
-        </div>
+          {activeSection === "segmentos" && (
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Meus Segmentos</h2>
+              <p className="text-muted-foreground">Gestão de segmentos em desenvolvimento...</p>
+            </Card>
+          )}
+
+          {activeSection === "perfil" && (
+            <CompleteProfileFeirante userId={user.id} />
+          )}
+
+          {activeSection === "suporte" && (
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Suporte</h2>
+              <p className="text-muted-foreground">
+                Entre em contato conosco através do email: suporte@feirafacil.com
+              </p>
+            </Card>
+          )}
+        </main>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
