@@ -7,17 +7,8 @@ import {
   Settings, 
   UserCog,
   HelpCircle,
-  Menu,
   Store
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 
 const menuItems = [
   { title: "Visão Geral", url: "#overview", icon: LayoutDashboard },
@@ -37,46 +28,39 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarProps) {
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="fixed left-4 top-4 z-50">
-          <Menu className="h-5 w-5" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="w-[320px] p-0">
-        <SheetHeader className="border-b pb-6 pt-6 px-6">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-              <Store className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <div className="text-left">
-              <SheetTitle className="text-lg font-semibold">Feira!</SheetTitle>
-              <p className="text-sm text-muted-foreground">Painel Administrativo</p>
-            </div>
+    <aside className="w-[280px] border-r bg-background h-screen fixed left-0 top-0 flex flex-col">
+      <div className="border-b pb-6 pt-6 px-6">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+            <Store className="w-6 h-6 text-primary-foreground" />
           </div>
-        </SheetHeader>
-
-        <div className="flex-1 overflow-auto py-6">
-          <nav className="space-y-2 px-4">
-            {menuItems.map((item) => (
-              <button
-                key={item.title}
-                onClick={() => {
-                  onSectionChange(item.url.replace('#', ''));
-                }}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                  activeSection === item.url.replace('#', '')
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
-              >
-                <item.icon className="w-5 h-5 shrink-0" />
-                <span>{item.title}</span>
-              </button>
-            ))}
-          </nav>
+          <div>
+            <h2 className="text-lg font-semibold">FeiraFácil!</h2>
+            <p className="text-sm text-muted-foreground">Painel Administrativo</p>
+          </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </div>
+
+      <div className="flex-1 overflow-auto py-6">
+        <nav className="space-y-2 px-4">
+          {menuItems.map((item) => (
+            <button
+              key={item.title}
+              onClick={() => {
+                onSectionChange(item.url.replace('#', ''));
+              }}
+              className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                activeSection === item.url.replace('#', '')
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              }`}
+            >
+              <item.icon className="w-5 h-5 shrink-0" />
+              <span>{item.title}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
+    </aside>
   );
 }
