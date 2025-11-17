@@ -137,10 +137,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 </Card>
               </div>
 
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Calendário de Feiras</h2>
-                <FeirasCalendar />
-              </Card>
+              <FeirasCalendar />
             </div>
           )}
 

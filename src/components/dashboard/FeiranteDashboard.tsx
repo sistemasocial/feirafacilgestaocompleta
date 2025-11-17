@@ -7,6 +7,7 @@ import { LogOut, DollarSign, TrendingUp, Star, MessageCircle, Mail } from "lucid
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FeirasDisponiveisEnhanced } from "./feirante/FeirasDisponiveisEnhanced";
+import { FeirasCalendarFeirante } from "./feirante/FeirasCalendarFeirante";
 import CompleteProfileFeirante from "@/components/profile/CompleteProfileFeirante";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
@@ -78,6 +79,8 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
                   </div>
                 </Card>
               </div>
+
+              <FeirasCalendarFeirante />
 
               <Card className="p-6">
                 <h2 className="text-xl font-semibold mb-4">Bem-vindo!</h2>
