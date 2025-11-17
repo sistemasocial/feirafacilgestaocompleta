@@ -41,7 +41,7 @@ export default function AdminProfileDisplay({ userId }: { userId: string }) {
       .from("profiles")
       .select("full_name, foto_url")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
 
     if (data && !error) {
       setProfile(data);

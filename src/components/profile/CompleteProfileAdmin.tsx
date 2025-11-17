@@ -39,7 +39,7 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
       .from("profiles")
       .select("full_name, whatsapp, foto_url, feiras_por_semana, media_feirantes_por_feira, pix_key")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
 
     if (data && !error) {
       setProfile(data);

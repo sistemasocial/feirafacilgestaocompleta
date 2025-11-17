@@ -24,7 +24,7 @@ export const AdminInfo = ({ adminId }: { adminId?: string | null }) => {
       .from("profiles")
       .select("full_name, foto_url, whatsapp")
       .eq("id", adminId)
-      .single();
+      .maybeSingle();
 
     if (data && !error) {
       setAdmin(data);

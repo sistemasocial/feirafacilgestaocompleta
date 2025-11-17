@@ -46,7 +46,7 @@ export const ProfileHeader = ({ userId, role }: ProfileHeaderProps) => {
         .from("profiles")
         .select("full_name, cpf, phone, whatsapp, feiras_por_semana, media_feirantes_por_feira")
         .eq("id", userId)
-        .single();
+        .maybeSingle();
 
       if (profileData) {
         setProfile(profileData);
