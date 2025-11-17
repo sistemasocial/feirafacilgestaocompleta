@@ -81,10 +81,10 @@ const Index = () => {
               <ShoppingBag className="text-white text-xl" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-800" style={{ fontFamily: 'Pacifico, serif' }}>
+              <h1 className="text-2xl font-bold text-gray-800" style={{ fontFamily: 'Pacifico, serif' }}>
                 FeiraFácil!
               </h1>
-              <p className="text-xs text-gray-500">Gestão Completa</p>
+              <p className="text-xs text-muted-foreground">Gestão Completa</p>
             </div>
           </div>
           <nav className="hidden md:flex items-center space-x-8">
@@ -290,9 +290,7 @@ const Index = () => {
                   <ShoppingBag className="text-white text-xl" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold" style={{ fontFamily: 'Pacifico, serif' }}>
-                    FeiraFácil!
-                  </h3>
+                  <h3 className="text-2xl font-bold" style={{ fontFamily: 'Pacifico, serif' }}>FeiraFácil!</h3>
                   <p className="text-xs text-gray-400">Gestão Completa</p>
                 </div>
               </div>
