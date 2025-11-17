@@ -11,6 +11,8 @@ import {
   Check,
   User
 } from "lucide-react";
+import feiraBackground from "@/assets/feira-background.jpg";
+import vendedoraHero from "@/assets/vendedora-hero.jpg";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -115,6 +117,14 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="relative py-20 px-6 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${feiraBackground})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/90 to-white/85"></div>
+        </div>
+        
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
@@ -158,10 +168,12 @@ const Index = () => {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
-                <div className="aspect-[3/2] bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-2xl flex items-center justify-center">
-                  <ShoppingBag className="w-32 h-32 text-emerald-600/20" />
-                </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+                <img 
+                  src={vendedoraHero} 
+                  alt="Feirante feliz" 
+                  className="w-full h-auto rounded-2xl object-cover"
+                />
               </div>
               <div className="absolute -top-4 -left-4 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
                 <div className="flex items-center space-x-3">
