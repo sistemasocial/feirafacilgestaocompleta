@@ -16,6 +16,7 @@ import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { AdminSidebar } from "./AdminSidebar";
 import { MessageCircle, Mail } from "lucide-react";
+import AdminProfileDisplay from "./AdminProfileDisplay";
 
 interface AdminDashboardProps {
   user: User;
@@ -81,7 +82,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
         <header className="border-b bg-card sticky top-0 z-10">
           <div className="px-4 py-4">
             <div className="flex items-center justify-end gap-4">
-              <ProfileHeader userId={user.id} role="admin" />
+              <AdminProfileDisplay userId={user.id} />
               <NotificationBell userId={user.id} />
               <Button variant="outline" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" />
