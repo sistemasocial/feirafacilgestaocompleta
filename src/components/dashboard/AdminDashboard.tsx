@@ -16,7 +16,6 @@ import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { AdminSidebar } from "./AdminSidebar";
 import { MessageCircle, Mail } from "lucide-react";
-import AdminProfileDisplay from "./AdminProfileDisplay";
 
 interface AdminDashboardProps {
   user: User;
@@ -24,6 +23,7 @@ interface AdminDashboardProps {
 
 const AdminDashboard = ({ user }: AdminDashboardProps) => {
   const [activeSection, setActiveSection] = useState("overview");
+  const [profileKey, setProfileKey] = useState(0);
   const [stats, setStats] = useState({
     totalFeirantes: 0,
     pagamentosPendentes: 0,
@@ -74,6 +74,12 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
     navigate("/auth");
   };
 
+  const handleProfileUpdated = async () => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setProfileKey(prev => prev + 1);
+    setActiveSection("overview");
+  };
+
   return (
     <div className="min-h-screen w-full flex bg-gradient-hero">
       <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
@@ -82,7 +88,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
         <header className="border-b bg-card sticky top-0 z-10">
           <div className="px-4 py-4">
             <div className="flex items-center justify-end gap-4">
-              <AdminProfileDisplay userId={user.id} />
+              <ProfileHeader key={profileKey} userId={user.id} role="admin" />
               <NotificationBell userId={user.id} />
               <Button variant="outline" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" />
@@ -181,7 +187,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "perfil" && (
-            <CompleteProfileAdmin userId={user.id} />
+            <CompleteProfileAdmin userId={user.id} onProfileUpdated={handleProfileUpdated} />
           )}
 
           {activeSection === "suporte" && (
