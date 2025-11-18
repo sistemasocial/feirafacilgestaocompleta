@@ -78,7 +78,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
-              <FeiraIcon className="w-6 h-6" color="white" />
+              <FeiraIcon className="w-8 h-8 text-primary" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">
