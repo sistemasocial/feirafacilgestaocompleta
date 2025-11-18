@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface ProfileHeaderProps {
   userId: string;
   role: "admin" | "feirante";
+  compact?: boolean;
 }
 
 interface ProfileData {
@@ -24,7 +25,7 @@ interface FeiranteData {
   cpf_cnpj: string;
 }
 
-export const ProfileHeader = ({ userId, role }: ProfileHeaderProps) => {
+export const ProfileHeader = ({ userId, role, compact = false }: ProfileHeaderProps) => {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [feirante, setFeirante] = useState<FeiranteData | null>(null);
   const [email, setEmail] = useState<string>("");
@@ -87,6 +88,17 @@ export const ProfileHeader = ({ userId, role }: ProfileHeaderProps) => {
   };
 
   if (loading) {
+    if (compact) {
+      return (
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+        </div>
+      );
+    }
     return (
       <Card className="p-6 mb-6">
         <Skeleton className="h-8 w-48 mb-4" />
@@ -101,6 +113,31 @@ export const ProfileHeader = ({ userId, role }: ProfileHeaderProps) => {
   }
 
   if (!profile) return null;
+
+  // Compact version for header
+  if (compact) {
+    return (
+      <div className="flex items-center gap-3">
+        {profile.foto_url ? (
+          <img 
+            src={profile.foto_url} 
+            alt={profile.full_name}
+            className="w-10 h-10 rounded-full object-cover shadow-md"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold shadow-md">
+            {profile.full_name.charAt(0).toUpperCase()}
+          </div>
+        )}
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">{profile.full_name}</span>
+          <span className="text-xs text-muted-foreground">
+            {role === "admin" ? "Administrador" : "Feirante"}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Card className="p-6 mb-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/10">

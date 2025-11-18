@@ -88,7 +88,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
         <header className="border-b bg-card sticky top-0 z-10">
           <div className="px-4 py-4">
             <div className="flex items-center justify-end gap-4">
-              <ProfileHeader key={profileKey} userId={user.id} role="admin" />
+              <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
               <NotificationBell userId={user.id} />
               <Button variant="outline" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" />
