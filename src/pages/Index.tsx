@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Users, DollarSign, TrendingUp, Settings, Clock, MapPin, Check, Store } from "lucide-react";
+import { Users, DollarSign, TrendingUp, Settings, Clock, MapPin, Check, Store, Smartphone } from "lucide-react";
 import feiraBackground from "@/assets/feira-background.jpg";
 import vendedoraHero from "@/assets/vendedora-hero.jpg";
 
@@ -283,10 +283,11 @@ const Index = () => {
               Começar Gratuitamente
             </button>
             <button
-              onClick={() => navigate("/auth")}
-              className="border-2 border-white/30 text-white px-8 py-4 rounded-2xl text-lg font-medium hover:bg-white/10 transition-all duration-300 whitespace-nowrap"
+              onClick={() => navigate("/install")}
+              className="border-2 border-white text-white px-8 py-4 rounded-2xl text-lg font-medium hover:bg-white/10 transition-all duration-300 whitespace-nowrap flex items-center justify-center gap-2"
             >
-              Agendar Demonstração
+              <Smartphone className="w-5 h-5" />
+              Instalar App
             </button>
           </div>
         </div>
