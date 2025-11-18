@@ -39,13 +39,23 @@ export const FeirasAtivas = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: feiranteData } = await supabase
+      const { data: feiranteData, error: feiranteError } = await supabase
         .from("feirantes")
         .select("id")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (!feiranteData) return;
+      if (feiranteError) {
+        console.error("Erro ao buscar feirante:", feiranteError);
+        setLoading(false);
+        return;
+      }
+
+      if (!feiranteData) {
+        console.log("Perfil de feirante não encontrado");
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from("inscricoes_feiras")
