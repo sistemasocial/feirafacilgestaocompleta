@@ -176,8 +176,8 @@ export const FeirasAtivas = () => {
                     {inscricao.pagamento.status !== "pago" ? (
                       <>
                         <div className="bg-gradient-to-br from-warning/20 via-warning/15 to-warning/10 border-2 border-warning/40 rounded-xl p-5 shadow-lg">
-                          <h4 className="font-bold text-lg mb-3 flex items-center gap-2 text-warning-foreground">
-                            <DollarSign className="w-6 h-6 text-warning" />
+                          <h4 className="font-bold text-lg mb-3 flex items-center gap-2 text-amber-900 dark:text-amber-100">
+                            <DollarSign className="w-6 h-6 text-amber-700 dark:text-amber-400" />
                             Pagamento Pendente
                           </h4>
                           <p className="text-base text-foreground/80 mb-4 font-medium">
