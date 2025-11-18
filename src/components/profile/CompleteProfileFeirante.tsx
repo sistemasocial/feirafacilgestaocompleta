@@ -162,11 +162,13 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
       console.log("PASSO 1: Atualizando profile...");
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({
+        .upsert({
+          id: userId,
           full_name: profile.full_name,
           foto_url: profile.foto_url,
-        })
-        .eq("id", userId);
+        }, {
+          onConflict: 'id'
+        });
 
       if (profileError) {
         console.error("Erro ao atualizar profile:", profileError);
