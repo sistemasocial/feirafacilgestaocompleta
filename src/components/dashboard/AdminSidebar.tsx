@@ -32,7 +32,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
       <div className="border-b pb-6 pt-6 px-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-            <img src={storeIcon} alt="Store" className="w-7 h-7" style={{ filter: 'brightness(0) saturate(100%) invert(47%) sepia(82%) saturate(2476%) hue-rotate(140deg) brightness(95%) contrast(101%)' }} />
+            <img src={storeIcon} alt="Store" className="w-7 h-7" />
           </div>
           <div>
             <h2 className="text-lg font-semibold">FeiraFácil!</h2>

@@ -176,7 +176,7 @@ const Auth = () => {
       <Card className="w-full max-w-md p-8 shadow-lg">
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
-            <img src={feiraIcon} alt="Feira Fácil" className="w-9 h-9 mix-blend-multiply dark:mix-blend-screen" style={{ filter: 'brightness(0) invert(1)' }} />
+            <img src={feiraIcon} alt="Feira Fácil" className="w-9 h-9" />
           </div>
         </div>
 
