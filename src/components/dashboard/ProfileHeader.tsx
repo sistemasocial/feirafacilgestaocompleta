@@ -117,25 +117,50 @@ export const ProfileHeader = ({ userId, role, compact = false }: ProfileHeaderPr
   // Compact version for header
   if (compact) {
     return (
-      <div className="flex items-center gap-3">
-        {profile.foto_url ? (
-          <img 
-            src={profile.foto_url} 
-            alt={profile.full_name}
-            className="w-10 h-10 rounded-full object-cover shadow-md"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold shadow-md">
-            {profile.full_name.charAt(0).toUpperCase()}
+      <Card className="p-4 bg-background/50 border-border/40">
+        <div className="flex items-start gap-4">
+          {profile.foto_url ? (
+            <img 
+              src={profile.foto_url} 
+              alt={profile.full_name}
+              className="w-12 h-12 rounded-full object-cover shadow-md"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold shadow-md">
+              {profile.full_name.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="flex-1 space-y-2">
+            <div>
+              <h3 className="text-base font-semibold">{profile.full_name}</h3>
+              <p className="text-xs text-muted-foreground">
+                {role === "admin" ? "Administrador" : "Feirante"}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+              <div className="flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-primary" />
+                <span className="text-muted-foreground">Email:</span>
+                <span className="font-medium">{email}</span>
+              </div>
+              {feirante?.cpf_cnpj && (
+                <div className="flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-muted-foreground">CPF/CNPJ:</span>
+                  <span className="font-medium">{feirante.cpf_cnpj}</span>
+                </div>
+              )}
+              {feirante?.segmento && (
+                <div className="flex items-center gap-1.5">
+                  <Tag className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-muted-foreground">Segmento:</span>
+                  <span className="font-medium">{formatSegmento(feirante.segmento)}</span>
+                </div>
+              )}
+            </div>
           </div>
-        )}
-        <div className="flex flex-col">
-          <span className="text-sm font-medium">{profile.full_name}</span>
-          <span className="text-xs text-muted-foreground">
-            {role === "admin" ? "Administrador" : "Feirante"}
-          </span>
         </div>
-      </div>
+      </Card>
     );
   }
 
