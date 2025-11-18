@@ -134,7 +134,17 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
     });
   };
 
-  const determineSegmento = (products: Record<string, string[]>): string => {
+  const determineSegmento = (products: Record<string, string[]>): Database["public"]["Enums"]["feirante_segment"] => {
+    // Mapeamento de categorias de produtos para segmentos válidos
+    const categoryToSegment: Record<string, Database["public"]["Enums"]["feirante_segment"]> = {
+      'alimentacao': 'alimentacao',
+      'roupas': 'roupas',
+      'artesanato': 'artesanato',
+      'beleza': 'outros', // Beleza mapeia para outros
+      'servicos': 'servicos',
+      'outros': 'outros',
+    };
+
     // Conta quantos produtos foram selecionados por categoria
     const categoryCounts: Record<string, number> = {};
     
@@ -154,7 +164,8 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
       a[1] > b[1] ? a : b
     )[0];
 
-    return mainCategory as string;
+    // Mapeia a categoria para um segmento válido
+    return categoryToSegment[mainCategory] || 'outros';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -202,7 +213,9 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
 
       // Create or update feirante
       let feiranteId = feirante?.id;
-      const segmento = determineSegmento(selectedProducts) as Database["public"]["Enums"]["feirante_segment"];
+      const segmento = determineSegmento(selectedProducts);
+      
+      console.log("SEGMENTO DETERMINADO:", segmento, "a partir de:", selectedProducts);
       
       if (!feirante) {
         console.log("PASSO 2: Criando novo feirante...");
