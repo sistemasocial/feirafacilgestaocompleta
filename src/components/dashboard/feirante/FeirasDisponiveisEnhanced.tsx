@@ -214,8 +214,8 @@ export const FeirasDisponiveisEnhanced = () => {
           
           return (
             <Card key={feira.id} className="overflow-hidden">
-              {/* Red Line - Informações Destacadas */}
-              <div className="bg-destructive/10 border-l-4 border-destructive px-6 py-4">
+              {/* Header - Informações Destacadas */}
+              <div className="bg-primary/5 border-l-4 border-primary px-6 py-4">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-4">
                     <div>
@@ -288,37 +288,52 @@ export const FeirasDisponiveisEnhanced = () => {
                     💰 Valores
                   </h4>
                   <div className="grid gap-3 text-base">
-                    {feira.valor_participacao && Number(feira.valor_participacao) > 0 && (
-                      <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
-                        <span className="font-medium text-foreground/80">Valor de Participação da Feira:</span>
-                        <span className="font-bold text-lg text-foreground">
-                          {formatCurrency(Number(feira.valor_participacao))}
-                        </span>
-                      </div>
-                    )}
-                    {feira.taxa_energia && Number(feira.taxa_energia) > 0 && (
-                      <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
-                        <span className="font-medium text-foreground/80">Taxa de Energia:</span>
-                        <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_energia))}</span>
-                      </div>
-                    )}
-                    {feira.taxa_limpeza && Number(feira.taxa_limpeza) > 0 && (
-                      <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
-                        <span className="font-medium text-foreground/80">Taxa de Limpeza:</span>
-                        <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_limpeza))}</span>
-                      </div>
-                    )}
-                    {feira.taxa_seguranca && Number(feira.taxa_seguranca) > 0 && (
-                      <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
-                        <span className="font-medium text-foreground/80">Taxa de Segurança:</span>
-                        <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_seguranca))}</span>
-                      </div>
-                    )}
-                    {total > 0 && (
-                      <div className="flex justify-between items-center bg-blue-600/20 border-2 border-blue-600/40 rounded-lg px-4 py-3 mt-2">
-                        <span className="font-bold text-lg text-foreground">Total:</span>
-                        <span className="font-bold text-2xl text-blue-700 dark:text-blue-400">{formatCurrency(total)}</span>
-                      </div>
+                    {/* Mostrar detalhes apenas se houver taxas adicionais */}
+                    {(feira.taxa_energia && Number(feira.taxa_energia) > 0) || 
+                     (feira.taxa_limpeza && Number(feira.taxa_limpeza) > 0) || 
+                     (feira.taxa_seguranca && Number(feira.taxa_seguranca) > 0) ? (
+                      <>
+                        {feira.valor_participacao && Number(feira.valor_participacao) > 0 && (
+                          <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
+                            <span className="font-medium text-foreground/80">Valor de Participação da Feira:</span>
+                            <span className="font-bold text-lg text-foreground">
+                              {formatCurrency(Number(feira.valor_participacao))}
+                            </span>
+                          </div>
+                        )}
+                        {feira.taxa_energia && Number(feira.taxa_energia) > 0 && (
+                          <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
+                            <span className="font-medium text-foreground/80">Taxa de Energia:</span>
+                            <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_energia))}</span>
+                          </div>
+                        )}
+                        {feira.taxa_limpeza && Number(feira.taxa_limpeza) > 0 && (
+                          <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
+                            <span className="font-medium text-foreground/80">Taxa de Limpeza:</span>
+                            <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_limpeza))}</span>
+                          </div>
+                        )}
+                        {feira.taxa_seguranca && Number(feira.taxa_seguranca) > 0 && (
+                          <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
+                            <span className="font-medium text-foreground/80">Taxa de Segurança:</span>
+                            <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_seguranca))}</span>
+                          </div>
+                        )}
+                        {total > 0 && (
+                          <div className="flex justify-between items-center bg-blue-600/20 border-2 border-blue-600/40 rounded-lg px-4 py-3 mt-2">
+                            <span className="font-bold text-lg text-foreground">Total:</span>
+                            <span className="font-bold text-2xl text-blue-700 dark:text-blue-400">{formatCurrency(total)}</span>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      /* Se não houver taxas adicionais, mostrar apenas o total */
+                      total > 0 && (
+                        <div className="flex justify-between items-center bg-blue-600/20 border-2 border-blue-600/40 rounded-lg px-4 py-3">
+                          <span className="font-bold text-lg text-foreground">Total:</span>
+                          <span className="font-bold text-2xl text-blue-700 dark:text-blue-400">{formatCurrency(total)}</span>
+                        </div>
+                      )
                     )}
                   </div>
                 </div>
