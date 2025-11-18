@@ -28,11 +28,44 @@ export default function PaymentUpload({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file size (5MB max)
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      toast({
+        title: "Arquivo muito grande",
+        description: "Tamanho máximo: 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file type using MIME type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Tipo de arquivo não permitido",
+        description: "Apenas imagens (JPG, PNG) ou PDF são aceitos",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploading(true);
 
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${pagamentoId}-${Date.now()}.${fileExt}`;
+      // Get current user ID for folder organization
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não autenticado");
+
+      // Sanitize filename using MIME type
+      const mimeToExt: Record<string, string> = {
+        'image/jpeg': 'jpg',
+        'image/jpg': 'jpg',
+        'image/png': 'png',
+        'application/pdf': 'pdf'
+      };
+      const safeExt = mimeToExt[file.type] || 'bin';
+      const fileName = `${user.id}/${pagamentoId}-${Date.now()}.${safeExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from("comprovantes")
@@ -40,16 +73,13 @@ export default function PaymentUpload({
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from("comprovantes")
-        .getPublicUrl(fileName);
-
+      // Update payment status to awaiting verification (not paid yet!)
       const { error: updateError } = await supabase
         .from("pagamentos")
         .update({
-          comprovante_url: publicUrl,
-          status: "pago",
-          data_pagamento: new Date().toISOString(),
+          comprovante_feirante_url: fileName,
+          status: "aguardando_verificacao",
+          data_upload: new Date().toISOString(),
         })
         .eq("id", pagamentoId);
 
@@ -57,7 +87,7 @@ export default function PaymentUpload({
 
       toast({
         title: "Comprovante enviado!",
-        description: "Seu pagamento foi registrado com sucesso.",
+        description: "Aguardando verificação do administrador.",
       });
 
       onUploadComplete();
@@ -79,6 +109,13 @@ export default function PaymentUpload({
           <Badge variant="default" className="bg-green-500">
             <CheckCircle className="w-4 h-4 mr-1" />
             Pago
+          </Badge>
+        );
+      case "aguardando_verificacao":
+        return (
+          <Badge variant="default" className="bg-yellow-500">
+            <Clock className="w-4 h-4 mr-1" />
+            Aguardando Verificação
           </Badge>
         );
       case "pendente":

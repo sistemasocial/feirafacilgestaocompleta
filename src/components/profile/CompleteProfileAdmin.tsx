@@ -50,10 +50,38 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file size (5MB max)
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      toast({
+        title: "Arquivo muito grande",
+        description: "Tamanho máximo: 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file type using MIME type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Tipo de arquivo não permitido",
+        description: "Apenas imagens JPG ou PNG são aceitas",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploading(true);
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${userId}-${Date.now()}.${fileExt}`;
+      // Sanitize filename using MIME type
+      const mimeToExt: Record<string, string> = {
+        'image/jpeg': 'jpg',
+        'image/jpg': 'jpg',
+        'image/png': 'png'
+      };
+      const safeExt = mimeToExt[file.type] || 'jpg';
+      const fileName = `${userId}-${Date.now()}.${safeExt}`;
 
       // Delete old avatar if exists
       if (profile.foto_url) {
