@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { User, Mail, Lock, Phone, UserCog, Store } from "lucide-react";
+import { User, Mail, Lock, Phone, UserCog, Store, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PRODUCT_CATEGORIES, CATEGORY_LABELS } from "@/lib/productCategories";
@@ -34,6 +34,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState<"admin" | "feirante">("feirante");
@@ -173,10 +174,23 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4">
       <Card className="w-full max-w-md p-8 shadow-lg">
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
-            <Store className="w-9 h-9" color="white" />
+        <div className="flex items-center justify-between mb-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/")}
+            className="hover:bg-accent"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          
+          <div className="flex-1 flex justify-center">
+            <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
+              <Store className="w-9 h-9" color="white" />
+            </div>
           </div>
+          
+          <div className="w-10" /> {/* Spacer for alignment */}
         </div>
 
         <div className="text-center mb-6">
@@ -362,14 +376,27 @@ const Auth = () => {
               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10"
+                className="pl-10 pr-10"
                 required
                 minLength={6}
               />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0 h-full hover:bg-transparent"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <Eye className="h-4 w-4 text-muted-foreground" />
+                )}
+              </Button>
             </div>
             {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
           </div>

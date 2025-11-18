@@ -7,7 +7,8 @@ import {
   Settings, 
   UserCog,
   HelpCircle,
-  Store
+  Store,
+  KeyRound
 } from "lucide-react";
 
 const menuItems = [
@@ -18,6 +19,7 @@ const menuItems = [
   { title: "Pagamentos", url: "#pagamentos", icon: DollarSign },
   { title: "Configurações", url: "#config", icon: Settings },
   { title: "Perfil do Administrador", url: "#perfil", icon: UserCog },
+  { title: "Alterar Senha", url: "#senha", icon: KeyRound },
   { title: "Suporte", url: "#suporte", icon: HelpCircle },
 ];
 

@@ -11,6 +11,7 @@ import { FeirasCalendarFeirante } from "./feirante/FeirasCalendarFeirante";
 import { FeirasAtivas } from "./feirante/FeirasAtivas";
 import { SegmentosSection } from "./feirante/SegmentosSection";
 import CompleteProfileFeirante from "@/components/profile/CompleteProfileFeirante";
+import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { FeiranteSidebar } from "./FeiranteSidebar";
@@ -134,6 +135,12 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
 
           {activeSection === "perfil" && (
             <CompleteProfileFeirante userId={user.id} onSuccess={handleProfileUpdated} />
+          )}
+
+          {activeSection === "senha" && (
+            <div className="max-w-4xl mx-auto">
+              <ChangePassword />
+            </div>
           )}
 
           {activeSection === "suporte" && (

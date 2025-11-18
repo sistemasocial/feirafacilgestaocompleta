@@ -6,7 +6,8 @@ import {
   Tag,
   UserCog,
   HelpCircle,
-  Store
+  Store,
+  KeyRound
 } from "lucide-react";
 
 const menuItems = [
@@ -17,6 +18,7 @@ const menuItems = [
   { title: "Vendas", url: "#vendas", icon: TrendingUp },
   { title: "Segmentos", url: "#segmentos", icon: Tag },
   { title: "Perfil do Feirante", url: "#perfil", icon: UserCog },
+  { title: "Alterar Senha", url: "#senha", icon: KeyRound },
   { title: "Suporte", url: "#suporte", icon: HelpCircle },
 ];
 

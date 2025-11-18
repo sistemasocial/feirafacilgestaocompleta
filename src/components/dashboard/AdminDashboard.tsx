@@ -12,6 +12,7 @@ import { InscricoesList } from "./admin/InscricoesList";
 import { FeirasCalendar } from "./admin/FeirasCalendar";
 import { FeirantesAtivos } from "./admin/FeirantesAtivos";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
+import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { AdminSidebar } from "./AdminSidebar";
@@ -190,6 +191,12 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
           {activeSection === "perfil" && (
             <CompleteProfileAdmin userId={user.id} onProfileUpdated={handleProfileUpdated} />
+          )}
+
+          {activeSection === "senha" && (
+            <div className="max-w-4xl mx-auto">
+              <ChangePassword />
+            </div>
           )}
 
           {activeSection === "suporte" && (
