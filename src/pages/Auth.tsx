@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ShoppingBag, User, Mail, Lock, Phone, UserCog } from "lucide-react";
+import { User, Mail, Lock, Phone, UserCog } from "lucide-react";
+import feiraIcon from "@/assets/feira-icon.png";
 import { z } from "zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PRODUCT_CATEGORIES, CATEGORY_LABELS } from "@/lib/productCategories";
@@ -175,7 +176,7 @@ const Auth = () => {
       <Card className="w-full max-w-md p-8 shadow-lg">
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
-            <ShoppingBag className="w-8 h-8 text-white" />
+            <img src={feiraIcon} alt="Feira Fácil" className="w-9 h-9" />
           </div>
         </div>
 

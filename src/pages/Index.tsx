@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { 
-  ShoppingBag, 
   Users, 
   DollarSign, 
   TrendingUp, 
@@ -13,6 +12,7 @@ import {
 } from "lucide-react";
 import feiraBackground from "@/assets/feira-background.jpg";
 import vendedoraHero from "@/assets/vendedora-hero.jpg";
+import feiraIcon from "@/assets/feira-icon.png";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -78,7 +78,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
-              <ShoppingBag className="text-white text-xl" />
+              <img src={feiraIcon} alt="Feira Fácil" className="w-6 h-6" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">
@@ -321,7 +321,7 @@ const Index = () => {
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
-                  <ShoppingBag className="text-white text-xl" />
+                  <img src={feiraIcon} alt="Feira Fácil" className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold">FeiraFácil!</h3>
