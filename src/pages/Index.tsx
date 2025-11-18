@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Users, DollarSign, TrendingUp, Settings, Clock, MapPin, Check, User } from "lucide-react";
+
 import feiraBackground from "@/assets/feira-background.jpg";
 import vendedoraHero from "@/assets/vendedora-hero.jpg";
 import { FeiraIcon } from "@/components/FeiraIcon";
@@ -10,42 +10,36 @@ const Index = () => {
 
   const features = [
     {
-      icon: Users,
       title: "Gestão de Feirantes",
       description: "Cadastre e gerencie todos os feirantes da sua feira em um só lugar",
       bgColor: "bg-emerald-100",
       iconColor: "text-emerald-600",
     },
     {
-      icon: DollarSign,
       title: "Controle de Pagamentos",
       description: "Acompanhe pagamentos, taxas e status financeiro de cada feirante",
       bgColor: "bg-blue-100",
       iconColor: "text-blue-600",
     },
     {
-      icon: TrendingUp,
       title: "Relatórios e Análises",
       description: "Visualize gráficos de desempenho e vendas em tempo real",
       bgColor: "bg-purple-100",
       iconColor: "text-purple-600",
     },
     {
-      icon: Settings,
       title: "Sistema de Regras",
       description: "Defina políticas de cancelamento e regras da feira automaticamente",
       bgColor: "bg-orange-100",
       iconColor: "text-orange-600",
     },
     {
-      icon: Clock,
       title: "Gestão de Horários",
       description: "Configure dias, horários e limite para montagem das barracas",
       bgColor: "bg-red-100",
       iconColor: "text-red-600",
     },
     {
-      icon: MapPin,
       title: "Localização",
       description: "Gerencie endereços e visualize a localização da sua feira",
       bgColor: "bg-green-100",
@@ -162,7 +156,7 @@ const Index = () => {
               <div className="absolute -top-4 -left-4 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-                    <User className="text-emerald-600 w-4 h-4" />
+                    <FeiraIcon className="w-4 h-4 text-emerald-600" color="currentColor" />
                   </div>
                   <div>
                     <div className="text-sm font-semibold text-gray-800">1,2 mil</div>
@@ -173,7 +167,7 @@ const Index = () => {
               <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <DollarSign className="text-yellow-600 w-4 h-4" />
+                    <FeiraIcon className="w-4 h-4 text-yellow-600" color="currentColor" />
                   </div>
                   <div>
                     <div className="text-sm font-semibold text-gray-800">R$ 45 mil</div>
@@ -202,7 +196,7 @@ const Index = () => {
                 className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 <div className={`w-16 h-16 ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6`}>
-                  <feature.icon className={`${feature.iconColor} text-2xl`} />
+                  <FeiraIcon className={`${feature.iconColor} w-8 h-8`} color="currentColor" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">{feature.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{feature.description}</p>
@@ -225,7 +219,7 @@ const Index = () => {
                 className="flex items-center space-x-4 p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-100"
               >
                 <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="text-emerald-600 text-lg" />
+                  <FeiraIcon className="w-5 h-5 text-emerald-600" color="currentColor" />
                 </div>
                 <p className="text-gray-700 font-medium">{benefit}</p>
               </div>
