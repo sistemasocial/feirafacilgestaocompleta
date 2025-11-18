@@ -101,38 +101,39 @@ export default function PaymentUpload({
   };
 
   return (
-    <Card className="p-6">
+    <Card className="bg-gradient-to-br from-primary/15 via-primary/10 to-accent/15 border-2 border-primary/30 shadow-lg p-6">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Pagamento</h3>
+          <h3 className="text-xl font-bold text-foreground">Pagamento</h3>
           {getStatusBadge()}
         </div>
 
         <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Valor total:</span>
-            <span className="font-semibold">
+          <div className="flex justify-between text-base">
+            <span className="font-medium text-foreground/80">Valor total:</span>
+            <span className="font-bold text-lg text-primary">
               {valorTotal > 0 ? `R$ ${valorTotal.toFixed(2)}` : "Gratuito"}
             </span>
           </div>
         </div>
 
         {status !== "pago" && valorTotal > 0 && (
-          <div className="space-y-4 pt-4 border-t">
-            <Label>Enviar Comprovante de Pagamento</Label>
+          <div className="space-y-4 pt-4 border-t-2 border-primary/20">
+            <Label className="text-base font-semibold text-foreground">Enviar Comprovante de Pagamento</Label>
             <Label htmlFor="comprovante-upload" className="cursor-pointer">
               <Button
                 type="button"
-                variant="outline"
-                className="w-full"
+                variant="default"
+                size="lg"
+                className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md"
                 disabled={uploading}
                 asChild
               >
                 <span>
                   {uploading ? (
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
                   ) : (
-                    <Upload className="w-4 h-4 mr-2" />
+                    <Upload className="w-5 h-5 mr-2" />
                   )}
                   {uploading ? "Enviando..." : "Selecionar Comprovante"}
                 </span>
@@ -146,16 +147,17 @@ export default function PaymentUpload({
               onChange={handleComprovanteUpload}
               disabled={uploading}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-foreground/70 font-medium text-center">
               Aceito: Imagens (JPG, PNG) ou PDF
             </p>
           </div>
         )}
 
         {status === "pago" && (
-          <div className="text-center text-green-600 py-4">
-            <CheckCircle className="w-12 h-12 mx-auto mb-2" />
-            <p className="font-medium">Pagamento confirmado!</p>
+          <div className="bg-gradient-to-br from-green-500/20 to-green-600/20 border-2 border-green-500/40 rounded-xl text-center py-6 shadow-inner">
+            <CheckCircle className="w-16 h-16 mx-auto mb-3 text-green-600" />
+            <p className="font-bold text-lg text-green-700">Pagamento confirmado!</p>
+            <p className="text-sm text-green-600 mt-1">Sua participação está garantida</p>
           </div>
         )}
       </div>

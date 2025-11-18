@@ -175,17 +175,17 @@ export const FeirasAtivas = () => {
                   <div className="mt-4 space-y-4">
                     {inscricao.pagamento.status !== "pago" ? (
                       <>
-                        <div className="bg-warning/10 border border-warning/20 rounded-lg p-4">
-                          <h4 className="font-semibold mb-2 flex items-center gap-2">
-                            <DollarSign className="w-5 h-5 text-warning" />
+                        <div className="bg-gradient-to-br from-warning/20 via-warning/15 to-warning/10 border-2 border-warning/40 rounded-xl p-5 shadow-lg">
+                          <h4 className="font-bold text-lg mb-3 flex items-center gap-2 text-warning-foreground">
+                            <DollarSign className="w-6 h-6 text-warning" />
                             Pagamento Pendente
                           </h4>
-                          <p className="text-sm text-muted-foreground mb-3">
+                          <p className="text-base text-foreground/80 mb-4 font-medium">
                             Complete o pagamento via PIX para confirmar sua participação.
                           </p>
-                          <div className="bg-background rounded p-3 mb-3">
-                            <p className="text-sm font-medium mb-1">Valor Total:</p>
-                            <p className="text-2xl font-bold text-primary">
+                          <div className="bg-background/80 backdrop-blur rounded-lg p-4 mb-3 border-2 border-primary/20 shadow-inner">
+                            <p className="text-sm font-semibold mb-2 text-foreground/70">Valor Total:</p>
+                            <p className="text-3xl font-bold text-primary">
                               {new Intl.NumberFormat("pt-BR", {
                                 style: "currency",
                                 currency: "BRL",

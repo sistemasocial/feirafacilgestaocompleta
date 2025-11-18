@@ -201,13 +201,13 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
 
       toast({
         title: "✅ Perfil salvo com sucesso!",
-        description: "Suas informações foram atualizadas.",
+        description: "Suas informações foram atualizadas. Aguarde...",
       });
       
-      // Force page reload to update all components
+      // Force page reload to update all components after showing toast
       setTimeout(() => {
         window.location.reload();
-      }, 1000);
+      }, 2000);
       
     } catch (error: any) {
       console.error("Erro ao salvar perfil:", error);
