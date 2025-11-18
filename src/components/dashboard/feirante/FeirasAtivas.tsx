@@ -171,26 +171,49 @@ export const FeirasAtivas = () => {
                 <AdminInfo adminId={inscricao.feiras.created_by} />
                 
                 {/* Sistema de Pagamento PIX */}
-                {inscricao.status === "aprovada" && inscricao.pagamento && (
+                {inscricao.status === "aprovada" && inscricao.pagamento && inscricao.pagamento.valor_total > 0 && (
                   <div className="mt-4 space-y-4">
-                    <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <DollarSign className="w-4 h-4 text-primary" />
-                        Pagamento via PIX
-                      </h4>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Realize o pagamento para o administrador e envie o comprovante para confirmar sua participação.
-                      </p>
-                      
-                      <PaymentUpload
-                        pagamentoId={inscricao.pagamento.id}
-                        status={inscricao.pagamento.status}
-                        valorTotal={inscricao.pagamento.valor_total}
-                        onUploadComplete={() => {
-                          window.location.reload();
-                        }}
-                      />
-                    </div>
+                    {inscricao.pagamento.status !== "pago" ? (
+                      <>
+                        <div className="bg-warning/10 border border-warning/20 rounded-lg p-4">
+                          <h4 className="font-semibold mb-2 flex items-center gap-2">
+                            <DollarSign className="w-5 h-5 text-warning" />
+                            Pagamento Pendente
+                          </h4>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Complete o pagamento via PIX para confirmar sua participação.
+                          </p>
+                          <div className="bg-background rounded p-3 mb-3">
+                            <p className="text-sm font-medium mb-1">Valor Total:</p>
+                            <p className="text-2xl font-bold text-primary">
+                              {new Intl.NumberFormat("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              }).format(inscricao.pagamento.valor_total)}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <PaymentUpload
+                          pagamentoId={inscricao.pagamento.id}
+                          status={inscricao.pagamento.status}
+                          valorTotal={inscricao.pagamento.valor_total}
+                          onUploadComplete={() => {
+                            window.location.reload();
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <div className="bg-success/10 border border-success/20 rounded-lg p-4">
+                        <div className="flex items-center gap-2 text-success">
+                          <CheckCircle className="w-5 h-5" />
+                          <p className="font-semibold">Pagamento Confirmado</p>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Sua participação está confirmada!
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
