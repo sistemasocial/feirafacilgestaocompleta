@@ -133,6 +133,26 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
     setLoading(true);
 
     try {
+      // Validação de campos obrigatórios
+      if (!profile.full_name.trim()) {
+        throw new Error("Nome completo é obrigatório");
+      }
+      
+      if (!cpf.trim()) {
+        throw new Error("CPF/CNPJ é obrigatório");
+      }
+
+      // Validar se pelo menos um produto foi selecionado
+      const hasProdutosSelecionados = Object.values(selectedProducts).some(
+        subcategorias => subcategorias.length > 0
+      );
+      
+      if (!hasProdutosSelecionados) {
+        throw new Error("Selecione pelo menos um produto que você vende");
+      }
+
+      console.log("Salvando perfil...", { userId, profile, cpf });
+
       // Update profile
       const { error: profileError } = await supabase
         .from("profiles")
@@ -142,12 +162,16 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
         })
         .eq("id", userId);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error("Erro ao atualizar profile:", profileError);
+        throw new Error(`Erro ao atualizar perfil: ${profileError.message}`);
+      }
 
       // Create or update feirante
       let feiranteId = feirante?.id;
       
       if (!feirante) {
+        console.log("Criando novo feirante...");
         const { data: newFeirante, error: feiranteError } = await supabase
           .from("feirantes")
           .insert({
@@ -158,27 +182,42 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
           .select("id")
           .single();
 
-        if (feiranteError) throw feiranteError;
+        if (feiranteError) {
+          console.error("Erro ao criar feirante:", feiranteError);
+          throw new Error(`Erro ao criar registro de feirante: ${feiranteError.message}`);
+        }
         feiranteId = newFeirante.id;
+        console.log("Feirante criado com ID:", feiranteId);
       } else {
         // Only update CPF if it changed
         if (feirante.cpf_cnpj !== cpf) {
+          console.log("Atualizando CPF do feirante...");
           const { error: updateError } = await supabase
             .from("feirantes")
             .update({ cpf_cnpj: cpf })
             .eq("id", feirante.id);
           
-          if (updateError) throw updateError;
+          if (updateError) {
+            console.error("Erro ao atualizar CPF:", updateError);
+            throw new Error(`Erro ao atualizar CPF: ${updateError.message}`);
+          }
         }
       }
 
       // Update products
       if (feiranteId) {
+        console.log("Atualizando produtos para feirante:", feiranteId);
+        
         // Delete existing products
-        await supabase
+        const { error: deleteError } = await supabase
           .from("produtos_feirante")
           .delete()
           .eq("feirante_id", feiranteId);
+
+        if (deleteError) {
+          console.error("Erro ao deletar produtos:", deleteError);
+          throw new Error(`Erro ao remover produtos anteriores: ${deleteError.message}`);
+        }
 
         // Insert new products
         const productsToInsert = Object.entries(selectedProducts).flatMap(
@@ -190,15 +229,21 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
             }))
         );
 
+        console.log("Inserindo produtos:", productsToInsert.length, "itens");
+        
         if (productsToInsert.length > 0) {
           const { error: productsError } = await supabase
             .from("produtos_feirante")
             .insert(productsToInsert);
           
-          if (productsError) throw productsError;
+          if (productsError) {
+            console.error("Erro ao inserir produtos:", productsError);
+            throw new Error(`Erro ao salvar produtos: ${productsError.message}`);
+          }
         }
       }
 
+      console.log("Perfil salvo com sucesso!");
       toast({
         title: "✅ Perfil salvo com sucesso!",
         description: "Suas informações foram atualizadas. Aguarde...",
