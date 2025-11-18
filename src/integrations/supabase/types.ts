@@ -54,6 +54,13 @@ export type Database = {
             foreignKeyName: "avaliacoes_feirante_id_fkey"
             columns: ["feirante_id"]
             isOneToOne: false
+            referencedRelation: "admin_feirante_contact"
+            referencedColumns: ["feirante_id"]
+          },
+          {
+            foreignKeyName: "avaliacoes_feirante_id_fkey"
+            columns: ["feirante_id"]
+            isOneToOne: false
             referencedRelation: "feirantes"
             referencedColumns: ["id"]
           },
@@ -255,6 +262,13 @@ export type Database = {
             foreignKeyName: "inscricoes_feiras_feirante_id_fkey"
             columns: ["feirante_id"]
             isOneToOne: false
+            referencedRelation: "admin_feirante_contact"
+            referencedColumns: ["feirante_id"]
+          },
+          {
+            foreignKeyName: "inscricoes_feiras_feirante_id_fkey"
+            columns: ["feirante_id"]
+            isOneToOne: false
             referencedRelation: "feirantes"
             referencedColumns: ["id"]
           },
@@ -300,6 +314,7 @@ export type Database = {
           created_at: string
           data_pagamento: string | null
           data_referencia: string
+          data_upload: string | null
           feira_id: string
           feirante_id: string
           id: string
@@ -311,6 +326,7 @@ export type Database = {
           taxa_seguranca: number | null
           updated_at: string
           valor_total: number
+          verificado_por: string | null
         }
         Insert: {
           comprovante_feirante_url?: string | null
@@ -318,6 +334,7 @@ export type Database = {
           created_at?: string
           data_pagamento?: string | null
           data_referencia: string
+          data_upload?: string | null
           feira_id: string
           feirante_id: string
           id?: string
@@ -329,6 +346,7 @@ export type Database = {
           taxa_seguranca?: number | null
           updated_at?: string
           valor_total: number
+          verificado_por?: string | null
         }
         Update: {
           comprovante_feirante_url?: string | null
@@ -336,6 +354,7 @@ export type Database = {
           created_at?: string
           data_pagamento?: string | null
           data_referencia?: string
+          data_upload?: string | null
           feira_id?: string
           feirante_id?: string
           id?: string
@@ -347,6 +366,7 @@ export type Database = {
           taxa_seguranca?: number | null
           updated_at?: string
           valor_total?: number
+          verificado_por?: string | null
         }
         Relationships: [
           {
@@ -355,6 +375,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "feiras"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pagamentos_feirante_id_fkey"
+            columns: ["feirante_id"]
+            isOneToOne: false
+            referencedRelation: "admin_feirante_contact"
+            referencedColumns: ["feirante_id"]
           },
           {
             foreignKeyName: "pagamentos_feirante_id_fkey"
@@ -388,6 +415,13 @@ export type Database = {
           subcategoria?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "produtos_feirante_feirante_id_fkey"
+            columns: ["feirante_id"]
+            isOneToOne: false
+            referencedRelation: "admin_feirante_contact"
+            referencedColumns: ["feirante_id"]
+          },
           {
             foreignKeyName: "produtos_feirante_feirante_id_fkey"
             columns: ["feirante_id"]
@@ -497,6 +531,13 @@ export type Database = {
             foreignKeyName: "vendas_feirante_id_fkey"
             columns: ["feirante_id"]
             isOneToOne: false
+            referencedRelation: "admin_feirante_contact"
+            referencedColumns: ["feirante_id"]
+          },
+          {
+            foreignKeyName: "vendas_feirante_id_fkey"
+            columns: ["feirante_id"]
+            isOneToOne: false
             referencedRelation: "feirantes"
             referencedColumns: ["id"]
           },
@@ -504,7 +545,19 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_feirante_contact: {
+        Row: {
+          bloqueado: boolean | null
+          feirante_id: string | null
+          foto_url: string | null
+          full_name: string | null
+          motivo_bloqueio: string | null
+          segmento: Database["public"]["Enums"]["feirante_segment"] | null
+          user_id: string | null
+          whatsapp: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
@@ -526,7 +579,11 @@ export type Database = {
         | "doces"
         | "joias"
         | "tapetes"
-      payment_status: "pago" | "pendente" | "atrasado"
+      payment_status:
+        | "pago"
+        | "pendente"
+        | "atrasado"
+        | "aguardando_verificacao"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -665,7 +722,12 @@ export const Constants = {
         "joias",
         "tapetes",
       ],
-      payment_status: ["pago", "pendente", "atrasado"],
+      payment_status: [
+        "pago",
+        "pendente",
+        "atrasado",
+        "aguardando_verificacao",
+      ],
     },
   },
 } as const
