@@ -1,11 +1,55 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Users, DollarSign, TrendingUp, Settings, Clock, MapPin, Check, Store, Smartphone } from "lucide-react";
+import { Users, DollarSign, TrendingUp, Settings, Clock, MapPin, Check, Store, Smartphone, Download } from "lucide-react";
 import feiraBackground from "@/assets/feira-background.jpg";
 import vendedoraHero from "@/assets/vendedora-hero.jpg";
+import { useState, useEffect } from "react";
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
 
 const Index = () => {
   const navigate = useNavigate();
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
+  useEffect(() => {
+    // Check if already installed
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      setShowInstallButton(false);
+      return;
+    }
+
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      setShowInstallButton(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      navigate("/install");
+      return;
+    }
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === "accepted") {
+      setShowInstallButton(false);
+    }
+
+    setDeferredPrompt(null);
+  };
 
   const features = [
     {
@@ -380,6 +424,19 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      {/* Floating Install Button */}
+      {showInstallButton && (
+        <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4">
+          <button
+            onClick={handleInstallClick}
+            className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-2 transition-all duration-300 hover:scale-105 font-medium"
+          >
+            <Download className="w-5 h-5" />
+            Instalar App
+          </button>
+        </div>
+      )}
     </div>
   );
 };
