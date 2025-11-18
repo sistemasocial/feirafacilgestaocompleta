@@ -17,6 +17,8 @@ const Index = () => {
   const navigate = useNavigate();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
+  const [previousCount, setPreviousCount] = useState(0);
+  const [shouldPulse, setShouldPulse] = useState(false);
 
   // Buscar contador de instalações
   const { data: installCount = 0 } = useQuery({
@@ -31,6 +33,16 @@ const Index = () => {
     },
     refetchInterval: 30000, // Atualizar a cada 30 segundos
   });
+
+  // Detectar quando o contador aumenta e ativar animação
+  useEffect(() => {
+    if (installCount > previousCount && previousCount > 0) {
+      setShouldPulse(true);
+      const timer = setTimeout(() => setShouldPulse(false), 2000);
+      return () => clearTimeout(timer);
+    }
+    setPreviousCount(installCount);
+  }, [installCount]);
   useEffect(() => {
     // Check if already installed
     if (window.matchMedia("(display-mode: standalone)").matches) {
@@ -174,7 +186,12 @@ const Index = () => {
               
               {installCount > 0 && (
                 <div className="flex justify-center sm:justify-start">
-                  <Badge variant="secondary" className="text-sm px-4 py-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                  <Badge 
+                    variant="secondary" 
+                    className={`text-sm px-4 py-2 animate-in fade-in slide-in-from-bottom-2 duration-500 transition-all ${
+                      shouldPulse ? 'animate-pulse scale-110 shadow-lg ring-2 ring-emerald-400' : ''
+                    }`}
+                  >
                     🎉 {installCount.toLocaleString('pt-BR')} {installCount === 1 ? 'pessoa já instalou' : 'pessoas já instalaram'}
                   </Badge>
                 </div>
