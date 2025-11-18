@@ -17,7 +17,13 @@ interface ProfileData {
   pix_key: string | null;
 }
 
-export default function CompleteProfileAdmin({ userId }: { userId: string }) {
+export default function CompleteProfileAdmin({ 
+  userId, 
+  onProfileUpdated 
+}: { 
+  userId: string;
+  onProfileUpdated?: () => void;
+}) {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
@@ -156,6 +162,7 @@ export default function CompleteProfileAdmin({ userId }: { userId: string }) {
         title: "Perfil atualizado!",
         description: "Suas informações foram salvas com sucesso.",
       });
+      onProfileUpdated?.();
     }
 
     setLoading(false);
