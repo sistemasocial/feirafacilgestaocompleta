@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Upload, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PRODUCT_CATEGORIES, CATEGORY_LABELS } from "@/lib/productCategories";
+import { Database } from "@/integrations/supabase/types";
 
 interface ProfileData {
   full_name: string;
@@ -133,6 +134,29 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
     });
   };
 
+  const determineSegmento = (products: Record<string, string[]>): string => {
+    // Conta quantos produtos foram selecionados por categoria
+    const categoryCounts: Record<string, number> = {};
+    
+    Object.entries(products).forEach(([categoria, subcategorias]) => {
+      if (subcategorias.length > 0) {
+        categoryCounts[categoria] = subcategorias.length;
+      }
+    });
+
+    // Se não há produtos selecionados, retorna 'outros'
+    if (Object.keys(categoryCounts).length === 0) {
+      return 'outros';
+    }
+
+    // Encontra a categoria com mais produtos
+    const mainCategory = Object.entries(categoryCounts).reduce((a, b) => 
+      a[1] > b[1] ? a : b
+    )[0];
+
+    return mainCategory as string;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -178,6 +202,7 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
 
       // Create or update feirante
       let feiranteId = feirante?.id;
+      const segmento = determineSegmento(selectedProducts) as Database["public"]["Enums"]["feirante_segment"];
       
       if (!feirante) {
         console.log("PASSO 2: Criando novo feirante...");
@@ -186,7 +211,7 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
           .insert({
             user_id: userId,
             cpf_cnpj: cpf,
-            segmento: "outros",
+            segmento: segmento,
           })
           .select("id")
           .single();
@@ -199,20 +224,23 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
         console.log("PASSO 2: Feirante criado com ID:", feiranteId);
       } else {
         console.log("PASSO 2: Feirante já existe, ID:", feirante.id);
-        // Only update CPF if it changed
+        // Update CPF and segmento
+        const updates: any = { segmento };
         if (feirante.cpf_cnpj !== cpf) {
-          console.log("PASSO 2B: Atualizando CPF do feirante...");
-          const { error: updateError } = await supabase
-            .from("feirantes")
-            .update({ cpf_cnpj: cpf })
-            .eq("id", feirante.id);
-          
-          if (updateError) {
-            console.error("Erro ao atualizar CPF:", updateError);
-            throw new Error(`Erro ao atualizar CPF: ${updateError.message}`);
-          }
-          console.log("PASSO 2B: CPF atualizado com sucesso");
+          updates.cpf_cnpj = cpf;
         }
+        
+        console.log("PASSO 2B: Atualizando feirante...", updates);
+        const { error: updateError } = await supabase
+          .from("feirantes")
+          .update(updates)
+          .eq("id", feirante.id);
+        
+        if (updateError) {
+          console.error("Erro ao atualizar feirante:", updateError);
+          throw new Error(`Erro ao atualizar feirante: ${updateError.message}`);
+        }
+        console.log("PASSO 2B: Feirante atualizado com sucesso");
       }
 
       // Update products

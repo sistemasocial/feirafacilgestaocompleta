@@ -14,6 +14,7 @@ interface ProfileData {
   cpf: string | null;
   phone: string | null;
   whatsapp: string | null;
+  foto_url: string | null;
   feiras_por_semana?: number | null;
   media_feirantes_por_feira?: number | null;
 }
@@ -44,7 +45,7 @@ export const ProfileHeader = ({ userId, role }: ProfileHeaderProps) => {
       // Get profile data
       const { data: profileData } = await supabase
         .from("profiles")
-        .select("full_name, cpf, phone, whatsapp, feiras_por_semana, media_feirantes_por_feira")
+        .select("full_name, cpf, phone, whatsapp, foto_url, feiras_por_semana, media_feirantes_por_feira")
         .eq("id", userId)
         .maybeSingle();
 
@@ -104,9 +105,17 @@ export const ProfileHeader = ({ userId, role }: ProfileHeaderProps) => {
   return (
     <Card className="p-6 mb-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/10">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold text-lg shadow-glow">
-          {profile.full_name.charAt(0).toUpperCase()}
-        </div>
+        {profile.foto_url ? (
+          <img 
+            src={profile.foto_url} 
+            alt={profile.full_name}
+            className="w-12 h-12 rounded-full object-cover shadow-glow"
+          />
+        ) : (
+          <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold text-lg shadow-glow">
+            {profile.full_name.charAt(0).toUpperCase()}
+          </div>
+        )}
         <div>
           <h2 className="text-xl font-bold">{profile.full_name}</h2>
           <p className="text-sm text-muted-foreground">
