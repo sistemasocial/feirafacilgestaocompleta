@@ -251,9 +251,9 @@ export const FeirasDisponiveisEnhanced = () => {
                   </div>
 
                   {feira.segmento_exclusivo && (
-                    <div className="flex items-start gap-2 bg-warning/10 border border-warning/20 rounded p-3 mt-3">
-                      <AlertTriangle className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
-                      <p className="text-sm text-warning">
+                    <div className="flex items-start gap-2 bg-amber-100 dark:bg-amber-950/50 border-2 border-amber-500 rounded p-3 mt-3">
+                      <AlertTriangle className="w-5 h-5 text-amber-700 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-amber-900 dark:text-amber-200 font-medium">
                         <strong>Segmento Exclusivo:</strong> Você será o único feirante autorizado para seu segmento nesta feira
                       </p>
                     </div>
