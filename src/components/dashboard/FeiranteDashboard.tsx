@@ -46,13 +46,15 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
       <div className="flex-1 flex flex-col ml-[280px]">
         <header className="border-b bg-card sticky top-0 z-10">
           <div className="px-4 py-4">
-            <div className="flex items-center justify-end gap-4">
+            <div className="flex items-center justify-between gap-4">
               <ProfileHeader key={profileKey} userId={user.id} role="feirante" compact />
-              <NotificationBell userId={user.id} />
-              <Button variant="outline" onClick={handleLogout}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Sair
-              </Button>
+              <div className="flex items-center gap-4">
+                <NotificationBell userId={user.id} />
+                <Button variant="outline" onClick={handleLogout}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sair
+                </Button>
+              </div>
             </div>
           </div>
         </header>
