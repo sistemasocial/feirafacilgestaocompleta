@@ -159,6 +159,7 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
       console.log("Salvando perfil...", { userId, profile, cpf });
 
       // Update profile
+      console.log("PASSO 1: Atualizando profile...");
       const { error: profileError } = await supabase
         .from("profiles")
         .update({
@@ -171,12 +172,13 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
         console.error("Erro ao atualizar profile:", profileError);
         throw new Error(`Erro ao atualizar perfil: ${profileError.message}`);
       }
+      console.log("PASSO 1: Profile atualizado com sucesso");
 
       // Create or update feirante
       let feiranteId = feirante?.id;
       
       if (!feirante) {
-        console.log("Criando novo feirante...");
+        console.log("PASSO 2: Criando novo feirante...");
         const { data: newFeirante, error: feiranteError } = await supabase
           .from("feirantes")
           .insert({
@@ -192,11 +194,12 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
           throw new Error(`Erro ao criar registro de feirante: ${feiranteError.message}`);
         }
         feiranteId = newFeirante.id;
-        console.log("Feirante criado com ID:", feiranteId);
+        console.log("PASSO 2: Feirante criado com ID:", feiranteId);
       } else {
+        console.log("PASSO 2: Feirante já existe, ID:", feirante.id);
         // Only update CPF if it changed
         if (feirante.cpf_cnpj !== cpf) {
-          console.log("Atualizando CPF do feirante...");
+          console.log("PASSO 2B: Atualizando CPF do feirante...");
           const { error: updateError } = await supabase
             .from("feirantes")
             .update({ cpf_cnpj: cpf })
@@ -206,14 +209,16 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
             console.error("Erro ao atualizar CPF:", updateError);
             throw new Error(`Erro ao atualizar CPF: ${updateError.message}`);
           }
+          console.log("PASSO 2B: CPF atualizado com sucesso");
         }
       }
 
       // Update products
       if (feiranteId) {
-        console.log("Atualizando produtos para feirante:", feiranteId);
+        console.log("PASSO 3: Atualizando produtos para feirante:", feiranteId);
         
         // Delete existing products
+        console.log("PASSO 3A: Deletando produtos existentes...");
         const { error: deleteError } = await supabase
           .from("produtos_feirante")
           .delete()
@@ -223,6 +228,7 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
           console.error("Erro ao deletar produtos:", deleteError);
           throw new Error(`Erro ao remover produtos anteriores: ${deleteError.message}`);
         }
+        console.log("PASSO 3A: Produtos deletados com sucesso");
 
         // Insert new products
         const productsToInsert = Object.entries(selectedProducts).flatMap(
@@ -234,7 +240,7 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
             }))
         );
 
-        console.log("Inserindo produtos:", productsToInsert.length, "itens");
+        console.log("PASSO 3B: Inserindo", productsToInsert.length, "produtos");
         
         if (productsToInsert.length > 0) {
           const { error: productsError } = await supabase
@@ -245,27 +251,33 @@ export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteP
             console.error("Erro ao inserir produtos:", productsError);
             throw new Error(`Erro ao salvar produtos: ${productsError.message}`);
           }
+          console.log("PASSO 3B: Produtos inseridos com sucesso");
         }
       }
 
-      console.log("Perfil salvo com sucesso!");
+      console.log("PASSO 4: Todas operações concluídas!");
       
       toast({
         title: "✅ Perfil salvo com sucesso!",
         description: "Suas informações foram atualizadas.",
       });
       
+      console.log("PASSO 5: Recarregando dados...");
       // Recarregar dados localmente
       await loadData();
+      console.log("PASSO 5: Dados recarregados");
+      
       setLoading(false);
       
+      console.log("PASSO 6: Chamando callback onSuccess...");
       // Chamar callback se fornecido
       if (onSuccess) {
         onSuccess();
       }
+      console.log("PASSO 6: Callback executado");
       
     } catch (error: any) {
-      console.error("Erro ao salvar perfil:", error);
+      console.error("ERRO CAPTURADO:", error);
       toast({
         title: "Erro ao salvar perfil",
         description: error.message || "Ocorreu um erro ao salvar as informações",
