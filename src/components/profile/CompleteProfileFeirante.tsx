@@ -20,7 +20,12 @@ interface FeiranteData {
   cpf_cnpj: string;
 }
 
-export default function CompleteProfileFeirante({ userId }: { userId: string }) {
+interface CompleteProfileFeiranteProps {
+  userId: string;
+  onSuccess?: () => void;
+}
+
+export default function CompleteProfileFeirante({ userId, onSuccess }: CompleteProfileFeiranteProps) {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
@@ -244,15 +249,20 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
       }
 
       console.log("Perfil salvo com sucesso!");
+      
       toast({
         title: "✅ Perfil salvo com sucesso!",
-        description: "Suas informações foram atualizadas. Aguarde...",
+        description: "Suas informações foram atualizadas.",
       });
       
-      // Force page reload to update all components after showing toast
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+      // Recarregar dados localmente
+      await loadData();
+      setLoading(false);
+      
+      // Chamar callback se fornecido
+      if (onSuccess) {
+        onSuccess();
+      }
       
     } catch (error: any) {
       console.error("Erro ao salvar perfil:", error);
