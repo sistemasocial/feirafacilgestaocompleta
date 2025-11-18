@@ -6,46 +6,55 @@ interface FeiraIconProps {
 export const FeiraIcon = ({ className = "w-6 h-6", color = "currentColor" }: FeiraIconProps) => {
   return (
     <svg
-      viewBox="0 0 24 24"
+      viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      {/* Toldo arredondado */}
+      {/* Telhado da barraca */}
       <path
-        d="M3 10C3 10 3 7 12 7C21 7 21 10 21 10"
-        stroke={color}
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Parte de baixo do toldo */}
-      <line
-        x1="3"
-        y1="10"
-        x2="21"
-        y2="10"
-        stroke={color}
-        strokeWidth="2"
+        d="M50 15 L85 45 L15 45 Z"
+        fill={color === "white" ? "#10b981" : color}
+        stroke="none"
       />
       {/* Corpo da barraca */}
       <rect
-        x="4"
-        y="10"
-        width="16"
-        height="11"
-        stroke={color}
-        strokeWidth="2"
-        fill="none"
+        x="20"
+        y="45"
+        width="60"
+        height="40"
+        fill={color === "white" ? "#10b981" : color}
+        stroke="none"
       />
-      {/* Porta */}
-      <rect
-        x="9"
-        y="14"
-        width="6"
-        height="7"
-        fill={color}
+      {/* Círculo decorativo */}
+      <circle
+        cx="50"
+        cy="55"
+        r="6"
+        fill="white"
       />
+      {/* Letra F */}
+      <text
+        x="35"
+        y="80"
+        fontFamily="Arial, sans-serif"
+        fontSize="24"
+        fontWeight="bold"
+        fill="white"
+      >
+        F
+      </text>
+      {/* Letra L */}
+      <text
+        x="52"
+        y="80"
+        fontFamily="Arial, sans-serif"
+        fontSize="24"
+        fontWeight="bold"
+        fill="white"
+      >
+        L
+      </text>
     </svg>
   );
 };
