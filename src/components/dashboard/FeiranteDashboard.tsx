@@ -30,7 +30,9 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
     navigate("/auth");
   };
 
-  const handleProfileUpdated = () => {
+  const handleProfileUpdated = async () => {
+    // Aguarda um momento para garantir que o banco foi atualizado
+    await new Promise(resolve => setTimeout(resolve, 500));
     // Força o ProfileHeader a recarregar atualizando a key
     setProfileKey(prev => prev + 1);
     // Volta para a home
