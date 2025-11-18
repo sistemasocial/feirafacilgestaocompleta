@@ -134,13 +134,15 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
 
     try {
       // Update profile
-      await supabase
+      const { error: profileError } = await supabase
         .from("profiles")
         .update({
           full_name: profile.full_name,
           foto_url: profile.foto_url,
         })
         .eq("id", userId);
+
+      if (profileError) throw profileError;
 
       // Create or update feirante
       let feiranteId = feirante?.id;
@@ -189,27 +191,33 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
         );
 
         if (productsToInsert.length > 0) {
-          await supabase.from("produtos_feirante").insert(productsToInsert);
+          const { error: productsError } = await supabase
+            .from("produtos_feirante")
+            .insert(productsToInsert);
+          
+          if (productsError) throw productsError;
         }
       }
 
       toast({
-        title: "Perfil atualizado!",
-        description: "Suas informações foram salvas com sucesso.",
+        title: "✅ Perfil salvo com sucesso!",
+        description: "Suas informações foram atualizadas.",
       });
       
-      // Reload data
-      await loadData();
+      // Force page reload to update all components
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      
     } catch (error: any) {
       console.error("Erro ao salvar perfil:", error);
       toast({
         title: "Erro ao salvar perfil",
-        description: error.message,
+        description: error.message || "Ocorreu um erro ao salvar as informações",
         variant: "destructive",
       });
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
