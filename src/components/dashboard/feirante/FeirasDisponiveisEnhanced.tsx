@@ -103,27 +103,54 @@ export const FeirasDisponiveisEnhanced = () => {
     if (!feiranteId || !feiranteSegmento) return;
 
     try {
-      const { error } = await supabase
+      // Criar inscrição
+      const { data: inscricaoData, error: inscricaoError } = await supabase
         .from("inscricoes_feiras")
         .insert({
           feira_id: feiraId,
           feirante_id: feiranteId,
-          status: "pendente",
+          status: "aprovada",
           segmento_inscrito: feiranteSegmento as any,
-        });
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (inscricaoError) throw inscricaoError;
 
-      toast.success("Inscrição realizada com sucesso! Aguarde aprovação do administrador.");
+      // Buscar feira para criar pagamento
+      const feira = feiras.find(f => f.id === feiraId);
+      if (feira) {
+        const total = calcularTotal(feira);
+        
+        // Criar registro de pagamento
+        const { error: pagamentoError } = await supabase
+          .from("pagamentos")
+          .insert({
+            feira_id: feiraId,
+            feirante_id: feiranteId,
+            valor_total: total,
+            taxa_participacao: Number(feira.valor_participacao || 0),
+            taxa_energia: Number(feira.taxa_energia || 0),
+            taxa_limpeza: Number(feira.taxa_limpeza || 0),
+            taxa_seguranca: Number(feira.taxa_seguranca || 0),
+            data_referencia: new Date().toISOString().split('T')[0],
+            status: total > 0 ? "pendente" : "pago",
+          });
+
+        if (pagamentoError) throw pagamentoError;
+      }
+
+      toast.success("Participação confirmada! Complete o pagamento para finalizar.");
       
       setInscricoes(prev => ({
         ...prev,
-        [feiraId]: "pendente"
+        [feiraId]: "aprovada"
       }));
     } catch (error: any) {
       if (error.code === "23505") {
         toast.error("Você já está inscrito nesta feira");
       } else {
+        console.error("Erro ao realizar inscrição:", error);
         toast.error("Erro ao realizar inscrição: " + error.message);
       }
     }

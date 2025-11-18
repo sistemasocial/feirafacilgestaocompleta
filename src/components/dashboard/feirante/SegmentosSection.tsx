@@ -4,8 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Tag } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
-import { Skeleton } from "@/components/ui/skeleton";
 import { AdminInfo } from "./AdminInfo";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Feira = Tables<"feiras">;
 

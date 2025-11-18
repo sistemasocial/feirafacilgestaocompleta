@@ -219,7 +219,7 @@ export const FeirasCalendarFeirante = () => {
                     </div>
                     <div>
                       <div className="text-xs font-semibold text-muted-foreground mb-1">Próxima</div>
-                      <div className="font-bold text-lg text-foreground">{nextOccurrence.dayName}</div>
+                      <div className="font-bold text-sm text-foreground">{nextOccurrence.dayName}</div>
                     </div>
                   </div>
                 </div>
