@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { Users, DollarSign, TrendingUp, Settings, Clock, MapPin, Check, Store, Smartphone, Download } from "lucide-react";
 import feiraBackground from "@/assets/feira-background.jpg";
 import vendedoraHero from "@/assets/vendedora-hero.jpg";
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{
@@ -14,6 +17,20 @@ const Index = () => {
   const navigate = useNavigate();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
+
+  // Buscar contador de instalações
+  const { data: installCount = 0 } = useQuery({
+    queryKey: ['app-installs-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('app_installs')
+        .select('*', { count: 'exact', head: true });
+      
+      if (error) throw error;
+      return count || 0;
+    },
+    refetchInterval: 30000, // Atualizar a cada 30 segundos
+  });
   useEffect(() => {
     // Check if already installed
     if (window.matchMedia("(display-mode: standalone)").matches) {
@@ -41,6 +58,15 @@ const Index = () => {
     } = await deferredPrompt.userChoice;
     if (outcome === "accepted") {
       setShowInstallButton(false);
+      
+      // Registrar instalação no banco de dados
+      try {
+        await supabase.from('app_installs').insert({
+          user_agent: navigator.userAgent,
+        });
+      } catch (error) {
+        console.error('Erro ao registrar instalação:', error);
+      }
     }
     setDeferredPrompt(null);
   };
@@ -145,6 +171,14 @@ const Index = () => {
                   Já tenho conta
                 </button>
               </div>
+              
+              {installCount > 0 && (
+                <div className="flex justify-center sm:justify-start">
+                  <Badge variant="secondary" className="text-sm px-4 py-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    🎉 {installCount.toLocaleString('pt-BR')} {installCount === 1 ? 'pessoa já instalou' : 'pessoas já instalaram'}
+                  </Badge>
+                </div>
+              )}
               <div className="flex items-center space-x-8 pt-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-800">1.200+</div>
