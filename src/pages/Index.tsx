@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Users, DollarSign, TrendingUp, Settings, Clock, MapPin, Check } from "lucide-react";
+import { Users, DollarSign, TrendingUp, Settings, Clock, MapPin, Check, Store } from "lucide-react";
 import feiraBackground from "@/assets/feira-background.jpg";
 import vendedoraHero from "@/assets/vendedora-hero.jpg";
-import { FeiraIcon } from "@/components/FeiraIcon";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -69,7 +68,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
-              <FeiraIcon className="w-8 h-8" color="white" />
+              <Store className="w-6 h-6" color="white" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">FeiraFácil!</h1>
@@ -162,7 +161,7 @@ const Index = () => {
               <div className="absolute -top-4 -left-4 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-                    <FeiraIcon className="w-4 h-4 text-emerald-600" color="currentColor" />
+                    <Store className="w-4 h-4 text-emerald-600" />
                   </div>
                   <div>
                     <div className="text-sm font-semibold text-gray-800">1,2 mil</div>
@@ -173,7 +172,7 @@ const Index = () => {
               <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <FeiraIcon className="w-4 h-4 text-yellow-600" color="currentColor" />
+                    <Store className="w-4 h-4 text-yellow-600" />
                   </div>
                   <div>
                     <div className="text-sm font-semibold text-gray-800">R$ 45 mil</div>
@@ -300,7 +299,7 @@ const Index = () => {
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
-                  <FeiraIcon className="w-6 h-6" color="white" />
+                  <Store className="w-6 h-6" color="white" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold">FeiraFácil!</h3>
