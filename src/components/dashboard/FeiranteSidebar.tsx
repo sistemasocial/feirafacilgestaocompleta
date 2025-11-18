@@ -11,7 +11,8 @@ import {
 
 const menuItems = [
   { title: "Início", url: "#home", icon: Home },
-  { title: "Feiras", url: "#feiras", icon: Calendar },
+  { title: "Feiras Disponíveis", url: "#feiras", icon: Calendar },
+  { title: "Minhas Inscrições", url: "#inscricoes", icon: Calendar },
   { title: "Pagamentos", url: "#pagamentos", icon: DollarSign },
   { title: "Vendas", url: "#vendas", icon: TrendingUp },
   { title: "Segmentos", url: "#segmentos", icon: Tag },

@@ -182,17 +182,17 @@ export const FeirasCalendarFeirante = () => {
 
                   {/* Countdown Badge */}
                   <div className="flex flex-col items-end gap-2">
-                    <div className="bg-gradient-to-br from-orange-500 to-red-500 text-white px-4 py-2 rounded-lg shadow-lg">
+                    <div className="bg-gradient-to-br from-orange-500 to-red-500 text-white px-5 py-3 rounded-lg shadow-lg">
                       <div className="text-center">
-                        <div className="text-2xl font-bold">
+                        <div className="text-3xl font-bold drop-shadow-lg">
                           {nextOccurrence.daysRemaining}
                         </div>
-                        <div className="text-xs font-medium">
+                        <div className="text-sm font-semibold">
                           {nextOccurrence.daysRemaining === 1 ? 'dia' : 'dias'}
                         </div>
                       </div>
                     </div>
-                    <span className="text-xs text-muted-foreground font-medium">
+                    <span className="text-sm text-foreground font-bold">
                       {getDaysUntilText(nextOccurrence.daysRemaining)}
                     </span>
                   </div>
@@ -205,8 +205,8 @@ export const FeirasCalendarFeirante = () => {
                       <Clock className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <div className="text-xs text-muted-foreground mb-1">Horário</div>
-                      <div className="font-bold text-foreground">
+                      <div className="text-xs font-semibold text-muted-foreground mb-1">Horário</div>
+                      <div className="font-bold text-lg text-foreground">
                         {feira.horario_inicio.slice(0, 5)} - {feira.horario_fim.slice(0, 5)}
                       </div>
                     </div>
@@ -218,8 +218,8 @@ export const FeirasCalendarFeirante = () => {
                       <Calendar className="w-5 h-5 text-purple-600" />
                     </div>
                     <div>
-                      <div className="text-xs text-muted-foreground mb-1">Próxima</div>
-                      <div className="font-bold text-foreground">{nextOccurrence.dayName}</div>
+                      <div className="text-xs font-semibold text-muted-foreground mb-1">Próxima</div>
+                      <div className="font-bold text-lg text-foreground">{nextOccurrence.dayName}</div>
                     </div>
                   </div>
                 </div>

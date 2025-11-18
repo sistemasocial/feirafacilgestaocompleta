@@ -159,10 +159,15 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
         if (feiranteError) throw feiranteError;
         feiranteId = newFeirante.id;
       } else {
-        await supabase
-          .from("feirantes")
-          .update({ cpf_cnpj: cpf })
-          .eq("id", feirante.id);
+        // Only update CPF if it changed
+        if (feirante.cpf_cnpj !== cpf) {
+          const { error: updateError } = await supabase
+            .from("feirantes")
+            .update({ cpf_cnpj: cpf })
+            .eq("id", feirante.id);
+          
+          if (updateError) throw updateError;
+        }
       }
 
       // Update products
@@ -192,7 +197,11 @@ export default function CompleteProfileFeirante({ userId }: { userId: string }) 
         title: "Perfil atualizado!",
         description: "Suas informações foram salvas com sucesso.",
       });
+      
+      // Reload data
+      await loadData();
     } catch (error: any) {
+      console.error("Erro ao salvar perfil:", error);
       toast({
         title: "Erro ao salvar perfil",
         description: error.message,
