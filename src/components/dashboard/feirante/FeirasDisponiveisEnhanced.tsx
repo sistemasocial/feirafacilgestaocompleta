@@ -282,43 +282,42 @@ export const FeirasDisponiveisEnhanced = () => {
                   </div>
                 )}
 
-                <div className="bg-gradient-to-br from-green-500/15 via-green-400/10 to-emerald-500/15 border-2 border-green-500/30 rounded-xl p-5 shadow-lg">
+                <div className="bg-gradient-to-br from-blue-500/10 via-indigo-400/10 to-purple-500/10 border-2 border-blue-500/30 rounded-xl p-5 shadow-lg">
                   <h4 className="font-bold text-lg mb-4 flex items-center gap-2 text-foreground">
-                    <DollarSign className="w-6 h-6 text-green-600" />
+                    <DollarSign className="w-6 h-6 text-blue-600" />
                     💰 Valores
                   </h4>
                   <div className="grid gap-3 text-base">
-                    <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
-                      <span className="font-medium text-foreground/80">Valor de Participação da Feira:</span>
-                      <span className="font-bold text-lg">
-                        {feira.valor_participacao && Number(feira.valor_participacao) > 0 
-                          ? formatCurrency(Number(feira.valor_participacao))
-                          : <span className="text-muted-foreground font-normal">Não informado</span>
-                        }
-                      </span>
-                    </div>
+                    {feira.valor_participacao && Number(feira.valor_participacao) > 0 && (
+                      <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
+                        <span className="font-medium text-foreground/80">Valor de Participação da Feira:</span>
+                        <span className="font-bold text-lg text-foreground">
+                          {formatCurrency(Number(feira.valor_participacao))}
+                        </span>
+                      </div>
+                    )}
                     {feira.taxa_energia && Number(feira.taxa_energia) > 0 && (
                       <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
                         <span className="font-medium text-foreground/80">Taxa de Energia:</span>
-                        <span className="font-bold text-lg">{formatCurrency(Number(feira.taxa_energia))}</span>
+                        <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_energia))}</span>
                       </div>
                     )}
                     {feira.taxa_limpeza && Number(feira.taxa_limpeza) > 0 && (
                       <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
                         <span className="font-medium text-foreground/80">Taxa de Limpeza:</span>
-                        <span className="font-bold text-lg">{formatCurrency(Number(feira.taxa_limpeza))}</span>
+                        <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_limpeza))}</span>
                       </div>
                     )}
                     {feira.taxa_seguranca && Number(feira.taxa_seguranca) > 0 && (
                       <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
                         <span className="font-medium text-foreground/80">Taxa de Segurança:</span>
-                        <span className="font-bold text-lg">{formatCurrency(Number(feira.taxa_seguranca))}</span>
+                        <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_seguranca))}</span>
                       </div>
                     )}
                     {total > 0 && (
-                      <div className="flex justify-between items-center bg-primary/20 border-2 border-primary/40 rounded-lg px-4 py-3 mt-2">
+                      <div className="flex justify-between items-center bg-blue-600/20 border-2 border-blue-600/40 rounded-lg px-4 py-3 mt-2">
                         <span className="font-bold text-lg text-foreground">Total:</span>
-                        <span className="font-bold text-2xl text-primary">{formatCurrency(total)}</span>
+                        <span className="font-bold text-2xl text-blue-700 dark:text-blue-400">{formatCurrency(total)}</span>
                       </div>
                     )}
                   </div>
