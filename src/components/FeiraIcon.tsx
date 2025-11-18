@@ -14,7 +14,7 @@ export const FeiraIcon = ({ className = "w-6 h-6", color = "currentColor" }: Fei
       {/* Telhado da barraca */}
       <path
         d="M50 15 L85 45 L15 45 Z"
-        fill={color === "white" ? "#10b981" : color}
+        fill="white"
         stroke="none"
       />
       {/* Corpo da barraca */}
@@ -23,7 +23,7 @@ export const FeiraIcon = ({ className = "w-6 h-6", color = "currentColor" }: Fei
         y="45"
         width="60"
         height="40"
-        fill={color === "white" ? "#10b981" : color}
+        fill="white"
         stroke="none"
       />
       {/* Círculo decorativo */}
@@ -31,7 +31,7 @@ export const FeiraIcon = ({ className = "w-6 h-6", color = "currentColor" }: Fei
         cx="50"
         cy="55"
         r="6"
-        fill="white"
+        fill="#f97316"
       />
       {/* Letra F */}
       <text
@@ -40,7 +40,7 @@ export const FeiraIcon = ({ className = "w-6 h-6", color = "currentColor" }: Fei
         fontFamily="Arial, sans-serif"
         fontSize="24"
         fontWeight="bold"
-        fill="white"
+        fill="#f97316"
       >
         F
       </text>
@@ -51,7 +51,7 @@ export const FeiraIcon = ({ className = "w-6 h-6", color = "currentColor" }: Fei
         fontFamily="Arial, sans-serif"
         fontSize="24"
         fontWeight="bold"
-        fill="white"
+        fill="#f97316"
       >
         L
       </text>
