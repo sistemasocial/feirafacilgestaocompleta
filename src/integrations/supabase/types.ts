@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_installs: {
+        Row: {
+          id: string
+          installed_at: string
+          ip_address: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          id?: string
+          installed_at?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          id?: string
+          installed_at?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       avaliacoes: {
         Row: {
           avaliacao: number | null
