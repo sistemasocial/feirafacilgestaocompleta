@@ -37,21 +37,32 @@ export const ProfileHeader = ({ userId, role, compact = false }: ProfileHeaderPr
 
   const loadProfile = async () => {
     try {
-      // Get user email
+      // Get user email and metadata
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setEmail(user.email || "");
-      }
+        
+        // If no profile exists, use user metadata as fallback
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("full_name, cpf, phone, whatsapp, foto_url, feiras_por_semana, media_feirantes_por_feira")
+          .eq("id", userId)
+          .maybeSingle();
 
-      // Get profile data
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("full_name, cpf, phone, whatsapp, foto_url, feiras_por_semana, media_feirantes_por_feira")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (profileData) {
-        setProfile(profileData);
+        if (profileData) {
+          setProfile(profileData);
+        } else if (user.user_metadata) {
+          // Use metadata as fallback
+          setProfile({
+            full_name: user.user_metadata.full_name || "Usuário",
+            cpf: user.user_metadata.cpf || null,
+            phone: user.user_metadata.phone || null,
+            whatsapp: user.user_metadata.whatsapp || null,
+            foto_url: null,
+            feiras_por_semana: null,
+            media_feirantes_por_feira: null
+          });
+        }
       }
 
       // If feirante, get additional data
@@ -112,7 +123,36 @@ export const ProfileHeader = ({ userId, role, compact = false }: ProfileHeaderPr
     );
   }
 
-  if (!profile) return null;
+  if (!profile) {
+    // Show minimal info even without complete profile
+    if (compact) {
+      return (
+        <Card className="p-4 bg-background/50 border-border/40">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold shadow-md">
+              ?
+            </div>
+            <div className="flex-1 space-y-2">
+              <div>
+                <h3 className="text-base font-semibold">Usuário</h3>
+                <p className="text-xs text-muted-foreground">
+                  {role === "admin" ? "Administrador" : "Feirante"}
+                </p>
+              </div>
+              {email && (
+                <div className="flex items-center gap-1.5 text-xs">
+                  <Mail className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-muted-foreground">Email:</span>
+                  <span className="font-medium">{email}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </Card>
+      );
+    }
+    return null;
+  }
 
   // Compact version for header
   if (compact) {
