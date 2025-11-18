@@ -6,9 +6,9 @@ import {
   DollarSign, 
   Settings, 
   UserCog,
-  HelpCircle
+  HelpCircle,
+  Store
 } from "lucide-react";
-import { FeiraIcon } from "@/components/FeiraIcon";
 
 const menuItems = [
   { title: "Visão Geral", url: "#overview", icon: LayoutDashboard },
@@ -32,7 +32,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
       <div className="border-b pb-6 pt-6 px-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-            <FeiraIcon className="w-7 h-7" color="hsl(var(--primary))" />
+            <Store className="w-7 h-7 text-primary" />
           </div>
           <div>
             <h2 className="text-lg font-semibold">FeiraFácil!</h2>
