@@ -7,7 +7,7 @@ import {
   UserCog,
   HelpCircle
 } from "lucide-react";
-import storeIcon from "@/assets/store-icon.png";
+import { FeiraIcon } from "@/components/FeiraIcon";
 
 const menuItems = [
   { title: "Início", url: "#home", icon: Home },
@@ -31,7 +31,7 @@ export function FeiranteSidebar({ activeSection, onSectionChange }: FeiranteSide
       <div className="border-b pb-6 pt-6 px-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-            <img src={storeIcon} alt="Store" className="w-7 h-7" />
+            <FeiraIcon className="w-7 h-7" color="hsl(var(--primary))" />
           </div>
           <div>
             <h2 className="text-lg font-semibold">FeiraFácil!</h2>
