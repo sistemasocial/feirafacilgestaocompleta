@@ -5,9 +5,9 @@ import {
   TrendingUp, 
   Tag,
   UserCog,
-  HelpCircle,
-  Store
+  HelpCircle
 } from "lucide-react";
+import storeIcon from "@/assets/store-icon.png";
 
 const menuItems = [
   { title: "Início", url: "#home", icon: Home },
@@ -30,8 +30,8 @@ export function FeiranteSidebar({ activeSection, onSectionChange }: FeiranteSide
     <aside className="w-[280px] border-r bg-background h-screen fixed left-0 top-0 flex flex-col">
       <div className="border-b pb-6 pt-6 px-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-            <Store className="w-6 h-6 text-primary-foreground" />
+          <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+            <img src={storeIcon} alt="Store" className="w-7 h-7" />
           </div>
           <div>
             <h2 className="text-lg font-semibold">FeiraFácil!</h2>
