@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FeirasDisponiveisEnhanced } from "./feirante/FeirasDisponiveisEnhanced";
 import { FeirasCalendarFeirante } from "./feirante/FeirasCalendarFeirante";
+import { FeirasAtivas } from "./feirante/FeirasAtivas";
+import { SegmentosSection } from "./feirante/SegmentosSection";
 import CompleteProfileFeirante from "@/components/profile/CompleteProfileFeirante";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
@@ -96,6 +98,10 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
             <FeirasDisponiveisEnhanced />
           )}
 
+          {activeSection === "inscricoes" && (
+            <FeirasAtivas />
+          )}
+
           {activeSection === "pagamentos" && (
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4">Meus Pagamentos</h2>
@@ -111,10 +117,7 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
           )}
 
           {activeSection === "segmentos" && (
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Meus Segmentos</h2>
-              <p className="text-muted-foreground">Gestão de segmentos em desenvolvimento...</p>
-            </Card>
+            <SegmentosSection />
           )}
 
           {activeSection === "perfil" && (

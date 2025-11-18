@@ -109,6 +109,7 @@ export const FeirasDisponiveisEnhanced = () => {
           feira_id: feiraId,
           feirante_id: feiranteId,
           status: "pendente",
+          segmento_inscrito: feiranteSegmento as any,
         });
 
       if (error) throw error;
@@ -129,7 +130,7 @@ export const FeirasDisponiveisEnhanced = () => {
   };
 
   const formatCurrency = (value: number | null) => {
-    if (!value) return "R$ 0,00";
+    if (!value || value === 0) return "Não informado";
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
@@ -263,7 +264,7 @@ export const FeirasDisponiveisEnhanced = () => {
                     <div className="grid gap-2 text-sm">
                       {feira.valor_participacao && Number(feira.valor_participacao) > 0 && (
                         <div className="flex justify-between">
-                          <span>Valor de Participação:</span>
+                          <span>Valor de Participação da Feira:</span>
                           <span className="font-medium">{formatCurrency(Number(feira.valor_participacao))}</span>
                         </div>
                       )}
