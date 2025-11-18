@@ -288,17 +288,15 @@ export const FeirasDisponiveisEnhanced = () => {
                     Valores
                   </h4>
                   <div className="grid gap-2 text-sm">
-                    {feira.valor_participacao && Number(feira.valor_participacao) > 0 ? (
-                      <div className="flex justify-between">
-                        <span>Valor de Participação da Feira:</span>
-                        <span className="font-medium">{formatCurrency(Number(feira.valor_participacao))}</span>
-                      </div>
-                    ) : (
-                      <div className="flex justify-between">
-                        <span>Valor de Participação da Feira:</span>
-                        <span className="font-medium text-muted-foreground">Não informado</span>
-                      </div>
-                    )}
+                    <div className="flex justify-between">
+                      <span>Valor de Participação da Feira:</span>
+                      <span className="font-medium">
+                        {feira.valor_participacao && Number(feira.valor_participacao) > 0 
+                          ? formatCurrency(Number(feira.valor_participacao))
+                          : <span className="text-muted-foreground">Não informado</span>
+                        }
+                      </span>
+                    </div>
                     {feira.taxa_energia && Number(feira.taxa_energia) > 0 && (
                       <div className="flex justify-between">
                         <span>Taxa de Energia:</span>

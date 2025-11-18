@@ -43,13 +43,13 @@ export const AdminInfo = ({ adminId }: { adminId?: string | null }) => {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-lg p-4 animate-pulse">
-        <div className="h-4 bg-muted rounded w-1/3 mb-3"></div>
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-muted"></div>
-          <div className="flex-1 space-y-2">
-            <div className="h-4 bg-muted rounded w-2/3"></div>
-            <div className="h-3 bg-muted rounded w-1/2"></div>
+      <div className="bg-gradient-to-br from-primary/20 via-primary/15 to-accent/20 border-2 border-primary/30 rounded-xl p-5 shadow-md animate-pulse">
+        <div className="h-5 bg-primary/20 rounded w-1/3 mb-4"></div>
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-primary/30 shadow-inner"></div>
+          <div className="flex-1 space-y-3">
+            <div className="h-5 bg-primary/20 rounded w-2/3"></div>
+            <div className="h-4 bg-primary/15 rounded w-1/2"></div>
           </div>
         </div>
       </div>
@@ -59,10 +59,12 @@ export const AdminInfo = ({ adminId }: { adminId?: string | null }) => {
   if (!admin) return null;
 
   return (
-    <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-lg p-4">
-      <h4 className="text-sm font-semibold mb-3">👤 Administrador Responsável</h4>
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
+    <div className="bg-gradient-to-br from-primary/20 via-primary/15 to-accent/20 border-2 border-primary/40 rounded-xl p-5 shadow-lg hover:shadow-xl transition-shadow">
+      <h4 className="text-base font-bold mb-4 text-foreground flex items-center gap-2">
+        👤 Administrador Responsável
+      </h4>
+      <div className="flex items-center gap-4">
+        <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg ring-2 ring-primary/30 ring-offset-2">
           {admin.foto_url ? (
             <img 
               src={admin.foto_url} 
@@ -70,17 +72,17 @@ export const AdminInfo = ({ adminId }: { adminId?: string | null }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-lg font-bold text-primary">
+            <span className="text-2xl font-bold text-primary-foreground">
               {admin.full_name.charAt(0).toUpperCase()}
             </span>
           )}
         </div>
         <div className="flex-1">
-          <p className="font-medium">{admin.full_name}</p>
+          <p className="font-bold text-lg text-foreground">{admin.full_name}</p>
           {admin.whatsapp && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-              <Phone className="w-3 h-3" />
-              <span>{admin.whatsapp}</span>
+            <div className="flex items-center gap-2 text-sm text-foreground/80 mt-2 bg-background/50 rounded-md px-3 py-1.5 w-fit">
+              <Phone className="w-4 h-4 text-primary" />
+              <span className="font-medium">{admin.whatsapp}</span>
             </div>
           )}
         </div>
