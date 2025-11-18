@@ -21,12 +21,20 @@ interface FeiranteDashboardProps {
 
 const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
   const [activeSection, setActiveSection] = useState("home");
+  const [profileKey, setProfileKey] = useState(0);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success("Logout realizado com sucesso");
     navigate("/auth");
+  };
+
+  const handleProfileUpdated = () => {
+    // Força o ProfileHeader a recarregar atualizando a key
+    setProfileKey(prev => prev + 1);
+    // Volta para a home
+    setActiveSection("home");
   };
 
   return (
@@ -37,7 +45,7 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
         <header className="border-b bg-card sticky top-0 z-10">
           <div className="px-4 py-4">
             <div className="flex items-center justify-end gap-4">
-              <ProfileHeader userId={user.id} role="feirante" />
+              <ProfileHeader key={profileKey} userId={user.id} role="feirante" />
               <NotificationBell userId={user.id} />
               <Button variant="outline" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" />
@@ -121,7 +129,7 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
           )}
 
           {activeSection === "perfil" && (
-            <CompleteProfileFeirante userId={user.id} />
+            <CompleteProfileFeirante userId={user.id} onSuccess={handleProfileUpdated} />
           )}
 
           {activeSection === "suporte" && (
