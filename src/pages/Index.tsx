@@ -7,6 +7,7 @@ import vendedoraHero from "@/assets/vendedora-hero.jpg";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import confetti from "canvas-confetti";
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{
@@ -38,8 +39,47 @@ const Index = () => {
   useEffect(() => {
     if (installCount > previousCount && previousCount > 0) {
       setShouldPulse(true);
-      const timer = setTimeout(() => setShouldPulse(false), 2000);
-      return () => clearTimeout(timer);
+      
+      // Efeito de confetti
+      const duration = 3000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+      const randomInRange = (min: number, max: number) => {
+        return Math.random() * (max - min) + min;
+      };
+
+      const interval = setInterval(() => {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        
+        // Lançar confetti de dois pontos
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+        });
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+        });
+      }, 250);
+
+      const timer = setTimeout(() => {
+        setShouldPulse(false);
+        clearInterval(interval);
+      }, duration);
+      
+      return () => {
+        clearTimeout(timer);
+        clearInterval(interval);
+      };
     }
     setPreviousCount(installCount);
   }, [installCount]);
