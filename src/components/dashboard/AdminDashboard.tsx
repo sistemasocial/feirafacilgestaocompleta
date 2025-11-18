@@ -3,13 +3,13 @@ import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { LogOut, Users, DollarSign } from "lucide-react";
+import { LogOut, Users, DollarSign, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FeiraForm } from "./admin/FeiraForm";
 import { FeirasListEnhanced } from "./admin/FeirasListEnhanced";
 import { InscricoesList } from "./admin/InscricoesList";
-import { FeirasCalendar } from "./admin/FeirasCalendar";
+import { FeirasCalendarActivity } from "./admin/FeirasCalendarActivity";
 import { FeirantesAtivos } from "./admin/FeirantesAtivos";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import ChangePassword from "@/components/profile/ChangePassword";
@@ -26,10 +26,12 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
   const [activeSection, setActiveSection] = useState("overview");
   const [profileKey, setProfileKey] = useState(0);
   const [stats, setStats] = useState({
+    totalFeiras: 0,
+    feirasAtivas: 0,
     totalFeirantes: 0,
+    participacoesConfirmadas: 0,
     pagamentosPendentes: 0,
-    pagamentosEmDia: 0,
-    feirantesAtivos: 0,
+    pagamentosRecebidos: 0,
   });
   const navigate = useNavigate();
 
@@ -39,30 +41,49 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
   const loadStats = async () => {
     try {
-      // Total feirantes
+      // Total de feiras
+      const { count: totalFeiras } = await supabase
+        .from("feiras")
+        .select("*", { count: "exact", head: true });
+
+      // Feiras ativas (recorrentes)
+      const { count: feirasAtivas } = await supabase
+        .from("feiras")
+        .select("*", { count: "exact", head: true })
+        .eq("recorrente", true);
+
+      // Total feirantes cadastrados
       const { count: totalFeirantes } = await supabase
         .from("feirantes")
         .select("*", { count: "exact", head: true });
 
-      // Feirantes ativos (não bloqueados)
-      const { count: feirantesAtivos } = await supabase
-        .from("feirantes")
+      // Participações confirmadas
+      const { count: participacoesConfirmadas } = await supabase
+        .from("inscricoes_feiras")
         .select("*", { count: "exact", head: true })
-        .eq("bloqueado", false);
+        .eq("status", "confirmada");
 
-      // Pagamentos pendentes e em dia
+      // Pagamentos
       const { data: pagamentos } = await supabase
         .from("pagamentos")
-        .select("status");
+        .select("status, valor_total");
 
-      const pendentes = pagamentos?.filter((p) => p.status === "pendente").length || 0;
-      const emDia = pagamentos?.filter((p) => p.status === "pago").length || 0;
+      const pendentes = pagamentos?.filter((p) => p.status === "pendente" || p.status === "atrasado").length || 0;
+      const recebidos = pagamentos?.filter((p) => p.status === "pago").length || 0;
+      const valorPendente = pagamentos
+        ?.filter((p) => p.status === "pendente" || p.status === "atrasado")
+        .reduce((acc, p) => acc + Number(p.valor_total), 0) || 0;
+      const valorRecebido = pagamentos
+        ?.filter((p) => p.status === "pago")
+        .reduce((acc, p) => acc + Number(p.valor_total), 0) || 0;
 
       setStats({
+        totalFeiras: totalFeiras || 0,
+        feirasAtivas: feirasAtivas || 0,
         totalFeirantes: totalFeirantes || 0,
-        pagamentosPendentes: pendentes,
-        pagamentosEmDia: emDia,
-        feirantesAtivos: feirantesAtivos || 0,
+        participacoesConfirmadas: participacoesConfirmadas || 0,
+        pagamentosPendentes: valorPendente,
+        pagamentosRecebidos: valorRecebido,
       });
     } catch (error) {
       console.error("Erro ao carregar estatísticas:", error);
@@ -104,49 +125,74 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
         <main className="flex-1 px-4 py-8 overflow-auto">
           {activeSection === "overview" && (
             <div className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">Visão Geral</h1>
+                <p className="text-muted-foreground">Painel de controle das feiras</p>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Card className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Total Feirantes</p>
-                      <p className="text-2xl font-bold">{stats.totalFeirantes}</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm text-muted-foreground">Total de Feiras</p>
+                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <Users className="w-8 h-8 text-primary" />
                   </div>
+                  <p className="text-3xl font-bold">{stats.totalFeiras}</p>
                 </Card>
 
                 <Card className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Pagamentos Pendentes</p>
-                      <p className="text-2xl font-bold">{stats.pagamentosPendentes}</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm text-muted-foreground">Feiras Ativas</p>
+                    <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-green-600 dark:text-green-400" />
                     </div>
-                    <DollarSign className="w-8 h-8 text-warning" />
                   </div>
+                  <p className="text-3xl font-bold">{stats.feirasAtivas}</p>
                 </Card>
 
                 <Card className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Pagamentos em Dia</p>
-                      <p className="text-2xl font-bold">{stats.pagamentosEmDia}</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm text-muted-foreground">Feirantes Cadastrados</p>
+                    <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
+                      <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                     </div>
-                    <DollarSign className="w-8 h-8 text-success" />
                   </div>
+                  <p className="text-3xl font-bold">{stats.totalFeirantes}</p>
                 </Card>
 
                 <Card className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Feirantes Ativos</p>
-                      <p className="text-2xl font-bold">{stats.feirantesAtivos}</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm text-muted-foreground">Participações Confirmadas</p>
+                    <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
+                      <Users className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                     </div>
-                    <Users className="w-8 h-8 text-info" />
                   </div>
+                  <p className="text-3xl font-bold">{stats.participacoesConfirmadas}</p>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm text-muted-foreground">Pagamentos Pendentes</p>
+                    <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+                      <DollarSign className="w-5 h-5 text-red-600 dark:text-red-400" />
+                    </div>
+                  </div>
+                  <p className="text-3xl font-bold">R$ {stats.pagamentosPendentes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                </Card>
+
+                <Card className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm text-muted-foreground">Pagamentos Recebidos</p>
+                    <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/20 flex items-center justify-center">
+                      <DollarSign className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                    </div>
+                  </div>
+                  <p className="text-3xl font-bold">R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                 </Card>
               </div>
 
-              <FeirasCalendar />
+              <FeirasCalendarActivity />
             </div>
           )}
 
