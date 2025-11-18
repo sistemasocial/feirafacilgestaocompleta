@@ -229,8 +229,8 @@ export const FeirasCalendarFeirante = () => {
                   {feira.dias_semana.map((dia) => (
                     <Badge 
                       key={dia} 
-                      variant="secondary"
-                      className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 text-primary font-semibold px-3 py-1"
+                      variant="default"
+                      className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-md font-bold px-3 py-1"
                     >
                       {DIAS_SEMANA[dia]}
                     </Badge>
