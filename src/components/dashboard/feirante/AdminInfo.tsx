@@ -10,9 +10,13 @@ interface AdminData {
 
 export const AdminInfo = ({ adminId }: { adminId?: string | null }) => {
   const [admin, setAdmin] = useState<AdminData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!adminId) return;
+    if (!adminId) {
+      setLoading(false);
+      return;
+    }
     
     loadAdminProfile();
   }, [adminId]);
@@ -20,16 +24,37 @@ export const AdminInfo = ({ adminId }: { adminId?: string | null }) => {
   const loadAdminProfile = async () => {
     if (!adminId) return;
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("full_name, foto_url, whatsapp")
-      .eq("id", adminId)
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name, foto_url, whatsapp")
+        .eq("id", adminId)
+        .maybeSingle();
 
-    if (data && !error) {
-      setAdmin(data);
+      if (data && !error) {
+        setAdmin(data);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar perfil do admin:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-lg p-4 animate-pulse">
+        <div className="h-4 bg-muted rounded w-1/3 mb-3"></div>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-muted"></div>
+          <div className="flex-1 space-y-2">
+            <div className="h-4 bg-muted rounded w-2/3"></div>
+            <div className="h-3 bg-muted rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!admin) return null;
 
