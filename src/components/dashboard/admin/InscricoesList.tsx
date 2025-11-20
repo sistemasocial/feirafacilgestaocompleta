@@ -79,6 +79,20 @@ export const InscricoesList = () => {
     }
   };
 
+  const getSegmentoLabel = (segmento: string) => {
+    const labels: Record<string, string> = {
+      alimentacao: "Alimentação",
+      roupas: "Roupas",
+      artesanato: "Artesanato",
+      servicos: "Serviços",
+      doces: "Doces",
+      joias: "Joias",
+      tapetes: "Tapetes",
+      outros: "Outros",
+    };
+    return labels[segmento] || segmento;
+  };
+
   const handleUpdateStatus = async (inscricaoId: string, newStatus: string) => {
     try {
       const { error } = await supabase
@@ -154,6 +168,27 @@ export const InscricoesList = () => {
             </div>
 
             <div className="space-y-2 text-sm">
+              <div>
+                <span className="text-muted-foreground text-xs">Segmento:</span>
+                <p className="font-medium capitalize">
+                  {getSegmentoLabel(
+                    inscricao.segmento_inscrito || inscricao.feirante.segmento
+                  )}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-muted-foreground text-xs">WhatsApp:</span>
+                <p className="font-medium">{inscricao.profile.whatsapp || inscricao.profile.phone || "N/A"}</p>
+              </div>
+
+              <div>
+                <span className="text-muted-foreground text-xs">CPF/CNPJ:</span>
+                <p className="font-medium">{inscricao.feirante.cpf_cnpj}</p>
+              </div>
+            </div>
+
+            <div className="bg-muted/30 rounded-lg p-3 space-y-2 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <MapPin className="w-4 h-4 shrink-0" />
                 <span className="line-clamp-1">{inscricao.feira.nome}</span>
@@ -163,26 +198,6 @@ export const InscricoesList = () => {
                 <span>
                   {new Date(inscricao.data_inscricao).toLocaleDateString("pt-BR")}
                 </span>
-              </div>
-            </div>
-
-            <div className="bg-muted/30 rounded-lg p-3 space-y-2 text-sm">
-              <div>
-                <span className="text-muted-foreground text-xs">Segmento:</span>
-                <p className="font-medium capitalize">
-                  {inscricao.segmento_inscrito ? 
-                    inscricao.segmento_inscrito.replace(/_/g, ' ') : 
-                    inscricao.feirante.segmento.replace(/_/g, ' ')
-                  }
-                </p>
-              </div>
-              <div>
-                <span className="text-muted-foreground text-xs">WhatsApp:</span>
-                <p className="font-medium">{inscricao.profile.whatsapp || inscricao.profile.phone || "N/A"}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground text-xs">CPF/CNPJ:</span>
-                <p className="font-medium">{inscricao.feirante.cpf_cnpj}</p>
               </div>
             </div>
 
