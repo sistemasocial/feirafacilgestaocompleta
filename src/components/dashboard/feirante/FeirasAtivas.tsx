@@ -129,110 +129,224 @@ export const FeirasAtivas = () => {
     );
   }
 
+  // Separar inscrições por status
+  const inscricoesPendentes = inscricoes.filter(i => i.status === "pendente");
+  const inscricoesAprovadas = inscricoes.filter(i => i.status === "aprovada");
+  const inscricoesRejeitadas = inscricoes.filter(i => i.status === "rejeitada");
+
   return (
-    <div className="space-y-6">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Minhas Inscrições</h2>
-        <p className="text-muted-foreground">Acompanhe suas inscrições e status de pagamento</p>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {inscricoes.map((inscricao) => (
-          <Card key={inscricao.id} className="p-6 hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col animate-fade-in">
-            <div className="space-y-4 flex-1">
-              {/* Título e Status */}
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="text-lg font-bold line-clamp-2">{inscricao.feiras.nome}</h3>
-                <div className="shrink-0">
-                  {inscricao.status === "aprovada" && inscricao.pagamento?.status === "pago" ? (
-                    <Badge className="bg-success text-success-foreground">
-                      <CheckCircle className="w-3 h-3 mr-1" />✓
+    <div className="space-y-8">
+      {/* Seção de Aguardando Aprovação */}
+      {inscricoesPendentes.length > 0 && (
+        <div>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+              <AlertCircle className="w-6 h-6 text-warning" />
+              Aguardando Aprovação do Administrador
+            </h2>
+            <p className="text-muted-foreground">
+              Suas inscrições estão sendo analisadas. Você será notificado quando o administrador aprovar sua participação.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {inscricoesPendentes.map((inscricao) => (
+              <Card key={inscricao.id} className="p-6 hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col animate-fade-in border-warning/50">
+                <div className="space-y-4 flex-1">
+                  {/* Título e Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-lg font-bold line-clamp-2">{inscricao.feiras.nome}</h3>
+                    <Badge variant="outline" className="border-warning text-warning shrink-0">
+                      <AlertCircle className="w-3 h-3 mr-1" />
+                      Pendente
                     </Badge>
-                  ) : inscricao.status === "aprovada" ? (
-                    <Badge className="bg-primary text-primary-foreground">
-                      <CheckCircle className="w-3 h-3 mr-1" />✓
-                    </Badge>
-                  ) : inscricao.status === "pendente" ? (
-                    <Badge variant="outline" className="border-warning text-warning">
-                      <AlertCircle className="w-3 h-3 mr-1" />⏱
-                    </Badge>
-                  ) : (
-                    <Badge variant="destructive">✗</Badge>
-                  )}
+                  </div>
+
+                  {/* Localização */}
+                  <div className="flex items-start gap-2 text-sm">
+                    <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">
+                      {inscricao.feiras.bairro}, {inscricao.feiras.cidade}
+                    </span>
+                  </div>
+
+                  {/* Horário */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="w-4 h-4 text-primary shrink-0" />
+                    <span>{inscricao.feiras.horario_inicio} - {inscricao.feiras.horario_fim}</span>
+                  </div>
+
+                  {/* Dias da Semana */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <CalendarIcon className="w-4 h-4 text-primary shrink-0" />
+                    <span className="line-clamp-1">
+                      {inscricao.feiras.dias_semana.map((d) => diasSemanaMap[d]).join(", ")}
+                    </span>
+                  </div>
+
+                  {/* Data de Inscrição */}
+                  <div className="text-xs text-muted-foreground pt-2 border-t">
+                    Inscrito em {format(new Date(inscricao.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                  </div>
+
+                  {/* Admin Info */}
+                  <AdminInfo adminId={inscricao.feiras.created_by} />
+                  
+                  {/* Aviso de espera */}
+                  <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
+                    <p className="text-xs text-warning font-medium">
+                      ⏱ Aguarde a aprovação do administrador para confirmar sua participação
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
-              {/* Localização */}
-              <div className="flex items-start gap-2 text-sm">
-                <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                <span className="line-clamp-2">
-                  {inscricao.feiras.bairro}, {inscricao.feiras.cidade}
-                </span>
-              </div>
+      {/* Seção de Participações Confirmadas */}
+      {inscricoesAprovadas.length > 0 && (
+        <div>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+              <CheckCircle className="w-6 h-6 text-success" />
+              Participações Confirmadas
+            </h2>
+            <p className="text-muted-foreground">
+              Suas inscrições aprovadas. Complete o pagamento para garantir sua vaga.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {inscricoesAprovadas.map((inscricao) => (
+              <Card key={inscricao.id} className="p-6 hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col animate-fade-in border-success/50">
+                <div className="space-y-4 flex-1">
+                  {/* Título e Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-lg font-bold line-clamp-2">{inscricao.feiras.nome}</h3>
+                    <Badge className="bg-success text-success-foreground shrink-0">
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      Aprovado
+                    </Badge>
+                  </div>
 
-              {/* Horário */}
-              <div className="flex items-center gap-2 text-sm">
-                <Clock className="w-4 h-4 text-primary shrink-0" />
-                <span>{inscricao.feiras.horario_inicio} - {inscricao.feiras.horario_fim}</span>
-              </div>
+                  {/* Localização */}
+                  <div className="flex items-start gap-2 text-sm">
+                    <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">
+                      {inscricao.feiras.bairro}, {inscricao.feiras.cidade}
+                    </span>
+                  </div>
 
-              {/* Dias da Semana */}
-              <div className="flex items-center gap-2 text-sm">
-                <CalendarIcon className="w-4 h-4 text-primary shrink-0" />
-                <span className="line-clamp-1">
-                  {inscricao.feiras.dias_semana.map((d) => diasSemanaMap[d]).join(", ")}
-                </span>
-              </div>
+                  {/* Horário */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="w-4 h-4 text-primary shrink-0" />
+                    <span>{inscricao.feiras.horario_inicio} - {inscricao.feiras.horario_fim}</span>
+                  </div>
 
-              {/* Data de Inscrição */}
-              <div className="text-xs text-muted-foreground pt-2 border-t">
-                Inscrito em {format(new Date(inscricao.created_at), "dd/MM/yyyy", { locale: ptBR })}
-              </div>
+                  {/* Dias da Semana */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <CalendarIcon className="w-4 h-4 text-primary shrink-0" />
+                    <span className="line-clamp-1">
+                      {inscricao.feiras.dias_semana.map((d) => diasSemanaMap[d]).join(", ")}
+                    </span>
+                  </div>
 
-              {/* Admin Info */}
-              <AdminInfo adminId={inscricao.feiras.created_by} />
-              
-              {/* Status de Pagamento */}
-              {inscricao.status === "aprovada" && inscricao.pagamento && inscricao.pagamento.valor_total > 0 && (
-                <div className="space-y-3">
-                  {inscricao.pagamento.status !== "pago" ? (
-                    <>
-                      <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          <DollarSign className="w-4 h-4 text-warning" />
-                          <p className="text-sm font-semibold text-warning">Pagamento Pendente</p>
+                  {/* Data de Inscrição */}
+                  <div className="text-xs text-muted-foreground pt-2 border-t">
+                    Inscrito em {format(new Date(inscricao.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                  </div>
+
+                  {/* Admin Info */}
+                  <AdminInfo adminId={inscricao.feiras.created_by} />
+                  
+                  {/* Status de Pagamento */}
+                  {inscricao.pagamento && inscricao.pagamento.valor_total > 0 && (
+                    <div className="space-y-3">
+                      {inscricao.pagamento.status !== "pago" ? (
+                        <>
+                          <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
+                            <div className="flex items-center gap-2 mb-2">
+                              <DollarSign className="w-4 h-4 text-warning" />
+                              <p className="text-sm font-semibold text-warning">Pagamento Pendente</p>
+                            </div>
+                            <p className="text-2xl font-bold text-primary">
+                              {new Intl.NumberFormat("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              }).format(inscricao.pagamento.valor_total)}
+                            </p>
+                          </div>
+                          
+                          <PaymentUpload
+                            pagamentoId={inscricao.pagamento.id}
+                            status={inscricao.pagamento.status}
+                            valorTotal={inscricao.pagamento.valor_total}
+                            onUploadComplete={() => {
+                              window.location.reload();
+                            }}
+                          />
+                        </>
+                      ) : (
+                        <div className="bg-success/10 border border-success/20 rounded-lg p-3">
+                          <div className="flex items-center gap-2 text-success">
+                            <CheckCircle className="w-4 h-4" />
+                            <p className="text-sm font-semibold">Pago ✓</p>
+                          </div>
                         </div>
-                        <p className="text-2xl font-bold text-primary">
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(inscricao.pagamento.valor_total)}
-                        </p>
-                      </div>
-                      
-                      <PaymentUpload
-                        pagamentoId={inscricao.pagamento.id}
-                        status={inscricao.pagamento.status}
-                        valorTotal={inscricao.pagamento.valor_total}
-                        onUploadComplete={() => {
-                          window.location.reload();
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <div className="bg-success/10 border border-success/20 rounded-lg p-3">
-                      <div className="flex items-center gap-2 text-success">
-                        <CheckCircle className="w-4 h-4" />
-                        <p className="text-sm font-semibold">Pago ✓</p>
-                      </div>
+                      )}
                     </div>
                   )}
                 </div>
-              )}
-            </div>
-          </Card>
-        ))}
-      </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Seção de Inscrições Rejeitadas */}
+      {inscricoesRejeitadas.length > 0 && (
+        <div>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-2 text-destructive">Inscrições Não Aprovadas</h2>
+            <p className="text-muted-foreground">
+              O administrador não aprovou sua participação nestas feiras.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {inscricoesRejeitadas.map((inscricao) => (
+              <Card key={inscricao.id} className="p-6 opacity-60 border-destructive/50">
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-lg font-bold line-clamp-2">{inscricao.feiras.nome}</h3>
+                    <Badge variant="destructive" className="shrink-0">Rejeitado</Badge>
+                  </div>
+
+                  <div className="flex items-start gap-2 text-sm">
+                    <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">
+                      {inscricao.feiras.bairro}, {inscricao.feiras.cidade}
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-muted-foreground pt-2 border-t">
+                    Inscrito em {format(new Date(inscricao.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Nenhuma Inscrição */}
+      {inscricoes.length === 0 && (
+        <Card className="p-8 text-center">
+          <p className="text-muted-foreground">Você ainda não se inscreveu em nenhuma feira.</p>
+        </Card>
+      )}
     </div>
   );
 };
