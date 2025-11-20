@@ -3,8 +3,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, MapPin, Clock, Calendar, DollarSign, Plus, Users } from "lucide-react";
+import { Loader2, MapPin, Clock, Calendar, DollarSign, Plus, Users, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Feira {
   id: string;
@@ -47,6 +57,7 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
   const [feiras, setFeiras] = useState<Feira[]>([]);
   const [loading, setLoading] = useState(true);
   const [inscricoesCount, setInscricoesCount] = useState<Record<string, number>>({});
+  const [feiraToDelete, setFeiraToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     loadFeiras();
@@ -99,6 +110,26 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
     return getDiaSemana(feira.dias_semana);
   };
 
+  const handleDelete = async () => {
+    if (!feiraToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from("feiras")
+        .delete()
+        .eq("id", feiraToDelete);
+
+      if (error) throw error;
+
+      toast.success("Feira excluída com sucesso");
+      loadFeiras();
+    } catch (error: any) {
+      toast.error("Erro ao excluir feira: " + error.message);
+    } finally {
+      setFeiraToDelete(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -145,7 +176,15 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
           const feirantesConfirmados = inscricoesCount[feira.id] || 0;
           
           return (
-            <Card key={feira.id} className="flex flex-col h-full">
+            <Card key={feira.id} className="flex flex-col h-full relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 z-10 h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={() => setFeiraToDelete(feira.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
               <div className="p-4 space-y-3">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
@@ -228,6 +267,23 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
           );
         })}
       </div>
+
+      <AlertDialog open={!!feiraToDelete} onOpenChange={() => setFeiraToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir esta feira? Esta ação não pode ser desfeita e todos os dados relacionados serão removidos.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
