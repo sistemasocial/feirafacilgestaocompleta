@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, DollarSign, CheckCircle, Clock, AlertCircle, Eye } from "lucide-react";
+import { Calendar, DollarSign, CheckCircle, Clock, AlertCircle, Eye, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -166,31 +166,35 @@ export const MeusPagamentos = () => {
             <AlertCircle className="w-5 h-5 text-warning" />
             Pagamentos Pendentes
           </h3>
-          <div className="space-y-4">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {pagamentosPendentes.map((pagamento) => (
-              <Card key={pagamento.id} className="p-6 border-warning/50 animate-fade-in">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h4 className="text-lg font-semibold mb-1">{pagamento.feira.nome}</h4>
-                    <p className="text-sm text-muted-foreground">
+              <Card key={pagamento.id} className="p-6 hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col animate-fade-in border-warning/50">
+                <div className="space-y-4 flex-1">
+                  {/* Título e Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-lg font-bold line-clamp-2">{pagamento.feira.nome}</h3>
+                    {getStatusBadge(pagamento.status)}
+                  </div>
+
+                  {/* Localização */}
+                  <div className="flex items-start gap-2 text-sm">
+                    <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">
                       {pagamento.feira.bairro}, {pagamento.feira.cidade}
-                    </p>
-                  </div>
-                  {getStatusBadge(pagamento.status)}
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Data de Referência</p>
-                    <p className="font-medium flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
-                    </p>
+                    </span>
                   </div>
 
-                  <div>
+                  {/* Data de Referência */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <Calendar className="w-4 h-4 text-primary shrink-0" />
+                    <span>{format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}</span>
+                  </div>
+
+                  {/* Valor Total */}
+                  <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
                     <p className="text-sm text-muted-foreground mb-1">Valor Total</p>
-                    <p className="font-bold text-2xl text-warning">
+                    <p className="text-2xl font-bold text-warning">
                       {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
@@ -198,9 +202,10 @@ export const MeusPagamentos = () => {
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t">
-                    <p className="text-sm font-medium mb-2">Detalhamento:</p>
-                    <div className="space-y-1.5 text-sm">
+                  {/* Detalhamento */}
+                  <div className="pt-2 border-t">
+                    <p className="text-xs font-medium mb-2 text-muted-foreground">Detalhamento:</p>
+                    <div className="space-y-1 text-xs">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Participação:</span>
                         <span className="font-medium">R$ {pagamento.taxa_participacao.toFixed(2)}</span>
@@ -239,31 +244,35 @@ export const MeusPagamentos = () => {
             <Clock className="w-5 h-5 text-yellow-500" />
             Aguardando Verificação
           </h3>
-          <div className="space-y-4">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {pagamentosAguardando.map((pagamento) => (
-              <Card key={pagamento.id} className="p-6 border-yellow-500/50 animate-fade-in">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h4 className="text-lg font-semibold mb-1">{pagamento.feira.nome}</h4>
-                    <p className="text-sm text-muted-foreground">
+              <Card key={pagamento.id} className="p-6 hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col animate-fade-in border-yellow-500/50">
+                <div className="space-y-4 flex-1">
+                  {/* Título e Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-lg font-bold line-clamp-2">{pagamento.feira.nome}</h3>
+                    {getStatusBadge(pagamento.status)}
+                  </div>
+
+                  {/* Localização */}
+                  <div className="flex items-start gap-2 text-sm">
+                    <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">
                       {pagamento.feira.bairro}, {pagamento.feira.cidade}
-                    </p>
-                  </div>
-                  {getStatusBadge(pagamento.status)}
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Data de Referência</p>
-                    <p className="font-medium flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
-                    </p>
+                    </span>
                   </div>
 
-                  <div>
+                  {/* Data de Referência */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <Calendar className="w-4 h-4 text-primary shrink-0" />
+                    <span>{format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}</span>
+                  </div>
+
+                  {/* Valor Total */}
+                  <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
                     <p className="text-sm text-muted-foreground mb-1">Valor Total</p>
-                    <p className="font-bold text-2xl">
+                    <p className="text-2xl font-bold text-foreground">
                       {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
@@ -271,18 +280,17 @@ export const MeusPagamentos = () => {
                     </p>
                   </div>
 
+                  {/* Botão Comprovante */}
                   {pagamento.comprovante_feirante_url && (
-                    <div className="pt-3 border-t">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                        onClick={() => visualizarComprovante(pagamento.comprovante_feirante_url!)}
-                      >
-                        <Eye className="w-4 h-4 mr-2" />
-                        Ver Comprovante Enviado
-                      </Button>
-                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => visualizarComprovante(pagamento.comprovante_feirante_url!)}
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Ver Comprovante
+                    </Button>
                   )}
                 </div>
               </Card>
@@ -298,40 +306,42 @@ export const MeusPagamentos = () => {
             <CheckCircle className="w-5 h-5 text-success" />
             Pagamentos Confirmados
           </h3>
-          <div className="space-y-4">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {pagamentosConfirmados.map((pagamento) => (
-              <Card key={pagamento.id} className="p-6 border-success/50 animate-fade-in">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h4 className="text-lg font-semibold mb-1">{pagamento.feira.nome}</h4>
-                    <p className="text-sm text-muted-foreground">
+              <Card key={pagamento.id} className="p-6 hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col animate-fade-in border-success/50">
+                <div className="space-y-4 flex-1">
+                  {/* Título e Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-lg font-bold line-clamp-2">{pagamento.feira.nome}</h3>
+                    {getStatusBadge(pagamento.status)}
+                  </div>
+
+                  {/* Localização */}
+                  <div className="flex items-start gap-2 text-sm">
+                    <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">
                       {pagamento.feira.bairro}, {pagamento.feira.cidade}
-                    </p>
-                  </div>
-                  {getStatusBadge(pagamento.status)}
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Data de Referência</p>
-                    <p className="font-medium flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
-                    </p>
+                    </span>
                   </div>
 
+                  {/* Data de Referência */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <Calendar className="w-4 h-4 text-primary shrink-0" />
+                    <span>{format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}</span>
+                  </div>
+
+                  {/* Data do Pagamento */}
                   {pagamento.data_pagamento && (
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">Data do Pagamento</p>
-                      <p className="font-medium">
-                        {format(new Date(pagamento.data_pagamento), "dd/MM/yyyy", { locale: ptBR })}
-                      </p>
+                    <div className="text-xs text-muted-foreground pt-2 border-t">
+                      Pago em {format(new Date(pagamento.data_pagamento), "dd/MM/yyyy", { locale: ptBR })}
                     </div>
                   )}
 
-                  <div>
+                  {/* Valor Total */}
+                  <div className="bg-success/10 border border-success/20 rounded-lg p-3">
                     <p className="text-sm text-muted-foreground mb-1">Valor Total</p>
-                    <p className="font-bold text-2xl text-success">
+                    <p className="text-2xl font-bold text-success">
                       {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
