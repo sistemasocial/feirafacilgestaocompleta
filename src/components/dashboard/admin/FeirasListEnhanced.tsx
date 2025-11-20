@@ -117,6 +117,7 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
     if (!feiraToDelete) return;
 
     try {
+      // Delete feira - CASCADE will automatically delete related inscricoes and pagamentos
       const { error } = await supabase
         .from("feiras")
         .delete()
@@ -124,8 +125,8 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
 
       if (error) throw error;
 
-      toast.success("Feira excluída com sucesso");
-      loadFeiras();
+      toast.success("Feira e todos os dados relacionados foram excluídos com sucesso");
+      await loadFeiras();
     } catch (error: any) {
       toast.error("Erro ao excluir feira: " + error.message);
     } finally {
