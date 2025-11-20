@@ -57,25 +57,36 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
         .from("feirantes")
         .select("*", { count: "exact", head: true });
 
-      // Participações confirmadas
+      // Participações confirmadas (status "aprovada")
       const { count: participacoesConfirmadas } = await supabase
         .from("inscricoes_feiras")
         .select("*", { count: "exact", head: true })
-        .eq("status", "confirmada");
+        .eq("status", "aprovada");
 
-      // Pagamentos
-      const { data: pagamentos } = await supabase
-        .from("pagamentos")
-        .select("status, valor_total");
+      // Pagamentos - apenas para inscrições aprovadas
+      const { data: inscricoesAprovadas } = await supabase
+        .from("inscricoes_feiras")
+        .select("id")
+        .eq("status", "aprovada");
 
-      const pendentes = pagamentos?.filter((p) => p.status === "pendente" || p.status === "atrasado").length || 0;
-      const recebidos = pagamentos?.filter((p) => p.status === "pago").length || 0;
-      const valorPendente = pagamentos
-        ?.filter((p) => p.status === "pendente" || p.status === "atrasado")
-        .reduce((acc, p) => acc + Number(p.valor_total), 0) || 0;
-      const valorRecebido = pagamentos
-        ?.filter((p) => p.status === "pago")
-        .reduce((acc, p) => acc + Number(p.valor_total), 0) || 0;
+      const inscricoesIds = inscricoesAprovadas?.map(i => i.id) || [];
+
+      let valorPendente = 0;
+      let valorRecebido = 0;
+
+      if (inscricoesIds.length > 0) {
+        const { data: pagamentos } = await supabase
+          .from("pagamentos")
+          .select("status, valor_total")
+          .in("feirante_id", inscricoesIds);
+
+        valorPendente = pagamentos
+          ?.filter((p) => p.status === "pendente" || p.status === "atrasado")
+          .reduce((acc, p) => acc + Number(p.valor_total), 0) || 0;
+        valorRecebido = pagamentos
+          ?.filter((p) => p.status === "pago")
+          .reduce((acc, p) => acc + Number(p.valor_total), 0) || 0;
+      }
 
       setStats({
         totalFeiras: totalFeiras || 0,

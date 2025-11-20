@@ -177,23 +177,25 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
           
           return (
             <Card key={feira.id} className="flex flex-col h-full relative">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-2 right-2 z-10 h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                onClick={() => setFeiraToDelete(feira.id)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
               <div className="p-4 space-y-3">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="text-lg font-bold line-clamp-2">{feira.nome}</h3>
-                    {feira.recorrente && (
-                      <Badge variant="outline" className="border-primary shrink-0">
-                        Recorrente
-                      </Badge>
-                    )}
+                    <h3 className="text-lg font-bold line-clamp-2 pr-10">{feira.nome}</h3>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {feira.recorrente && (
+                        <Badge variant="outline" className="border-primary">
+                          Recorrente
+                        </Badge>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        onClick={() => setFeiraToDelete(feira.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                   
                   <div className="flex flex-wrap gap-2">
