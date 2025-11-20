@@ -166,7 +166,7 @@ export const MeusPagamentos = () => {
             <AlertCircle className="w-5 h-5 text-warning" />
             Pagamentos Pendentes
           </h3>
-          <div className="grid gap-4">
+          <div className="space-y-4">
             {pagamentosPendentes.map((pagamento) => (
               <Card key={pagamento.id} className="p-6 border-warning/50">
                 <div className="flex items-start justify-between mb-4">
@@ -179,28 +179,30 @@ export const MeusPagamentos = () => {
                   {getStatusBadge(pagamento.status)}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Data de Referência</p>
-                    <p className="font-medium flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Valor Total</p>
-                    <p className="font-bold text-lg text-warning">
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(pagamento.valor_total)}
-                    </p>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Data de Referência</p>
+                      <p className="font-medium flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Valor Total</p>
+                      <p className="font-bold text-lg text-warning">
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(pagamento.valor_total)}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t">
-                  <p className="text-sm font-medium mb-2">Detalhamento:</p>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="pt-4 border-t">
+                    <p className="text-sm font-medium mb-2">Detalhamento:</p>
+                    <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Participação:</span>
                       <span>R$ {pagamento.taxa_participacao.toFixed(2)}</span>
@@ -238,7 +240,7 @@ export const MeusPagamentos = () => {
             <Clock className="w-5 h-5 text-yellow-500" />
             Aguardando Verificação
           </h3>
-          <div className="grid gap-4">
+          <div className="space-y-4">
             {pagamentosAguardando.map((pagamento) => (
               <Card key={pagamento.id} className="p-6 border-yellow-500/50">
                 <div className="flex items-start justify-between mb-4">
@@ -251,35 +253,39 @@ export const MeusPagamentos = () => {
                   {getStatusBadge(pagamento.status)}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Data de Referência</p>
-                    <p className="font-medium flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
-                    </p>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Data de Referência</p>
+                      <p className="font-medium flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Valor Total</p>
+                      <p className="font-bold text-lg">
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(pagamento.valor_total)}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Valor Total</p>
-                    <p className="font-bold text-lg">
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(pagamento.valor_total)}
-                    </p>
-                  </div>
-                </div>
 
-                {pagamento.comprovante_feirante_url && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => visualizarComprovante(pagamento.comprovante_feirante_url!)}
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    Ver Comprovante Enviado
-                  </Button>
-                )}
+                  {pagamento.comprovante_feirante_url && (
+                    <div className="pt-4 border-t">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => visualizarComprovante(pagamento.comprovante_feirante_url!)}
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Ver Comprovante Enviado
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </Card>
             ))}
           </div>
@@ -293,7 +299,7 @@ export const MeusPagamentos = () => {
             <CheckCircle className="w-5 h-5 text-success" />
             Pagamentos Confirmados
           </h3>
-          <div className="grid gap-4">
+          <div className="space-y-4">
             {pagamentosConfirmados.map((pagamento) => (
               <Card key={pagamento.id} className="p-6 border-success/50">
                 <div className="flex items-start justify-between mb-4">
@@ -306,30 +312,32 @@ export const MeusPagamentos = () => {
                   {getStatusBadge(pagamento.status)}
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Data de Referência</p>
-                    <p className="font-medium flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
-                    </p>
-                  </div>
-                  {pagamento.data_pagamento && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">Data do Pagamento</p>
-                      <p className="font-medium">
-                        {format(new Date(pagamento.data_pagamento), "dd/MM/yyyy", { locale: ptBR })}
+                      <p className="text-sm text-muted-foreground">Data de Referência</p>
+                      <p className="font-medium flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
                       </p>
                     </div>
-                  )}
-                  <div>
-                    <p className="text-sm text-muted-foreground">Valor Total</p>
-                    <p className="font-bold text-lg text-success">
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(pagamento.valor_total)}
-                    </p>
+                    {pagamento.data_pagamento && (
+                      <div>
+                        <p className="text-sm text-muted-foreground">Data do Pagamento</p>
+                        <p className="font-medium">
+                          {format(new Date(pagamento.data_pagamento), "dd/MM/yyyy", { locale: ptBR })}
+                        </p>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm text-muted-foreground">Valor Total</p>
+                      <p className="font-bold text-lg text-success">
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(pagamento.valor_total)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </Card>
