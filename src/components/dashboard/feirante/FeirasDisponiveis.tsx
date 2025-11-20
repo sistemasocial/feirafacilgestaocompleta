@@ -200,6 +200,13 @@ export const FeirasDisponiveis = () => {
                       {feira.horario_inicio} - {feira.horario_fim}
                     </span>
                   </div>
+
+                  <div className="flex items-center gap-2 text-sm">
+                    <AlertCircle className="w-4 h-4 text-warning shrink-0" />
+                    <span>
+                      <strong>Pagamento:</strong> {feira.prazo_pagamento_dias || 3} dias antes
+                    </span>
+                  </div>
                 </div>
 
                 {total > 0 && (
