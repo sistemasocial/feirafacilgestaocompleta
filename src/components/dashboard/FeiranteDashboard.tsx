@@ -16,22 +16,20 @@ import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { FeiranteSidebar } from "./FeiranteSidebar";
-
 interface FeiranteDashboardProps {
   user: User;
 }
-
-const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
+const FeiranteDashboard = ({
+  user
+}: FeiranteDashboardProps) => {
   const [activeSection, setActiveSection] = useState("home");
   const [profileKey, setProfileKey] = useState(0);
   const navigate = useNavigate();
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success("Logout realizado com sucesso");
     navigate("/auth");
   };
-
   const handleProfileUpdated = async () => {
     // Aguarda um momento para garantir que o banco foi atualizado
     await new Promise(resolve => setTimeout(resolve, 500));
@@ -40,9 +38,7 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
     // Volta para a home
     setActiveSection("home");
   };
-
-  return (
-    <div className="min-h-screen w-full flex bg-gradient-hero">
+  return <div className="min-h-screen w-full flex bg-gradient-hero">
       <FeiranteSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
       
       <div className="flex-1 flex flex-col ml-[280px]">
@@ -62,8 +58,7 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
         </header>
 
         <main className="flex-1 px-4 py-8 overflow-auto">
-          {activeSection === "home" && (
-            <div className="space-y-6">
+          {activeSection === "home" && <div className="space-y-6">
               <div className="grid gap-4 md:grid-cols-3">
                 <Card className="p-6">
                   <div className="flex items-center justify-between">
@@ -99,58 +94,37 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
               <FeirasCalendarFeirante />
 
               <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Bem-vindo!</h2>
-                <p className="text-muted-foreground">
-                  Este é o seu espaço para gerenciar suas atividades na feira. Aqui você pode conferir
-                  pagamentos, registrar vendas e avaliar sua experiência.
+                <h2 className="text-xl font-semibold mb-4">Bem-vindo! Feira Fácil - Gestão Completa de feiras do Brasil          </h2>
+                <p className="font-serif text-xl text-slate-900">
+                  Este é o seu espaço para gerenciar suas atividades nas feiras. Aqui você pode conferir ferias disponíveis, pagamentos status de aproção do administrador das feiras.                     
                 </p>
               </Card>
-            </div>
-          )}
+            </div>}
 
-          {activeSection === "feiras" && (
-            <FeirasDisponiveisEnhanced />
-          )}
+          {activeSection === "feiras" && <FeirasDisponiveisEnhanced />}
 
-          {activeSection === "disponiveis" && (
-            <FeirasDisponiveisEnhanced />
-          )}
+          {activeSection === "disponiveis" && <FeirasDisponiveisEnhanced />}
 
-          {activeSection === "inscricoes" && (
-            <FeirasAtivas />
-          )}
+          {activeSection === "inscricoes" && <FeirasAtivas />}
 
-          {activeSection === "minhas-inscricoes" && (
-            <FeirasAtivas />
-          )}
+          {activeSection === "minhas-inscricoes" && <FeirasAtivas />}
 
-          {activeSection === "pagamentos" && (
-            <MeusPagamentos />
-          )}
+          {activeSection === "pagamentos" && <MeusPagamentos />}
 
-          {activeSection === "vendas" && (
-            <Card className="p-6">
+          {activeSection === "vendas" && <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4">Registrar Vendas</h2>
               <p className="text-muted-foreground">Sistema de vendas em desenvolvimento...</p>
-            </Card>
-          )}
+            </Card>}
 
-          {activeSection === "segmentos" && (
-            <SegmentosSection />
-          )}
+          {activeSection === "segmentos" && <SegmentosSection />}
 
-          {activeSection === "perfil" && (
-            <CompleteProfileFeirante userId={user.id} onSuccess={handleProfileUpdated} />
-          )}
+          {activeSection === "perfil" && <CompleteProfileFeirante userId={user.id} onSuccess={handleProfileUpdated} />}
 
-          {activeSection === "senha" && (
-            <div className="max-w-4xl mx-auto">
+          {activeSection === "senha" && <div className="max-w-4xl mx-auto">
               <ChangePassword />
-            </div>
-          )}
+            </div>}
 
-          {activeSection === "suporte" && (
-            <Card className="p-6">
+          {activeSection === "suporte" && <Card className="p-6">
               <h2 className="text-xl font-semibold mb-6">Suporte</h2>
               <div className="space-y-4 max-w-md">
                 <div className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
@@ -159,12 +133,7 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">WhatsApp</p>
-                    <a 
-                      href="https://wa.me/5562991429264" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-primary"
-                    >
+                    <a href="https://wa.me/5562991429264" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary">
                       +55 62 9 9142-9264
                     </a>
                   </div>
@@ -176,21 +145,15 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">E-mail</p>
-                    <a 
-                      href="mailto:feirafacilbrasil@gmail.com"
-                      className="text-sm text-muted-foreground hover:text-primary"
-                    >
+                    <a href="mailto:feirafacilbrasil@gmail.com" className="text-sm text-muted-foreground hover:text-primary">
                       feirafacilbrasil@gmail.com
                     </a>
                   </div>
                 </div>
               </div>
-            </Card>
-          )}
+            </Card>}
         </main>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default FeiranteDashboard;
