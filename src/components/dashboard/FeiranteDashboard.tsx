@@ -50,7 +50,7 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
             <div className="flex items-center justify-between gap-4">
               <ProfileHeader key={profileKey} userId={user.id} role="feirante" compact />
               <div className="flex items-center gap-4">
-                <NotificationBell userId={user.id} />
+                <NotificationBell userId={user.id} onNavigate={setActiveSection} />
                 <Button variant="outline" onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-2" />
                   Sair
@@ -111,7 +111,15 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
             <FeirasDisponiveisEnhanced />
           )}
 
+          {activeSection === "disponiveis" && (
+            <FeirasDisponiveisEnhanced />
+          )}
+
           {activeSection === "inscricoes" && (
+            <FeirasAtivas />
+          )}
+
+          {activeSection === "minhas-inscricoes" && (
             <FeirasAtivas />
           )}
 

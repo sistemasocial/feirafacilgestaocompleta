@@ -19,11 +19,18 @@ interface Notification {
   type: string;
   read: boolean;
   created_at: string;
+  related_id: string | null;
 }
 
-export default function NotificationBell({ userId }: { userId: string }) {
+interface NotificationBellProps {
+  userId: string;
+  onNavigate?: (section: string) => void;
+}
+
+export default function NotificationBell({ userId, onNavigate }: NotificationBellProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     loadNotifications();
@@ -64,13 +71,40 @@ export default function NotificationBell({ userId }: { userId: string }) {
     }
   };
 
-  const markAsRead = async (notificationId: string) => {
+  const handleNotificationClick = async (notification: Notification) => {
+    // Marcar como lida
     await supabase
       .from("notifications")
       .update({ read: true })
-      .eq("id", notificationId);
+      .eq("id", notification.id);
 
     loadNotifications();
+
+    // Navegar baseado no tipo de notificação
+    if (onNavigate) {
+      switch (notification.type) {
+        case 'pagamento_enviado':
+          onNavigate('pagamentos');
+          break;
+        case 'nova_inscricao':
+        case 'inscricao_pendente':
+          onNavigate('feirantes');
+          break;
+        case 'inscricao_aprovada':
+        case 'inscricao_rejeitada':
+          // Para feirantes, mostrar suas inscrições
+          onNavigate('minhas-inscricoes');
+          break;
+        case 'nova_feira':
+          onNavigate('disponiveis');
+          break;
+        default:
+          break;
+      }
+    }
+
+    // Fechar popover
+    setIsOpen(false);
   };
 
   const markAllAsRead = async () => {
@@ -84,7 +118,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
   };
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
@@ -117,10 +151,10 @@ export default function NotificationBell({ userId }: { userId: string }) {
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 cursor-pointer hover:bg-muted/50 ${
-                    !notification.read ? "bg-muted/30" : ""
+                  className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
+                    !notification.read ? "bg-primary/5 border-l-2 border-primary" : ""
                   }`}
-                  onClick={() => markAsRead(notification.id)}
+                  onClick={() => handleNotificationClick(notification)}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1">
