@@ -10,6 +10,7 @@ import { FeirasDisponiveisEnhanced } from "./feirante/FeirasDisponiveisEnhanced"
 import { FeirasCalendarFeirante } from "./feirante/FeirasCalendarFeirante";
 import { FeirasAtivas } from "./feirante/FeirasAtivas";
 import { SegmentosSection } from "./feirante/SegmentosSection";
+import { MeusPagamentos } from "./feirante/MeusPagamentos";
 import CompleteProfileFeirante from "@/components/profile/CompleteProfileFeirante";
 import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
@@ -124,10 +125,7 @@ const FeiranteDashboard = ({ user }: FeiranteDashboardProps) => {
           )}
 
           {activeSection === "pagamentos" && (
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Meus Pagamentos</h2>
-              <p className="text-muted-foreground">Sistema de pagamentos em desenvolvimento...</p>
-            </Card>
+            <MeusPagamentos />
           )}
 
           {activeSection === "vendas" && (
