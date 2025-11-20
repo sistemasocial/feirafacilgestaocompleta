@@ -200,7 +200,7 @@ export const FeirasDisponiveisEnhanced = () => {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2">Feiras Disponíveis</h2>
           <p className="text-muted-foreground">
@@ -208,33 +208,17 @@ export const FeirasDisponiveisEnhanced = () => {
           </p>
         </div>
 
-        {feiras.map((feira) => {
-          const status = inscricoes[feira.id];
-          const total = calcularTotal(feira);
-          
-          return (
-            <Card key={feira.id} className="overflow-hidden">
-              {/* Header - Informações Destacadas */}
-              <div className="bg-primary/5 border-l-4 border-primary px-6 py-4">
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="text-lg font-bold">{feira.nome}</h3>
-                      <div className="flex flex-wrap items-center gap-4 text-sm mt-2">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>{feira.cidade} - {feira.bairro}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>{feira.dias_semana.map((dia) => diasSemanaMap[dia]).join(", ")}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          <span>{feira.horario_inicio} - {feira.horario_fim}</span>
-                        </div>
-                      </div>
-                    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {feiras.map((feira) => {
+            const status = inscricoes[feira.id];
+            const total = calcularTotal(feira);
+            
+            return (
+              <Card key={feira.id} className="p-6 hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col animate-fade-in">
+                <div className="space-y-4 flex-1">
+                  {/* Título e Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-lg font-bold line-clamp-2">{feira.nome}</h3>
                     {status && (
                       <Badge 
                         variant={
@@ -242,118 +226,110 @@ export const FeirasDisponiveisEnhanced = () => {
                           status === "rejeitada" ? "destructive" : 
                           "secondary"
                         }
+                        className="shrink-0"
                       >
-                        {status === "aprovada" ? "Aprovado" :
-                         status === "rejeitada" ? "Rejeitado" :
-                         "Pendente"}
+                        {status === "aprovada" ? "✓" :
+                         status === "rejeitada" ? "✗" :
+                         "⏱"}
                       </Badge>
                     )}
                   </div>
 
+                  {/* Badge de Tipo e Exclusividade */}
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant={feira.tipo_feira === "publica" ? "default" : "secondary"} className="w-fit">
+                      {feira.tipo_feira === "publica" ? "Feira Pública" : "Condomínio"}
+                    </Badge>
+                    {feira.segmento_exclusivo && (
+                      <Badge variant="outline" className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-500">
+                        ⭐ Exclusivo
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Informações Principais */}
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2 text-sm">
+                      <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                      <span className="line-clamp-2">
+                        {feira.bairro}, {feira.cidade}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm">
+                      <Calendar className="w-4 h-4 text-primary shrink-0" />
+                      <span className="line-clamp-1">
+                        {feira.dias_semana.map((dia) => diasSemanaMap[dia]).join(", ")}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm">
+                      <Clock className="w-4 h-4 text-primary shrink-0" />
+                      <span>
+                        {feira.horario_inicio} - {feira.horario_fim}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Valor Total */}
+                  {total > 0 && (
+                    <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-3 border border-primary/20">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <DollarSign className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-medium">Valor Total</span>
+                        </div>
+                        <span className="text-lg font-bold text-primary">{formatCurrency(total)}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Avisos */}
+                  {feira.avisos && (
+                    <div className="bg-warning/10 border border-warning/20 rounded-lg p-2">
+                      <p className="text-xs"><strong>⚠️ Aviso:</strong> {feira.avisos}</p>
+                    </div>
+                  )}
+
+                  {/* Segmento Exclusivo Aviso */}
                   {feira.segmento_exclusivo && (
-                    <div className="flex items-start gap-2 bg-amber-100 dark:bg-amber-950/50 border-2 border-amber-500 rounded p-3 mt-3">
-                      <AlertTriangle className="w-5 h-5 text-amber-700 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-                      <p className="text-sm text-amber-900 dark:text-amber-200 font-medium">
-                        <strong>Segmento Exclusivo:</strong> Você será o único feirante autorizado para seu segmento nesta feira
+                    <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-2">
+                      <p className="text-xs text-amber-900 dark:text-amber-200">
+                        <strong>Exclusividade:</strong> Único no seu segmento
                       </p>
                     </div>
                   )}
                 </div>
-              </div>
 
-              {/* Detalhes da Feira */}
-              <div className="p-6 space-y-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  <span>{feira.endereco}, {feira.bairro} - {feira.cidade}</span>
-                </div>
-
-                {feira.observacoes && (
-                  <div className="bg-muted/50 rounded-lg p-4">
-                    <p className="text-sm font-medium mb-1">📋 Observações do Administrador</p>
-                    <p className="text-sm text-muted-foreground">{feira.observacoes}</p>
-                  </div>
-                )}
-
-                {feira.avisos && (
-                  <div className="bg-warning/10 border border-warning/20 rounded-lg p-4">
-                    <p className="text-sm font-medium text-warning mb-1">⚠️ Avisos Importantes</p>
-                    <p className="text-sm text-muted-foreground">{feira.avisos}</p>
-                  </div>
-                )}
-
-                <div className="bg-gradient-to-br from-blue-500/10 via-indigo-400/10 to-purple-500/10 border-2 border-blue-500/30 rounded-xl p-5 shadow-lg">
-                  <h4 className="font-bold text-lg mb-4 flex items-center gap-2 text-foreground">
-                    <DollarSign className="w-6 h-6 text-blue-600" />
-                    💰 Valores
-                  </h4>
-                  <div className="grid gap-3 text-base">
-                    {/* Mostrar detalhes apenas se houver taxas adicionais */}
-                    {(feira.taxa_energia && Number(feira.taxa_energia) > 0) || 
-                     (feira.taxa_limpeza && Number(feira.taxa_limpeza) > 0) || 
-                     (feira.taxa_seguranca && Number(feira.taxa_seguranca) > 0) ? (
-                      <>
-                        {feira.valor_participacao && Number(feira.valor_participacao) > 0 && (
-                          <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
-                            <span className="font-medium text-foreground/80">Valor de Participação da Feira:</span>
-                            <span className="font-bold text-lg text-foreground">
-                              {formatCurrency(Number(feira.valor_participacao))}
-                            </span>
-                          </div>
-                        )}
-                        {feira.taxa_energia && Number(feira.taxa_energia) > 0 && (
-                          <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
-                            <span className="font-medium text-foreground/80">Taxa de Energia:</span>
-                            <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_energia))}</span>
-                          </div>
-                        )}
-                        {feira.taxa_limpeza && Number(feira.taxa_limpeza) > 0 && (
-                          <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
-                            <span className="font-medium text-foreground/80">Taxa de Limpeza:</span>
-                            <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_limpeza))}</span>
-                          </div>
-                        )}
-                        {feira.taxa_seguranca && Number(feira.taxa_seguranca) > 0 && (
-                          <div className="flex justify-between items-center bg-background/60 rounded-lg px-3 py-2">
-                            <span className="font-medium text-foreground/80">Taxa de Segurança:</span>
-                            <span className="font-bold text-lg text-foreground">{formatCurrency(Number(feira.taxa_seguranca))}</span>
-                          </div>
-                        )}
-                        {total > 0 && (
-                          <div className="flex justify-between items-center bg-blue-600/20 border-2 border-blue-600/40 rounded-lg px-4 py-3 mt-2">
-                            <span className="font-bold text-lg text-foreground">Total:</span>
-                            <span className="font-bold text-2xl text-blue-700 dark:text-blue-400">{formatCurrency(total)}</span>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      /* Se não houver taxas adicionais, mostrar apenas o total */
-                      total > 0 && (
-                        <div className="flex justify-between items-center bg-blue-600/20 border-2 border-blue-600/40 rounded-lg px-4 py-3">
-                          <span className="font-bold text-lg text-foreground">Total:</span>
-                          <span className="font-bold text-2xl text-blue-700 dark:text-blue-400">{formatCurrency(total)}</span>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-
+                {/* Admin Info Compacta */}
                 <AdminInfo adminId={feira.created_by} />
 
-                {!status && (
-                  <Button 
-                    onClick={() => handleInscreverClick(feira)}
-                    className="w-full"
-                    size="lg"
-                  >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Aceitar Participação
-                  </Button>
-                )}
-              </div>
-            </Card>
-          );
-        })}
+                {/* Botão de Ação */}
+                <div className="mt-auto pt-4">
+                  {!status ? (
+                    <Button 
+                      onClick={() => handleInscreverClick(feira)}
+                      className="w-full"
+                      size="sm"
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Aceitar Participação
+                    </Button>
+                  ) : status === "aprovada" ? (
+                    <Button className="w-full" variant="outline" size="sm" disabled>
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Participação Confirmada
+                    </Button>
+                  ) : status === "pendente" ? (
+                    <Button className="w-full" variant="secondary" size="sm" disabled>
+                      ⏱ Aguardando Aprovação
+                    </Button>
+                  ) : null}
+                </div>
+              </Card>
+            );
+          })}
+        </div>
       </div>
 
       {/* Exclusivity Warning Dialog */}
