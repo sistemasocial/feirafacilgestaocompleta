@@ -117,128 +117,96 @@ export const InscricoesList = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Inscrições de Feirantes ({inscricoes.length})</h2>
+      <h2 className="text-xl font-semibold">Feirantes Aceitaram Participar ({inscricoes.length})</h2>
       
-      <div className="grid gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {inscricoes.map((inscricao) => (
-          <Card key={inscricao.id} className="p-6">
-            <div className="space-y-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  {inscricao.profile.foto_url ? (
-                    <img 
-                      src={inscricao.profile.foto_url} 
-                      alt={inscricao.profile.full_name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-primary">
-                        {inscricao.profile.full_name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-primary" />
-                      <span className="font-semibold">{inscricao.profile.full_name}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="w-4 h-4" />
-                      <span>{inscricao.feira.nome} - {inscricao.feira.cidade}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      <span>
-                        {new Date(inscricao.data_inscricao).toLocaleDateString("pt-BR")}
-                      </span>
-                    </div>
-                  </div>
+          <Card key={inscricao.id} className="p-6 flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              {inscricao.profile.foto_url ? (
+                <img 
+                  src={inscricao.profile.foto_url} 
+                  alt={inscricao.profile.full_name}
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">
+                    {inscricao.profile.full_name.charAt(0).toUpperCase()}
+                  </span>
                 </div>
+              )}
+              <div className="flex-1 space-y-1">
+                <h3 className="font-semibold">{inscricao.profile.full_name}</h3>
                 <Badge 
                   variant={
                     inscricao.status === "aprovada" ? "default" : 
                     inscricao.status === "rejeitada" ? "destructive" : 
                     "secondary"
                   }
+                  className="text-xs"
                 >
-                  {inscricao.status}
+                  {inscricao.status === "aprovada" ? "Aprovado" : 
+                   inscricao.status === "rejeitada" ? "Rejeitado" : 
+                   "Pendente"}
                 </Badge>
               </div>
-
-              <div className="bg-muted/30 rounded-lg p-4 space-y-3">
-                <h4 className="font-semibold text-sm">📋 Perfil Completo do Feirante</h4>
-                <div className="grid md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Segmento:</span>
-                    <p className="font-medium capitalize">
-                      {inscricao.segmento_inscrito ? 
-                        inscricao.segmento_inscrito.replace(/_/g, ' ') : 
-                        inscricao.feirante.segmento.replace(/_/g, ' ')
-                      }
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">CPF/CNPJ:</span>
-                    <p className="font-medium">{inscricao.feirante.cpf_cnpj}</p>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Telefone:</span>
-                    <p className="font-medium">{inscricao.profile.phone || inscricao.profile.whatsapp || "N/A"}</p>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">WhatsApp:</span>
-                    <p className="font-medium">{inscricao.profile.whatsapp || inscricao.profile.phone || "N/A"}</p>
-                  </div>
-                  {inscricao.feirante.tamanho_barraca && (
-                    <div>
-                      <span className="text-muted-foreground">Tamanho da Barraca:</span>
-                      <p className="font-medium">{inscricao.feirante.tamanho_barraca}</p>
-                    </div>
-                  )}
-                  {inscricao.feirante.ticket_medio && (
-                    <div>
-                      <span className="text-muted-foreground">Ticket Médio:</span>
-                      <p className="font-medium">R$ {Number(inscricao.feirante.ticket_medio).toFixed(2)}</p>
-                    </div>
-                  )}
-                </div>
-                {inscricao.feirante.descricao && (
-                  <div>
-                    <span className="text-muted-foreground">Descrição:</span>
-                    <p className="font-medium mt-1">{inscricao.feirante.descricao}</p>
-                  </div>
-                )}
-                {inscricao.observacoes && (
-                  <div className="mt-2">
-                    <span className="text-muted-foreground">Observações:</span>
-                    <p className="font-medium mt-1">{inscricao.observacoes}</p>
-                  </div>
-                )}
-              </div>
-
-              {inscricao.status === "pendente" && (
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleUpdateStatus(inscricao.id, "aprovada")}
-                    className="flex-1"
-                  >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Aprovar
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => handleUpdateStatus(inscricao.id, "rejeitada")}
-                    className="flex-1"
-                  >
-                    <XCircle className="w-4 h-4 mr-2" />
-                    Rejeitar
-                  </Button>
-                </div>
-              )}
             </div>
+
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <MapPin className="w-4 h-4 shrink-0" />
+                <span className="line-clamp-1">{inscricao.feira.nome}</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Calendar className="w-4 h-4 shrink-0" />
+                <span>
+                  {new Date(inscricao.data_inscricao).toLocaleDateString("pt-BR")}
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-muted/30 rounded-lg p-3 space-y-2 text-sm">
+              <div>
+                <span className="text-muted-foreground text-xs">Segmento:</span>
+                <p className="font-medium capitalize">
+                  {inscricao.segmento_inscrito ? 
+                    inscricao.segmento_inscrito.replace(/_/g, ' ') : 
+                    inscricao.feirante.segmento.replace(/_/g, ' ')
+                  }
+                </p>
+              </div>
+              <div>
+                <span className="text-muted-foreground text-xs">WhatsApp:</span>
+                <p className="font-medium">{inscricao.profile.whatsapp || inscricao.profile.phone || "N/A"}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground text-xs">CPF/CNPJ:</span>
+                <p className="font-medium">{inscricao.feirante.cpf_cnpj}</p>
+              </div>
+            </div>
+
+            {inscricao.status === "pendente" && (
+              <div className="flex gap-2 pt-2">
+                <Button
+                  size="sm"
+                  onClick={() => handleUpdateStatus(inscricao.id, "aprovada")}
+                  className="flex-1"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Aprovar
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => handleUpdateStatus(inscricao.id, "rejeitada")}
+                  className="flex-1"
+                >
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Rejeitar
+                </Button>
+              </div>
+            )}
           </Card>
         ))}
       </div>
