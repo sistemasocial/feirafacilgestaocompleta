@@ -52,7 +52,7 @@ export const FeirasListOverview = () => {
             .from("inscricoes_feiras")
             .select("*", { count: "exact", head: true })
             .eq("feira_id", feira.id)
-            .eq("status", "confirmada");
+            .eq("status", "aprovada");
 
           return {
             ...feira,
