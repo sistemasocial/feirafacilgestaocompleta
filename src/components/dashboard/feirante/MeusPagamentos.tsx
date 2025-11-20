@@ -168,9 +168,9 @@ export const MeusPagamentos = () => {
           </h3>
           <div className="space-y-4">
             {pagamentosPendentes.map((pagamento) => (
-              <Card key={pagamento.id} className="p-6 border-warning/50">
+              <Card key={pagamento.id} className="p-6 border-warning/50 animate-fade-in">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
+                  <div>
                     <h4 className="text-lg font-semibold mb-1">{pagamento.feira.nome}</h4>
                     <p className="text-sm text-muted-foreground">
                       {pagamento.feira.bairro}, {pagamento.feira.cidade}
@@ -179,52 +179,51 @@ export const MeusPagamentos = () => {
                   {getStatusBadge(pagamento.status)}
                 </div>
 
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Data de Referência</p>
-                      <p className="font-medium flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Valor Total</p>
-                      <p className="font-bold text-lg text-warning">
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(pagamento.valor_total)}
-                      </p>
-                    </div>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Data de Referência</p>
+                    <p className="font-medium flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
+                    </p>
                   </div>
-                </div>
 
-                  <div className="pt-4 border-t">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Valor Total</p>
+                    <p className="font-bold text-2xl text-warning">
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(pagamento.valor_total)}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t">
                     <p className="text-sm font-medium mb-2">Detalhamento:</p>
-                    <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Participação:</span>
-                      <span>R$ {pagamento.taxa_participacao.toFixed(2)}</span>
+                    <div className="space-y-1.5 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Participação:</span>
+                        <span className="font-medium">R$ {pagamento.taxa_participacao.toFixed(2)}</span>
+                      </div>
+                      {pagamento.taxa_energia && pagamento.taxa_energia > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Energia:</span>
+                          <span className="font-medium">R$ {pagamento.taxa_energia.toFixed(2)}</span>
+                        </div>
+                      )}
+                      {pagamento.taxa_limpeza && pagamento.taxa_limpeza > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Limpeza:</span>
+                          <span className="font-medium">R$ {pagamento.taxa_limpeza.toFixed(2)}</span>
+                        </div>
+                      )}
+                      {pagamento.taxa_seguranca && pagamento.taxa_seguranca > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Segurança:</span>
+                          <span className="font-medium">R$ {pagamento.taxa_seguranca.toFixed(2)}</span>
+                        </div>
+                      )}
                     </div>
-                    {pagamento.taxa_energia && pagamento.taxa_energia > 0 && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Energia:</span>
-                        <span>R$ {pagamento.taxa_energia.toFixed(2)}</span>
-                      </div>
-                    )}
-                    {pagamento.taxa_limpeza && pagamento.taxa_limpeza > 0 && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Limpeza:</span>
-                        <span>R$ {pagamento.taxa_limpeza.toFixed(2)}</span>
-                      </div>
-                    )}
-                    {pagamento.taxa_seguranca && pagamento.taxa_seguranca > 0 && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Segurança:</span>
-                        <span>R$ {pagamento.taxa_seguranca.toFixed(2)}</span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </Card>
@@ -242,9 +241,9 @@ export const MeusPagamentos = () => {
           </h3>
           <div className="space-y-4">
             {pagamentosAguardando.map((pagamento) => (
-              <Card key={pagamento.id} className="p-6 border-yellow-500/50">
+              <Card key={pagamento.id} className="p-6 border-yellow-500/50 animate-fade-in">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
+                  <div>
                     <h4 className="text-lg font-semibold mb-1">{pagamento.feira.nome}</h4>
                     <p className="text-sm text-muted-foreground">
                       {pagamento.feira.bairro}, {pagamento.feira.cidade}
@@ -253,31 +252,31 @@ export const MeusPagamentos = () => {
                   {getStatusBadge(pagamento.status)}
                 </div>
 
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Data de Referência</p>
-                      <p className="font-medium flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Valor Total</p>
-                      <p className="font-bold text-lg">
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(pagamento.valor_total)}
-                      </p>
-                    </div>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Data de Referência</p>
+                    <p className="font-medium flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Valor Total</p>
+                    <p className="font-bold text-2xl">
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(pagamento.valor_total)}
+                    </p>
                   </div>
 
                   {pagamento.comprovante_feirante_url && (
-                    <div className="pt-4 border-t">
+                    <div className="pt-3 border-t">
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full"
                         onClick={() => visualizarComprovante(pagamento.comprovante_feirante_url!)}
                       >
                         <Eye className="w-4 h-4 mr-2" />
@@ -301,9 +300,9 @@ export const MeusPagamentos = () => {
           </h3>
           <div className="space-y-4">
             {pagamentosConfirmados.map((pagamento) => (
-              <Card key={pagamento.id} className="p-6 border-success/50">
+              <Card key={pagamento.id} className="p-6 border-success/50 animate-fade-in">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
+                  <div>
                     <h4 className="text-lg font-semibold mb-1">{pagamento.feira.nome}</h4>
                     <p className="text-sm text-muted-foreground">
                       {pagamento.feira.bairro}, {pagamento.feira.cidade}
@@ -312,32 +311,32 @@ export const MeusPagamentos = () => {
                   {getStatusBadge(pagamento.status)}
                 </div>
 
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Data de Referência</p>
+                    <p className="font-medium flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
+                    </p>
+                  </div>
+
+                  {pagamento.data_pagamento && (
                     <div>
-                      <p className="text-sm text-muted-foreground">Data de Referência</p>
-                      <p className="font-medium flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        {format(new Date(pagamento.data_referencia), "dd/MM/yyyy", { locale: ptBR })}
+                      <p className="text-sm text-muted-foreground mb-1">Data do Pagamento</p>
+                      <p className="font-medium">
+                        {format(new Date(pagamento.data_pagamento), "dd/MM/yyyy", { locale: ptBR })}
                       </p>
                     </div>
-                    {pagamento.data_pagamento && (
-                      <div>
-                        <p className="text-sm text-muted-foreground">Data do Pagamento</p>
-                        <p className="font-medium">
-                          {format(new Date(pagamento.data_pagamento), "dd/MM/yyyy", { locale: ptBR })}
-                        </p>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-sm text-muted-foreground">Valor Total</p>
-                      <p className="font-bold text-lg text-success">
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(pagamento.valor_total)}
-                      </p>
-                    </div>
+                  )}
+
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Valor Total</p>
+                    <p className="font-bold text-2xl text-success">
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(pagamento.valor_total)}
+                    </p>
                   </div>
                 </div>
               </Card>
