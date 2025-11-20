@@ -10,6 +10,7 @@ import { FeiraForm } from "./admin/FeiraForm";
 import { FeirasListEnhanced } from "./admin/FeirasListEnhanced";
 import { InscricoesList } from "./admin/InscricoesList";
 import { FeirasCalendarActivity } from "./admin/FeirasCalendarActivity";
+import { FeirasListOverview } from "./admin/FeirasListOverview";
 import { FeirantesAtivos } from "./admin/FeirantesAtivos";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import ChangePassword from "@/components/profile/ChangePassword";
@@ -193,6 +194,8 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
               </div>
 
               <FeirasCalendarActivity />
+              
+              <FeirasListOverview />
             </div>
           )}
 
