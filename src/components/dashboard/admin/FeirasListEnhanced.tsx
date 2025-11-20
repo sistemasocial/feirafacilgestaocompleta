@@ -140,41 +140,27 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
         </div>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {feiras.map((feira) => {
           const feirantesConfirmados = inscricoesCount[feira.id] || 0;
           
           return (
-            <Card key={feira.id} className="overflow-hidden">
-              {/* Red Line - Info destacada */}
-              <div className="bg-destructive/10 border-l-4 border-destructive px-6 py-4">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="space-y-1">
-                    <h3 className="text-lg font-bold">{feira.nome}</h3>
-                    <div className="flex flex-wrap items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        <span>{formatDate(feira)}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        <span>{feira.horario_inicio} - {feira.horario_fim}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4" />
-                        <span className="font-semibold">{feirantesConfirmados} feirantes confirmados</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant={feira.tipo_feira === "publica" ? "default" : "secondary"}>
-                      {feira.tipo_feira === "publica" ? "Feira Pública" : "Condomínio"}
-                    </Badge>
+            <Card key={feira.id} className="flex flex-col h-full">
+              <div className="p-4 space-y-3">
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-lg font-bold line-clamp-2">{feira.nome}</h3>
                     {feira.recorrente && (
-                      <Badge variant="outline" className="border-primary">
+                      <Badge variant="outline" className="border-primary shrink-0">
                         Recorrente
                       </Badge>
                     )}
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant={feira.tipo_feira === "publica" ? "default" : "secondary"}>
+                      {feira.tipo_feira === "publica" ? "Pública" : "Condomínio"}
+                    </Badge>
                     {feira.segmento_exclusivo && (
                       <Badge variant="outline" className="border-warning">
                         Segmento Exclusivo
@@ -182,75 +168,59 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                     )}
                   </div>
                 </div>
-              </div>
 
-              {/* Detalhes da feira */}
-              <div className="p-6 space-y-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  <span>{feira.endereco}, {feira.bairro} - {feira.cidade}</span>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <MapPin className="w-4 h-4 shrink-0" />
+                    <span className="line-clamp-1">{feira.bairro} - {feira.cidade}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 shrink-0 text-primary" />
+                    <span className="line-clamp-1">{formatDate(feira)}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 shrink-0 text-primary" />
+                    <span>{feira.horario_inicio} - {feira.horario_fim}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 shrink-0 text-primary" />
+                    <span className="font-semibold">{feirantesConfirmados} confirmados</span>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="pt-2 border-t space-y-2">
                   <div className="flex items-start gap-2">
-                    <Calendar className="w-4 h-4 mt-0.5 text-primary" />
-                    <div>
-                      <p className="text-sm font-medium">Dias da Semana</p>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {feira.dias_semana.map((dia) => (
-                          <Badge key={dia} variant="outline" className="text-xs">
-                            {DIAS_SEMANA_LABELS[dia]}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2">
-                    <Clock className="w-4 h-4 mt-0.5 text-primary" />
-                    <div>
-                      <p className="text-sm font-medium">Horários</p>
-                      <p className="text-sm text-muted-foreground">
-                        {feira.horario_inicio} às {feira.horario_fim}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Chegar {feira.tempo_antecedencia_minutos} min antes
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2">
-                    <DollarSign className="w-4 h-4 mt-0.5 text-success" />
-                    <div>
-                      <p className="text-sm font-medium">Valor da Feira (Administrador)</p>
-                      <p className="text-lg font-bold text-primary mb-1">
+                    <DollarSign className="w-4 h-4 mt-0.5 text-success shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Valor da Feira</p>
+                      <p className="text-lg font-bold text-primary">
                         R$ {feira.valor_participacao?.toFixed(2) || "0,00"}
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        {feirantesConfirmados} feirantes × R$ 3,00
-                      </p>
-                      <p className="text-sm font-semibold text-success mt-1">
-                        Total: R$ {(feirantesConfirmados * 3).toFixed(2)}
+                      <p className="text-xs text-muted-foreground">
+                        Total Admin: R$ {(feirantesConfirmados * 3).toFixed(2)}
                       </p>
                     </div>
                   </div>
-                </div>
 
-                <div>
-                  <p className="text-sm font-medium mb-2">Formas de Pagamento</p>
-                  <div className="flex flex-wrap gap-2">
-                    {feira.formas_pagamento.map((forma) => (
-                      <Badge key={forma} variant="secondary">
-                        {forma.toUpperCase()}
-                      </Badge>
-                    ))}
+                  <div>
+                    <p className="text-xs font-medium mb-1">Pagamento</p>
+                    <div className="flex flex-wrap gap-1">
+                      {feira.formas_pagamento.map((forma) => (
+                        <Badge key={forma} variant="secondary" className="text-xs">
+                          {forma.toUpperCase()}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
                 {feira.avisos && (
-                  <div className="bg-warning/10 border border-warning/20 rounded-lg p-4">
-                    <p className="text-sm font-medium text-warning mb-1">⚠️ Avisos aos Feirantes</p>
-                    <p className="text-sm text-muted-foreground">{feira.avisos}</p>
+                  <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
+                    <p className="text-xs font-medium text-warning mb-1">⚠️ Avisos</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2">{feira.avisos}</p>
                   </div>
                 )}
               </div>
