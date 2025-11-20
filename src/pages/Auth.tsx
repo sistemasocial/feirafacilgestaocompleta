@@ -172,252 +172,279 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4">
-      <Card className="w-full max-w-md p-8 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/")}
-            className="hover:bg-accent"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          
-          <div className="flex-1 flex justify-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
-              <Store className="w-9 h-9" color="white" />
-            </div>
+    <div className="min-h-screen flex">
+      {/* Left side - Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-primary/90 to-primary/70">
+        <img 
+          src="/src/assets/vendedora-hero.jpg" 
+          alt="Feira" 
+          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40"
+        />
+        <div className="relative z-10 flex flex-col justify-center px-12 text-white">
+          <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg mb-6">
+            <Store className="w-12 h-12" />
           </div>
-          
-          <div className="w-10" /> {/* Spacer for alignment */}
-        </div>
-
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold mb-2">Feira Fácil</h1>
-          <p className="text-lg text-muted-foreground">
+          <h1 className="text-5xl font-bold mb-4">Feira Fácil</h1>
+          <p className="text-xl text-white/90 max-w-md">
             Sua plataforma de gestão completa de feiras
           </p>
         </div>
+      </div>
 
-        <form onSubmit={handleAuth} className="space-y-4">
-          {!isLogin && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Nome Completo</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+      {/* Right side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-md">
+          <div className="flex items-center justify-between mb-8">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/")}
+              className="hover:bg-accent"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            
+            {/* Mobile logo */}
+            <div className="lg:hidden flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
+                <Store className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold">Feira Fácil</span>
+            </div>
+            
+            <div className="w-10" />
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold mb-2">
+              {isLogin ? "Bem-vindo!" : "Criar conta"}
+            </h2>
+            <p className="text-muted-foreground">
+              {isLogin 
+                ? "Entre com suas credenciais para continuar" 
+                : "Preencha os dados para criar sua conta"}
+            </p>
+          </div>
+
+          <form onSubmit={handleAuth} className="space-y-4">
+            {!isLogin && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">Nome Completo</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="fullName"
+                      type="text"
+                      placeholder="Seu nome completo"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                  {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Telefone/WhatsApp</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="(00) 00000-0000"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                  {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="role">Tipo de Usuário</Label>
+                  <div className="relative">
+                    <UserCog className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                    <Select value={role} onValueChange={(value: "admin" | "feirante") => setRole(value)}>
+                      <SelectTrigger className="pl-10">
+                        <SelectValue placeholder="Selecione o tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="feirante">Feirante</SelectItem>
+                        <SelectItem value="admin">Administrador</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {errors.role && <p className="text-sm text-destructive">{errors.role}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="cpf">CPF *</Label>
                   <Input
-                    id="fullName"
+                    id="cpf"
                     type="text"
-                    placeholder="Seu nome completo"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="pl-10"
+                    placeholder="000.000.000-00"
+                    value={cpf}
+                    onChange={(e) => setCpf(e.target.value)}
+                    disabled={loading}
+                    className={errors.cpf ? "border-destructive" : ""}
                     required
                   />
+                  {errors.cpf && <p className="text-sm text-destructive">{errors.cpf}</p>}
                 </div>
-                {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="phone">Telefone/WhatsApp</Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="(00) 00000-0000"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-                {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
-              </div>
+                {role === "feirante" && (
+                  <div className="space-y-3">
+                    <Label>Categorias e Produtos *</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Selecione as categorias e subcategorias dos produtos que você vende
+                    </p>
+                    <Accordion type="multiple" className="w-full">
+                      {Object.entries(PRODUCT_CATEGORIES).map(([categoria, subcategorias]) => (
+                        <AccordionItem key={categoria} value={categoria}>
+                          <AccordionTrigger className="text-sm font-medium">
+                            {CATEGORY_LABELS[categoria]}
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="space-y-3 pl-2">
+                              {subcategorias.map((subcategoria) => (
+                                <div key={subcategoria} className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id={`${categoria}-${subcategoria}`}
+                                    checked={selectedCategories[categoria]?.includes(subcategoria) || false}
+                                    onCheckedChange={(checked) => {
+                                      setSelectedCategories((prev) => {
+                                        const current = prev[categoria] || [];
+                                        if (checked) {
+                                          return {
+                                            ...prev,
+                                            [categoria]: [...current, subcategoria],
+                                          };
+                                        } else {
+                                          return {
+                                            ...prev,
+                                            [categoria]: current.filter((s) => s !== subcategoria),
+                                          };
+                                        }
+                                      });
+                                    }}
+                                  />
+                                  <label
+                                    htmlFor={`${categoria}-${subcategoria}`}
+                                    className="text-sm cursor-pointer"
+                                  >
+                                    {subcategoria}
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </div>
+                )}
 
-              <div className="space-y-2">
-                <Label htmlFor="role">Tipo de Usuário</Label>
-                <div className="relative">
-                  <UserCog className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
-                  <Select value={role} onValueChange={(value: "admin" | "feirante") => setRole(value)}>
-                    <SelectTrigger className="pl-10">
-                      <SelectValue placeholder="Selecione o tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="feirante">Feirante</SelectItem>
-                      <SelectItem value="admin">Administrador</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {errors.role && <p className="text-sm text-destructive">{errors.role}</p>}
-              </div>
+                {role === "admin" && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="feiras_por_semana">Quantidade média de feiras por semana (opcional)</Label>
+                      <Input
+                        id="feiras_por_semana"
+                        type="number"
+                        placeholder="Ex: 4"
+                        value={feiras_por_semana || ""}
+                        onChange={(e) => setFeirasPorSemana(e.target.value ? parseInt(e.target.value) : undefined)}
+                        disabled={loading}
+                        min="1"
+                      />
+                    </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="cpf">CPF *</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="media_feirantes">Média de feirantes por feira (opcional)</Label>
+                      <Input
+                        id="media_feirantes"
+                        type="number"
+                        placeholder="Ex: 30"
+                        value={media_feirantes || ""}
+                        onChange={(e) => setMediaFeirantes(e.target.value ? parseInt(e.target.value) : undefined)}
+                        disabled={loading}
+                        min="1"
+                      />
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="cpf"
-                  type="text"
-                  placeholder="000.000.000-00"
-                  value={cpf}
-                  onChange={(e) => setCpf(e.target.value)}
-                  disabled={loading}
-                  className={errors.cpf ? "border-destructive" : ""}
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10"
                   required
                 />
-                {errors.cpf && <p className="text-sm text-destructive">{errors.cpf}</p>}
               </div>
-
-              {role === "feirante" && (
-                <div className="space-y-3">
-                  <Label>Categorias e Produtos *</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Selecione as categorias e subcategorias dos produtos que você vende
-                  </p>
-                  <Accordion type="multiple" className="w-full">
-                    {Object.entries(PRODUCT_CATEGORIES).map(([categoria, subcategorias]) => (
-                      <AccordionItem key={categoria} value={categoria}>
-                        <AccordionTrigger className="text-sm font-medium">
-                          {CATEGORY_LABELS[categoria]}
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className="space-y-3 pl-2">
-                            {subcategorias.map((subcategoria) => (
-                              <div key={subcategoria} className="flex items-center space-x-2">
-                                <Checkbox
-                                  id={`${categoria}-${subcategoria}`}
-                                  checked={selectedCategories[categoria]?.includes(subcategoria) || false}
-                                  onCheckedChange={(checked) => {
-                                    setSelectedCategories((prev) => {
-                                      const current = prev[categoria] || [];
-                                      if (checked) {
-                                        return {
-                                          ...prev,
-                                          [categoria]: [...current, subcategoria],
-                                        };
-                                      } else {
-                                        return {
-                                          ...prev,
-                                          [categoria]: current.filter((s) => s !== subcategoria),
-                                        };
-                                      }
-                                    });
-                                  }}
-                                />
-                                <label
-                                  htmlFor={`${categoria}-${subcategoria}`}
-                                  className="text-sm cursor-pointer"
-                                >
-                                  {subcategoria}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </div>
-              )}
-
-              {role === "admin" && (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="feiras_por_semana">Quantidade média de feiras por semana (opcional)</Label>
-                    <Input
-                      id="feiras_por_semana"
-                      type="number"
-                      placeholder="Ex: 4"
-                      value={feiras_por_semana || ""}
-                      onChange={(e) => setFeirasPorSemana(e.target.value ? parseInt(e.target.value) : undefined)}
-                      disabled={loading}
-                      min="1"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="media_feirantes">Média de feirantes por feira (opcional)</Label>
-                    <Input
-                      id="media_feirantes"
-                      type="number"
-                      placeholder="Ex: 30"
-                      value={media_feirantes || ""}
-                      onChange={(e) => setMediaFeirantes(e.target.value ? parseInt(e.target.value) : undefined)}
-                      disabled={loading}
-                      min="1"
-                    />
-                  </div>
-                </>
-              )}
-            </>
-          )}
-
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10"
-                required
-              />
+              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
             </div>
-            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Senha</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 pr-10"
-                required
-                minLength={6}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-0 top-0 h-full hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
-              </Button>
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 pr-10"
+                  required
+                  minLength={6}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </div>
+              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
-            {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Processando..." : isLogin ? "Entrar" : "Criar conta"}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
+              type="button"
+              onClick={() => setIsLogin(!isLogin)}
+              className="text-sm text-primary hover:underline"
+            >
+              {isLogin
+                ? "Não tem conta? Cadastre-se"
+                : "Já tem conta? Faça login"}
+            </button>
           </div>
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Processando..." : isLogin ? "Entrar" : "Criar conta"}
-          </Button>
-        </form>
-
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-sm text-primary hover:underline"
-          >
-            {isLogin
-              ? "Não tem conta? Cadastre-se"
-              : "Já tem conta? Faça login"}
-          </button>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };
