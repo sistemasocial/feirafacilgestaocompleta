@@ -174,12 +174,13 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Image */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-primary/90 to-primary/70">
+      <div className="hidden lg:flex lg:w-1/2 relative">
         <img 
           src="/src/assets/vendedora-hero.jpg" 
           alt="Feira" 
-          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40"
+          className="absolute inset-0 w-full h-full object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60" />
         <div className="relative z-10 flex flex-col justify-center px-12 text-white">
           <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg mb-6">
             <Store className="w-12 h-12" />
