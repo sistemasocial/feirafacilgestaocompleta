@@ -3,8 +3,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, MapPin, Clock, Calendar, DollarSign, Plus } from "lucide-react";
+import { Loader2, MapPin, Clock, Calendar, DollarSign, Plus, Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Feira {
   id: string;
@@ -28,6 +38,7 @@ interface Feira {
 
 interface FeirasListProps {
   onAddNew: () => void;
+  onEdit?: (feira: Feira) => void;
 }
 
 const DIAS_SEMANA_LABELS: { [key: string]: string } = {
@@ -40,9 +51,11 @@ const DIAS_SEMANA_LABELS: { [key: string]: string } = {
   "6": "Sáb",
 };
 
-export const FeirasList = ({ onAddNew }: FeirasListProps) => {
+export const FeirasList = ({ onAddNew, onEdit }: FeirasListProps) => {
   const [feiras, setFeiras] = useState<Feira[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [feiraToDelete, setFeiraToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     loadFeiras();
@@ -62,6 +75,32 @@ export const FeirasList = ({ onAddNew }: FeirasListProps) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDelete = async () => {
+    if (!feiraToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from("feiras")
+        .delete()
+        .eq("id", feiraToDelete);
+
+      if (error) throw error;
+
+      toast.success("Feira excluída com sucesso!");
+      loadFeiras();
+    } catch (error: any) {
+      toast.error("Erro ao excluir feira: " + error.message);
+    } finally {
+      setDeleteDialogOpen(false);
+      setFeiraToDelete(null);
+    }
+  };
+
+  const confirmDelete = (feiraId: string) => {
+    setFeiraToDelete(feiraId);
+    setDeleteDialogOpen(true);
   };
 
   if (loading) {
@@ -117,9 +156,27 @@ export const FeirasList = ({ onAddNew }: FeirasListProps) => {
                   </div>
                   <p className="text-sm text-muted-foreground">{feira.endereco}</p>
                 </div>
-                <Badge variant={feira.tipo_feira === "publica" ? "default" : "secondary"}>
-                  {feira.tipo_feira === "publica" ? "Feira Pública" : "Condomínio"}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant={feira.tipo_feira === "publica" ? "default" : "secondary"}>
+                    {feira.tipo_feira === "publica" ? "Feira Pública" : "Condomínio"}
+                  </Badge>
+                  {onEdit && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => onEdit(feira)}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => confirmDelete(feira.id)}
+                  >
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -206,6 +263,23 @@ export const FeirasList = ({ onAddNew }: FeirasListProps) => {
           </Card>
         ))}
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir esta feira? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -171,7 +171,12 @@ export const InscricoesList = () => {
                 <div className="grid md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-muted-foreground">Segmento:</span>
-                    <p className="font-medium capitalize">{inscricao.segmento_inscrito || inscricao.feirante.segmento}</p>
+                    <p className="font-medium capitalize">
+                      {inscricao.segmento_inscrito ? 
+                        inscricao.segmento_inscrito.replace(/_/g, ' ') : 
+                        inscricao.feirante.segmento.replace(/_/g, ' ')
+                      }
+                    </p>
                   </div>
                   <div>
                     <span className="text-muted-foreground">CPF/CNPJ:</span>
@@ -179,11 +184,11 @@ export const InscricoesList = () => {
                   </div>
                   <div>
                     <span className="text-muted-foreground">Telefone:</span>
-                    <p className="font-medium">{inscricao.profile.phone || "N/A"}</p>
+                    <p className="font-medium">{inscricao.profile.phone || inscricao.profile.whatsapp || "N/A"}</p>
                   </div>
                   <div>
                     <span className="text-muted-foreground">WhatsApp:</span>
-                    <p className="font-medium">{inscricao.profile.whatsapp || "N/A"}</p>
+                    <p className="font-medium">{inscricao.profile.whatsapp || inscricao.profile.phone || "N/A"}</p>
                   </div>
                   {inscricao.feirante.tamanho_barraca && (
                     <div>

@@ -151,7 +151,7 @@ export const FeirasCalendarFeirante = () => {
         </h2>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {feiras.map((feira) => {
           const nextOccurrence = getNextOccurrence(feira.dias_semana);
           const admin = feira.created_by ? adminProfiles[feira.created_by] : null;
