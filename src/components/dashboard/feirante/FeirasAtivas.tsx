@@ -34,60 +34,60 @@ export const FeirasAtivas = () => {
   const [inscricoes, setInscricoes] = useState<Inscricao[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchInscricoes = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+  const fetchInscricoes = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
-      const { data: feiranteData, error: feiranteError } = await supabase
-        .from("feirantes")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
+    const { data: feiranteData, error: feiranteError } = await supabase
+      .from("feirantes")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-      if (feiranteError) {
-        console.error("Erro ao buscar feirante:", feiranteError);
-        setLoading(false);
-        return;
-      }
-
-      if (!feiranteData) {
-        console.log("Perfil de feirante não encontrado");
-        setLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("inscricoes_feiras")
-        .select("*, feiras(*)")
-        .eq("feirante_id", feiranteData.id)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Erro ao buscar inscrições:", error);
-      } else {
-        // Buscar pagamentos para cada inscrição
-        const inscricoesComPagamento = await Promise.all(
-          (data || []).map(async (inscricao) => {
-            const { data: pagamentoData } = await supabase
-              .from("pagamentos")
-              .select("id, status, valor_total")
-              .eq("feira_id", inscricao.feira_id)
-              .eq("feirante_id", feiranteData.id)
-              .maybeSingle();
-            
-            return {
-              ...inscricao,
-              pagamento: pagamentoData
-            };
-          })
-        );
-        
-        setInscricoes(inscricoesComPagamento as any || []);
-      }
+    if (feiranteError) {
+      console.error("Erro ao buscar feirante:", feiranteError);
       setLoading(false);
-    };
+      return;
+    }
 
+    if (!feiranteData) {
+      console.log("Perfil de feirante não encontrado");
+      setLoading(false);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("inscricoes_feiras")
+      .select("*, feiras(*)")
+      .eq("feirante_id", feiranteData.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Erro ao buscar inscrições:", error);
+    } else {
+      // Buscar pagamentos para cada inscrição
+      const inscricoesComPagamento = await Promise.all(
+        (data || []).map(async (inscricao) => {
+          const { data: pagamentoData } = await supabase
+            .from("pagamentos")
+            .select("id, status, valor_total")
+            .eq("feira_id", inscricao.feira_id)
+            .eq("feirante_id", feiranteData.id)
+            .maybeSingle();
+          
+          return {
+            ...inscricao,
+            pagamento: pagamentoData
+          };
+        })
+      );
+      
+      setInscricoes(inscricoesComPagamento as any || []);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchInscricoes();
   }, []);
 
@@ -283,9 +283,7 @@ export const FeirasAtivas = () => {
                             pagamentoId={inscricao.pagamento.id}
                             status={inscricao.pagamento.status}
                             valorTotal={inscricao.pagamento.valor_total}
-                            onUploadComplete={() => {
-                              window.location.reload();
-                            }}
+                            onUploadComplete={fetchInscricoes}
                           />
                         </>
                       ) : (
