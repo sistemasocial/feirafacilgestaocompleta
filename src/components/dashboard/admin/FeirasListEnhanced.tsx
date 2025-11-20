@@ -3,8 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, MapPin, Clock, Calendar, DollarSign, Plus, Users, Trash2, AlertCircle } from "lucide-react";
+import { Loader2, MapPin, Clock, Calendar, DollarSign, Plus, Users, Trash2, AlertCircle, Pencil } from "lucide-react";
 import { toast } from "sonner";
+import { FeiraEditForm } from "./FeiraEditForm";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -59,6 +60,7 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
   const [loading, setLoading] = useState(true);
   const [inscricoesCount, setInscricoesCount] = useState<Record<string, number>>({});
   const [feiraToDelete, setFeiraToDelete] = useState<string | null>(null);
+  const [feiraToEdit, setFeiraToEdit] = useState<string | null>(null);
 
   useEffect(() => {
     loadFeiras();
@@ -181,13 +183,21 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
               <div className="p-4 space-y-3">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="text-lg font-bold line-clamp-2 pr-10">{feira.nome}</h3>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <h3 className="text-lg font-bold line-clamp-2 pr-20">{feira.nome}</h3>
+                    <div className="flex items-center gap-1 shrink-0">
                       {feira.recorrente && (
                         <Badge variant="outline" className="border-primary">
                           Recorrente
                         </Badge>
                       )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-primary hover:text-primary hover:bg-primary/10"
+                        onClick={() => setFeiraToEdit(feira.id)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -277,6 +287,13 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
           );
         })}
       </div>
+
+      <FeiraEditForm
+        feiraId={feiraToEdit || ""}
+        open={!!feiraToEdit}
+        onOpenChange={(open) => !open && setFeiraToEdit(null)}
+        onSuccess={loadFeiras}
+      />
 
       <AlertDialog open={!!feiraToDelete} onOpenChange={() => setFeiraToDelete(null)}>
         <AlertDialogContent>
