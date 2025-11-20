@@ -4,7 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { CheckCircle, XCircle, ExternalLink, Loader2, Clock, DollarSign } from "lucide-react";
+import { CheckCircle, XCircle, ExternalLink, Loader2, Clock, DollarSign, MapPin, Calendar } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -178,100 +179,115 @@ export function PagamentosVerificacao() {
         </p>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {pagamentos.map((pagamento) => (
-          <Card key={pagamento.id} className="p-6">
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex items-center gap-4 flex-1">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
-                  {pagamento.profile.foto_url ? (
-                    <img
-                      src={pagamento.profile.foto_url}
-                      alt={pagamento.profile.full_name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-2xl font-bold text-primary">
-                      {pagamento.profile.full_name.charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg">{pagamento.profile.full_name}</h3>
-                  <p className="text-sm text-muted-foreground">{pagamento.feira.nome}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Badge 
-                      variant="outline" 
-                      className={
-                        pagamento.status === "aguardando_verificacao"
-                          ? "bg-yellow-500/10 text-yellow-700 border-yellow-500/20"
-                          : "bg-orange-500/10 text-orange-700 border-orange-500/20"
-                      }
-                    >
-                      <Clock className="w-3 h-3 mr-1" />
-                      {pagamento.status === "aguardando_verificacao" 
-                        ? "Aguardando Verificação" 
-                        : "Pagamento Pendente"}
-                    </Badge>
-                  </div>
+          <Card 
+            key={pagamento.id} 
+            className="p-6 hover:shadow-lg transition-all hover:scale-[1.02] animate-fade-in"
+          >
+            <div className="space-y-4">
+              {/* Header com Avatar e Nome */}
+              <div className="flex items-center gap-3">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage src={pagamento.profile.foto_url || undefined} />
+                  <AvatarFallback className="bg-primary/10 text-primary">
+                    {pagamento.profile.full_name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold truncate">{pagamento.profile.full_name}</h3>
+                  <Badge 
+                    variant="outline" 
+                    className={
+                      pagamento.status === "aguardando_verificacao"
+                        ? "bg-yellow-500/10 text-yellow-700 border-yellow-500/20 text-xs"
+                        : "bg-orange-500/10 text-orange-700 border-orange-500/20 text-xs"
+                    }
+                  >
+                    {pagamento.status === "aguardando_verificacao" 
+                      ? "Aguardando" 
+                      : "Pendente"}
+                  </Badge>
                 </div>
               </div>
 
-              <div className="flex flex-col justify-between items-end gap-4">
-                <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Valor Total</p>
-                  <p className="text-2xl font-bold text-primary">
-                    R$ {pagamento.valor_total.toFixed(2)}
+              {/* Informações da Feira */}
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  <p className="text-sm font-medium">{pagamento.feira.nome}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  <p className="text-sm text-muted-foreground">
+                    Ref: {new Date(pagamento.data_referencia).toLocaleDateString("pt-BR")}
                   </p>
-                  {pagamento.data_upload && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Enviado em: {new Date(pagamento.data_upload).toLocaleDateString("pt-BR")}
+                </div>
+                {pagamento.data_upload && (
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    <p className="text-sm text-muted-foreground">
+                      Enviado: {new Date(pagamento.data_upload).toLocaleDateString("pt-BR")}
                     </p>
-                  )}
-                </div>
+                  </div>
+                )}
+              </div>
 
-                <div className="flex gap-2">
-                  {pagamento.comprovante_feirante_url && (
+              {/* Valor Total */}
+              <div className={`p-4 rounded-lg ${
+                pagamento.status === "aguardando_verificacao" 
+                  ? "bg-yellow-500/10" 
+                  : "bg-orange-500/10"
+              }`}>
+                <p className="text-sm text-muted-foreground">Valor Total</p>
+                <p className="text-2xl font-bold">
+                  R$ {pagamento.valor_total.toFixed(2)}
+                </p>
+              </div>
+
+              {/* Ações */}
+              <div className="flex flex-col gap-2">
+                {pagamento.comprovante_feirante_url && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => visualizarComprovante(pagamento.comprovante_feirante_url!)}
+                    className="w-full"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Ver Comprovante
+                  </Button>
+                )}
+                
+                {pagamento.status === "aguardando_verificacao" && (
+                  <div className="flex gap-2">
                     <Button
-                      variant="outline"
+                      variant="default"
                       size="sm"
-                      onClick={() => visualizarComprovante(pagamento.comprovante_feirante_url!)}
+                      onClick={() => handleVerificarPagamento(pagamento.id, true)}
+                      disabled={processingId === pagamento.id}
+                      className="flex-1 bg-green-600 hover:bg-green-700"
                     >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Ver Comprovante
+                      {processingId === pagamento.id ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                      )}
+                      Aprovar
                     </Button>
-                  )}
-                  
-                  {pagamento.status === "aguardando_verificacao" && (
-                    <>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleVerificarPagamento(pagamento.id, true)}
-                        disabled={processingId === pagamento.id}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        {processingId === pagamento.id ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        ) : (
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                        )}
-                        Aprovar
-                      </Button>
 
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleVerificarPagamento(pagamento.id, false)}
-                        disabled={processingId === pagamento.id}
-                      >
-                        <XCircle className="w-4 h-4 mr-2" />
-                        Rejeitar
-                      </Button>
-                    </>
-                  )}
-                </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleVerificarPagamento(pagamento.id, false)}
+                      disabled={processingId === pagamento.id}
+                      className="flex-1"
+                    >
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Rejeitar
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </Card>
