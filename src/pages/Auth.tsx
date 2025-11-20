@@ -178,15 +178,15 @@ const Auth = () => {
         <img 
           src="/src/assets/vendedora-hero.jpg" 
           alt="Feira" 
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover brightness-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-transparent to-black/30" />
         <div className="relative z-10 flex flex-col justify-center px-12 text-white">
-          <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg mb-6">
+          <div className="w-20 h-20 rounded-full bg-primary/80 backdrop-blur-sm flex items-center justify-center shadow-lg mb-6">
             <Store className="w-12 h-12" />
           </div>
-          <h1 className="text-5xl font-bold mb-4">Feira Fácil</h1>
-          <p className="text-xl text-white/90 max-w-md">
+          <h1 className="text-5xl font-bold mb-4 drop-shadow-lg">Feira Fácil</h1>
+          <p className="text-xl text-white/95 max-w-md drop-shadow-md">
             Sua plataforma de gestão completa de feiras
           </p>
         </div>
