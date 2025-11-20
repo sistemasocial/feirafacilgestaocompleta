@@ -145,148 +145,107 @@ export const FeirasDisponiveis = () => {
   }
 
   return (
-    <div className="space-y-4">
-      {feiras.map((feira) => {
-        const status = inscricoes[feira.id];
-        const total = calcularTotal(feira);
-        
-        return (
-          <Card key={feira.id} className="p-6 hover:shadow-lg transition-shadow">
-            <div className="space-y-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-xl font-bold mb-2">{feira.nome}</h3>
-                  <Badge variant={feira.tipo_feira === "publica" ? "default" : "secondary"}>
-                    {feira.tipo_feira === "publica" ? "Feira Pública" : "Condomínio"}
-                  </Badge>
-                </div>
-                {status && (
-                  <Badge 
-                    variant={
-                      status === "aprovada" ? "default" : 
-                      status === "rejeitada" ? "destructive" : 
-                      "secondary"
-                    }
-                  >
-                    {status === "aprovada" ? "Aprovado" :
-                     status === "rejeitada" ? "Rejeitado" :
-                     "Pendente"}
-                  </Badge>
-                )}
-              </div>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold">Feiras Disponíveis</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {feiras.map((feira) => {
+          const status = inscricoes[feira.id];
+          const total = calcularTotal(feira);
+          
+          return (
+            <Card key={feira.id} className="p-6 hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col">
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="w-4 h-4 text-primary" />
-                  <span>
-                    {feira.endereco}, {feira.bairro} - {feira.cidade}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="w-4 h-4 text-primary" />
-                  <span>
-                    {feira.dias_semana.map((dia) => diasSemanaMap[dia]).join(", ")}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="w-4 h-4 text-primary" />
-                  <span>
-                    {feira.horario_inicio} às {feira.horario_fim}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="w-4 h-4 text-warning" />
-                  <span>
-                    Chegue {feira.tempo_antecedencia_minutos} min antes
-                  </span>
-                </div>
-              </div>
-
-              <div className="border-t pt-4">
-                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-success" />
-                  Valores
-                </h4>
-                <div className="grid gap-2 text-sm">
-                  {feira.valor_participacao && Number(feira.valor_participacao) > 0 && (
-                    <div className="flex justify-between">
-                      <span>Valor de Participação:</span>
-                      <span className="font-medium">{formatCurrency(Number(feira.valor_participacao))}</span>
-                    </div>
-                  )}
-                  {feira.taxa_energia && Number(feira.taxa_energia) > 0 && (
-                    <div className="flex justify-between">
-                      <span>Taxa de Energia:</span>
-                      <span className="font-medium">{formatCurrency(Number(feira.taxa_energia))}</span>
-                    </div>
-                  )}
-                  {feira.taxa_limpeza && Number(feira.taxa_limpeza) > 0 && (
-                    <div className="flex justify-between">
-                      <span>Taxa de Limpeza:</span>
-                      <span className="font-medium">{formatCurrency(Number(feira.taxa_limpeza))}</span>
-                    </div>
-                  )}
-                  {feira.taxa_seguranca && Number(feira.taxa_seguranca) > 0 && (
-                    <div className="flex justify-between">
-                      <span>Taxa de Segurança:</span>
-                      <span className="font-medium">{formatCurrency(Number(feira.taxa_seguranca))}</span>
-                    </div>
-                  )}
-                  {total > 0 && (
-                    <div className="flex justify-between border-t pt-2 font-bold">
-                      <span>Total:</span>
-                      <span className="text-primary">{formatCurrency(total)}</span>
-                    </div>
+              <div className="space-y-4 flex-1">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="text-lg font-bold line-clamp-2">{feira.nome}</h3>
+                  {status && (
+                    <Badge 
+                      variant={
+                        status === "aprovada" ? "default" : 
+                        status === "rejeitada" ? "destructive" : 
+                        "secondary"
+                      }
+                      className="shrink-0"
+                    >
+                      {status === "aprovada" ? "✓" :
+                       status === "rejeitada" ? "✗" :
+                       "⏱"}
+                    </Badge>
                   )}
                 </div>
-              </div>
 
-              {feira.formas_pagamento && feira.formas_pagamento.length > 0 && (
-                <div className="flex items-start gap-2">
-                  <DollarSign className="w-4 h-4 text-success mt-0.5" />
-                  <div>
-                    <span className="text-sm font-medium">Formas de pagamento: </span>
-                    <span className="text-sm">
-                      {feira.formas_pagamento.map(f => f.toUpperCase()).join(", ")}
+                <Badge variant={feira.tipo_feira === "publica" ? "default" : "secondary"} className="w-fit">
+                  {feira.tipo_feira === "publica" ? "Feira Pública" : "Condomínio"}
+                </Badge>
+
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2 text-sm">
+                    <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">
+                      {feira.bairro}, {feira.cidade}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm">
+                    <Calendar className="w-4 h-4 text-primary shrink-0" />
+                    <span className="line-clamp-1">
+                      {feira.dias_semana.map((dia) => diasSemanaMap[dia]).join(", ")}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="w-4 h-4 text-primary shrink-0" />
+                    <span>
+                      {feira.horario_inicio} - {feira.horario_fim}
                     </span>
                   </div>
                 </div>
-              )}
 
-              {feira.avisos && (
-                <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
-                  <p className="text-sm"><strong>Avisos:</strong> {feira.avisos}</p>
-                </div>
-              )}
+                {total > 0 && (
+                  <div className="bg-muted/50 rounded-lg p-3 border-t">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="w-4 h-4 text-success" />
+                        <span className="text-sm font-medium">Valor Total</span>
+                      </div>
+                      <span className="text-lg font-bold text-primary">{formatCurrency(total)}</span>
+                    </div>
+                  </div>
+                )}
 
-              {feira.regras_evento && (
-                <div className="text-sm">
-                  <strong>Regras:</strong>
-                  <p className="text-muted-foreground mt-1">{feira.regras_evento}</p>
-                </div>
-              )}
+                {feira.avisos && (
+                  <div className="bg-warning/10 border border-warning/20 rounded-lg p-2">
+                    <p className="text-xs"><strong>⚠️ Aviso:</strong> {feira.avisos}</p>
+                  </div>
+                )}
+              </div>
 
-              {!status ? (
-                <Button 
-                  onClick={() => handleInscrever(feira.id)} 
-                  className="w-full"
-                >
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Quero Participar desta Feira
-                </Button>
-              ) : status === "aprovada" ? (
-                <Button className="w-full" variant="outline" disabled>
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Você está inscrito nesta feira
-                </Button>
-              ) : null}
-            </div>
-          </Card>
-        );
-      })}
+              <div className="mt-auto pt-4">
+                {!status ? (
+                  <Button 
+                    onClick={() => handleInscrever(feira.id)} 
+                    className="w-full"
+                    size="sm"
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Participar
+                  </Button>
+                ) : status === "aprovada" ? (
+                  <Button className="w-full" variant="outline" size="sm" disabled>
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Inscrito
+                  </Button>
+                ) : status === "pendente" ? (
+                  <Button className="w-full" variant="secondary" size="sm" disabled>
+                    ⏱ Aguardando Aprovação
+                  </Button>
+                ) : null}
+              </div>
+            </Card>
+          );
+        })}
+      </div>
     </div>
   );
 };
