@@ -38,60 +38,6 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
   useEffect(() => {
     loadStats();
-    
-    // Subscribe to realtime changes in feiras table
-    const feirasChannel = supabase
-      .channel('admin-feiras-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'feiras'
-        },
-        () => {
-          loadStats();
-        }
-      )
-      .subscribe();
-
-    // Subscribe to realtime changes in inscricoes_feiras table
-    const inscricoesChannel = supabase
-      .channel('admin-inscricoes-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'inscricoes_feiras'
-        },
-        () => {
-          loadStats();
-        }
-      )
-      .subscribe();
-
-    // Subscribe to realtime changes in pagamentos table
-    const pagamentosChannel = supabase
-      .channel('admin-pagamentos-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'pagamentos'
-        },
-        () => {
-          loadStats();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(feirasChannel);
-      supabase.removeChannel(inscricoesChannel);
-      supabase.removeChannel(pagamentosChannel);
-    };
   }, []);
 
   const loadStats = async () => {
