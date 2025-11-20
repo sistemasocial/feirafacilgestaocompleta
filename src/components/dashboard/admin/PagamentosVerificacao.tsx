@@ -58,7 +58,7 @@ export function PagamentosVerificacao() {
           feira:feiras(nome),
           feirante:feirantes(user_id)
         `)
-        .eq("status", "aguardando_verificacao")
+        .in("status", ["aguardando_verificacao", "pendente"])
         .order("data_upload", { ascending: false });
 
       if (error) throw error;
@@ -174,7 +174,7 @@ export function PagamentosVerificacao() {
       <div>
         <h2 className="text-2xl font-bold mb-2">Verificar Pagamentos</h2>
         <p className="text-muted-foreground">
-          {pagamentos.length} comprovante{pagamentos.length !== 1 ? "s" : ""} aguardando verificação
+          {pagamentos.length} pagamento{pagamentos.length !== 1 ? "s" : ""} pendente{pagamentos.length !== 1 ? "s" : ""} ou aguardando verificação
         </p>
       </div>
 
@@ -201,9 +201,18 @@ export function PagamentosVerificacao() {
                   <h3 className="font-semibold text-lg">{pagamento.profile.full_name}</h3>
                   <p className="text-sm text-muted-foreground">{pagamento.feira.nome}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <Badge variant="outline" className="bg-yellow-500/10 text-yellow-700 border-yellow-500/20">
+                    <Badge 
+                      variant="outline" 
+                      className={
+                        pagamento.status === "aguardando_verificacao"
+                          ? "bg-yellow-500/10 text-yellow-700 border-yellow-500/20"
+                          : "bg-orange-500/10 text-orange-700 border-orange-500/20"
+                      }
+                    >
                       <Clock className="w-3 h-3 mr-1" />
-                      Aguardando Verificação
+                      {pagamento.status === "aguardando_verificacao" 
+                        ? "Aguardando Verificação" 
+                        : "Pagamento Pendente"}
                     </Badge>
                   </div>
                 </div>
@@ -234,30 +243,34 @@ export function PagamentosVerificacao() {
                     </Button>
                   )}
                   
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => handleVerificarPagamento(pagamento.id, true)}
-                    disabled={processingId === pagamento.id}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    {processingId === pagamento.id ? (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    ) : (
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                    )}
-                    Aprovar
-                  </Button>
+                  {pagamento.status === "aguardando_verificacao" && (
+                    <>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => handleVerificarPagamento(pagamento.id, true)}
+                        disabled={processingId === pagamento.id}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        {processingId === pagamento.id ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                        )}
+                        Aprovar
+                      </Button>
 
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleVerificarPagamento(pagamento.id, false)}
-                    disabled={processingId === pagamento.id}
-                  >
-                    <XCircle className="w-4 h-4 mr-2" />
-                    Rejeitar
-                  </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleVerificarPagamento(pagamento.id, false)}
+                        disabled={processingId === pagamento.id}
+                      >
+                        <XCircle className="w-4 h-4 mr-2" />
+                        Rejeitar
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
