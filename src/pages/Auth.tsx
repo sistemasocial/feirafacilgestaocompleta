@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const loginSchema = z.object({
-  email: z.string().trim().email({ message: "Email inválido" }).max(255, { message: "Email muito longo" }),
+  email: z.string().email({ message: "Email inválido" }).max(255, { message: "Email muito longo" }),
   password: z.string().min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
 });
 
@@ -75,8 +75,8 @@ const Auth = () => {
         }
 
         const { error } = await supabase.auth.signInWithPassword({
-          email: result.data.email,
-          password: result.data.password,
+          email: result.data.email.trim().toLowerCase(),
+          password: password,
         });
         if (error) throw error;
         toast.success("Login realizado com sucesso!");
