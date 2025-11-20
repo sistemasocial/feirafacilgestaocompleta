@@ -11,6 +11,7 @@ import { FeirasListEnhanced } from "./admin/FeirasListEnhanced";
 import { InscricoesList } from "./admin/InscricoesList";
 import { FeirasListOverview } from "./admin/FeirasListOverview";
 import { FeirantesAtivos } from "./admin/FeirantesAtivos";
+import { PagamentosVerificacao } from "./admin/PagamentosVerificacao";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
@@ -215,10 +216,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "pagamentos" && (
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Gerenciar Pagamentos</h2>
-              <p className="text-muted-foreground">Sistema de pagamentos em desenvolvimento...</p>
-            </Card>
+            <PagamentosVerificacao />
           )}
 
           {activeSection === "config" && (
