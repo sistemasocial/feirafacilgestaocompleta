@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, MapPin, Clock, Calendar, DollarSign, Plus, Users, Trash2 } from "lucide-react";
+import { Loader2, MapPin, Clock, Calendar, DollarSign, Plus, Users, Trash2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -37,6 +37,7 @@ interface Feira {
   recorrente: boolean;
   segmento_exclusivo: boolean;
   valor_participacao: number | null;
+  prazo_pagamento_dias: number | null;
 }
 
 interface FeirasListEnhancedProps {
@@ -229,6 +230,13 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                   <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 shrink-0 text-primary" />
                     <span className="font-semibold">{feirantesConfirmados} confirmados</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-warning" />
+                    <span className="text-sm">
+                      Pagamento: <strong>{feira.prazo_pagamento_dias || 3} dias antes</strong>
+                    </span>
                   </div>
                 </div>
 
