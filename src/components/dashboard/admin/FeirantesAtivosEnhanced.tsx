@@ -1,0 +1,205 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Loader2, User, Phone, MapPin, Calendar } from "lucide-react";
+import { toast } from "sonner";
+
+interface Feirante {
+  id: string;
+  user_id: string;
+  cpf_cnpj: string;
+  segmento: string;
+  descricao: string | null;
+  ticket_medio: number | null;
+  tamanho_barraca: string | null;
+  ponto_fixo: boolean | null;
+  bloqueado: boolean | null;
+  profile: {
+    full_name: string;
+    phone: string | null;
+    whatsapp: string | null;
+    foto_url: string | null;
+  };
+  feiras: Array<{
+    id: string;
+    nome: string;
+    cidade: string;
+    bairro: string;
+    status: string;
+  }>;
+}
+
+export const FeirantesAtivosEnhanced = () => {
+  const [feirantes, setFeirantes] = useState<Feirante[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadFeirantes();
+  }, []);
+
+  const loadFeirantes = async () => {
+    try {
+      const { data: feirantesData, error } = await supabase
+        .from("feirantes")
+        .select("*")
+        .eq("bloqueado", false)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      const feirantesComDados = await Promise.all(
+        (feirantesData || []).map(async (feirante) => {
+          // Buscar profile
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("full_name, phone, whatsapp, foto_url")
+            .eq("id", feirante.user_id)
+            .single();
+
+          // Buscar feiras confirmadas
+          const { data: inscricoesData } = await supabase
+            .from("inscricoes_feiras")
+            .select(`
+              status,
+              feira:feiras(id, nome, cidade, bairro)
+            `)
+            .eq("feirante_id", feirante.id)
+            .eq("status", "confirmada");
+
+          const feiras = (inscricoesData || []).map((insc: any) => ({
+            id: insc.feira.id,
+            nome: insc.feira.nome,
+            cidade: insc.feira.cidade,
+            bairro: insc.feira.bairro,
+            status: insc.status,
+          }));
+
+          return {
+            ...feirante,
+            profile: profileData || {
+              full_name: "N/A",
+              phone: null,
+              whatsapp: null,
+              foto_url: null,
+            },
+            feiras,
+          };
+        })
+      );
+
+      setFeirantes(feirantesComDados);
+    } catch (error: any) {
+      toast.error("Erro ao carregar feirantes: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getSegmentoLabel = (segmento: string) => {
+    const labels: Record<string, string> = {
+      alimentacao: "Alimentação",
+      roupas: "Roupas",
+      artesanato: "Artesanato",
+      servicos: "Serviços",
+      doces: "Doces",
+      joias: "Joias",
+      tapetes: "Tapetes",
+      outros: "Outros",
+    };
+    return labels[segmento] || segmento;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (feirantes.length === 0) {
+    return (
+      <Card className="p-8 text-center">
+        <User className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+        <h3 className="text-lg font-semibold mb-2">Nenhum feirante ativo</h3>
+        <p className="text-muted-foreground">
+          Ainda não há feirantes cadastrados no sistema.
+        </p>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold">Feirantes Ativos</h2>
+        <Badge variant="secondary">{feirantes.length} feirantes</Badge>
+      </div>
+
+      <div className="grid gap-4">
+        {feirantes.map((feirante) => (
+          <Card key={feirante.id} className="p-6">
+            <div className="flex items-start gap-4 mb-4">
+              <Avatar className="w-16 h-16">
+                <AvatarImage src={feirante.profile.foto_url || undefined} />
+                <AvatarFallback className="text-lg">
+                  {feirante.profile.full_name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-lg mb-1">
+                  {feirante.profile.full_name}
+                </h3>
+                <Badge variant="outline" className="mb-2">
+                  {getSegmentoLabel(feirante.segmento)}
+                </Badge>
+
+                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                  {(feirante.profile.phone || feirante.profile.whatsapp) && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4" />
+                      <span>{feirante.profile.phone || feirante.profile.whatsapp}</span>
+                    </div>
+                  )}
+                  {feirante.ponto_fixo && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      <span>Ponto Fixo</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {feirante.feiras.length > 0 && (
+              <div className="border-t pt-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Calendar className="w-4 h-4 text-primary" />
+                  <h4 className="font-semibold text-sm">
+                    Feiras Confirmadas ({feirante.feiras.length})
+                  </h4>
+                </div>
+                <div className="grid gap-2 md:grid-cols-2">
+                  {feirante.feiras.map((feira) => (
+                    <div
+                      key={feira.id}
+                      className="p-3 bg-muted/30 rounded-lg border"
+                    >
+                      <p className="font-medium text-sm">{feira.nome}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {feira.cidade} - {feira.bairro}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};

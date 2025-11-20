@@ -96,6 +96,7 @@ export const FeirasListOverview = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {feiras.map((feira) => {
             const valorTotal = (feira.inscricoes_confirmadas || 0) * (feira.valor_participacao || 0);
+            const isActive = feira.recorrente;
             
             return (
               <div
@@ -104,7 +105,7 @@ export const FeirasListOverview = () => {
               >
                 <div className="flex items-center justify-between">
                   <h4 className="font-semibold text-base">{feira.nome}</h4>
-                  {feira.recorrente && (
+                  {isActive && (
                     <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
                       Ativa
                     </span>
