@@ -124,7 +124,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             <div className="flex items-center justify-between gap-4">
               <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
               <div className="flex items-center gap-4">
-                <NotificationBell userId={user.id} />
+                <NotificationBell userId={user.id} onNavigate={setActiveSection} />
                 <Button variant="outline" onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-2" />
                   Sair
