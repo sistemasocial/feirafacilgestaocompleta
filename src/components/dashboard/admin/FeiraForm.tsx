@@ -96,6 +96,7 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
     horario_inicio: "",
     horario_fim: "",
     tempo_antecedencia_minutos: 30,
+    prazo_pagamento_dias: 3,
     formas_pagamento: ["pix", "debito", "credito"],
     horas_cancelamento_sem_multa: 24,
     taxa_cancelamento: "",
@@ -215,6 +216,7 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
         recorrente: formData.recorrente,
         segmento_exclusivo: formData.segmento_exclusivo,
         created_by: user?.id,
+        prazo_pagamento_dias: formData.prazo_pagamento_dias || 3,
       });
 
       if (error) throw error;
@@ -412,6 +414,21 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
                 placeholder="0.00"
               />
               {errors.taxa_seguranca && <p className="text-sm text-destructive mt-1">{errors.taxa_seguranca}</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="prazo_pagamento_dias">Prazo de Pagamento (dias antes)</Label>
+              <Input
+                id="prazo_pagamento_dias"
+                type="number"
+                min="1"
+                value={formData.prazo_pagamento_dias}
+                onChange={(e) => setFormData({ ...formData, prazo_pagamento_dias: parseInt(e.target.value) || 3 })}
+                placeholder="3"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Feirantes devem pagar até X dias antes da feira
+              </p>
             </div>
           </div>
         </CardContent>

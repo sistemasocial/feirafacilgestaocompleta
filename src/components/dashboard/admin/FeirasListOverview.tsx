@@ -93,70 +93,60 @@ export const FeirasListOverview = () => {
         </div>
       </CardHeader>
       <CardContent className="p-6 pt-0">
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {feiras.map((feira) => {
             const valorTotal = (feira.inscricoes_confirmadas || 0) * (feira.valor_participacao || 0);
             
             return (
               <div
                 key={feira.id}
-                className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                className="p-4 border rounded-lg hover:bg-muted/50 transition-colors flex flex-col gap-3"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-semibold text-base">{feira.nome}</h4>
-                      {feira.recorrente && (
-                        <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
-                          Ativa
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        <span>{feira.bairro}, {feira.cidade}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        <span>{feira.dias_semana.join(", ")}</span>
-                      </div>
-                    </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold text-base">{feira.nome}</h4>
+                  {feira.recorrente && (
+                    <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+                      Ativa
+                    </span>
+                  )}
+                </div>
+                
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 flex-shrink-0" />
+                    <span className="line-clamp-1">{feira.bairro}, {feira.cidade}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 flex-shrink-0" />
+                    <span className="line-clamp-1">{feira.dias_semana.join(", ")}</span>
+                  </div>
+                </div>
 
-                    <div className="flex items-center gap-6">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                          <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Inscrições</p>
-                          <p className="text-sm font-semibold">{feira.inscricoes_count}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                          <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Confirmadas</p>
-                          <p className="text-sm font-semibold">{feira.inscricoes_confirmadas}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
-                          <DollarSign className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Valor Total</p>
-                          <p className="text-sm font-semibold">
-                            R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                          </p>
-                        </div>
-                      </div>
+                <div className="grid grid-cols-3 gap-3 pt-2 border-t">
+                  <div className="text-center">
+                    <div className="w-10 h-10 mx-auto rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-1">
+                      <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
+                    <p className="text-xs text-muted-foreground">Inscrições</p>
+                    <p className="text-sm font-semibold">{feira.inscricoes_count}</p>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="w-10 h-10 mx-auto rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-1">
+                      <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">Confirmadas</p>
+                    <p className="text-sm font-semibold">{feira.inscricoes_confirmadas}</p>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="w-10 h-10 mx-auto rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center mb-1">
+                      <DollarSign className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">Valor Total</p>
+                    <p className="text-sm font-semibold">
+                      R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </p>
                   </div>
                 </div>
               </div>

@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { FeiraForm } from "./admin/FeiraForm";
 import { FeirasListEnhanced } from "./admin/FeirasListEnhanced";
 import { InscricoesList } from "./admin/InscricoesList";
-import { FeirasCalendarActivity } from "./admin/FeirasCalendarActivity";
 import { FeirasListOverview } from "./admin/FeirasListOverview";
 import { FeirantesAtivos } from "./admin/FeirantesAtivos";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
@@ -192,8 +191,6 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                   <p className="text-3xl font-bold">R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                 </Card>
               </div>
-
-              <FeirasCalendarActivity />
               
               <FeirasListOverview />
             </div>

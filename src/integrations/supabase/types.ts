@@ -155,6 +155,7 @@ export type Database = {
           nome: string
           observacoes: string | null
           politica_cancelamento: string | null
+          prazo_pagamento_dias: number | null
           recorrente: boolean | null
           regras_evento: string | null
           segmento_exclusivo: boolean | null
@@ -186,6 +187,7 @@ export type Database = {
           nome: string
           observacoes?: string | null
           politica_cancelamento?: string | null
+          prazo_pagamento_dias?: number | null
           recorrente?: boolean | null
           regras_evento?: string | null
           segmento_exclusivo?: boolean | null
@@ -217,6 +219,7 @@ export type Database = {
           nome?: string
           observacoes?: string | null
           politica_cancelamento?: string | null
+          prazo_pagamento_dias?: number | null
           recorrente?: boolean | null
           regras_evento?: string | null
           segmento_exclusivo?: boolean | null
