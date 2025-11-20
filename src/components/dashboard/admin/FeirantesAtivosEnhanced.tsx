@@ -140,74 +140,69 @@ export const FeirantesAtivosEnhanced = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {feirantes.map((feirante) => (
-          <Card key={feirante.id} className="p-6 flex flex-col gap-4">
-            <div className="flex flex-col items-center text-center gap-3">
-              <Avatar className="w-20 h-20">
+          <Card key={feirante.id} className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Avatar className="w-16 h-16">
                 <AvatarImage src={feirante.profile.foto_url || undefined} />
-                <AvatarFallback className="text-2xl">
+                <AvatarFallback className="text-lg">
                   {feirante.profile.full_name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
 
-              <div>
-                <h3 className="font-semibold text-lg mb-1">
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-base line-clamp-1">
                   {feirante.profile.full_name}
                 </h3>
-                <Badge variant="outline">
+                <Badge variant="outline" className="text-xs">
                   {getSegmentoLabel(feirante.segmento)}
                 </Badge>
               </div>
             </div>
 
-            <div className="bg-muted/30 rounded-lg p-4 space-y-3 text-sm">
+            <div className="space-y-2 text-sm">
+              <div>
+                <span className="text-muted-foreground text-xs">WhatsApp:</span>
+                <p className="font-medium">
+                  {feirante.profile.whatsapp || feirante.profile.phone || "N/A"}
+                </p>
+              </div>
+
               <div>
                 <span className="text-muted-foreground text-xs">CPF/CNPJ:</span>
                 <p className="font-medium">{feirante.cpf_cnpj}</p>
               </div>
 
-              {(feirante.profile.whatsapp || feirante.profile.phone) && (
-                <div>
-                  <span className="text-muted-foreground text-xs">WhatsApp:</span>
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-primary" />
-                    <p className="font-medium">
-                      {feirante.profile.whatsapp || feirante.profile.phone}
-                    </p>
-                  </div>
-                </div>
-              )}
-
               {feirante.ponto_fixo && (
-                <div className="flex items-center gap-2 text-primary">
+                <div className="flex items-center gap-2 text-primary pt-2">
                   <MapPin className="w-4 h-4" />
-                  <span className="font-medium text-sm">Ponto Fixo</span>
+                  <span className="font-medium text-xs">Ponto Fixo</span>
                 </div>
               )}
             </div>
 
             {feirante.feiras.length > 0 && (
-              <div className="border-t pt-4">
-                <div className="flex items-center gap-2 mb-3">
+              <div className="border-t mt-4 pt-3">
+                <div className="flex items-center gap-2 mb-2">
                   <Calendar className="w-4 h-4 text-primary" />
-                  <h4 className="font-semibold text-sm">
-                    Feiras Confirmadas ({feirante.feiras.length})
+                  <h4 className="font-semibold text-xs">
+                    Feiras ({feirante.feiras.length})
                   </h4>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {feirante.feiras.slice(0, 2).map((feira) => (
                     <div
                       key={feira.id}
-                      className="p-2 bg-muted/30 rounded-lg border text-xs"
+                      className="p-2 bg-muted/30 rounded text-xs"
                     >
                       <p className="font-medium line-clamp-1">{feira.nome}</p>
                       <p className="text-muted-foreground line-clamp-1">
-                        {feira.cidade} - {feira.bairro}
+                        {feira.cidade}
                       </p>
                     </div>
                   ))}
                   {feirante.feiras.length > 2 && (
-                    <p className="text-xs text-muted-foreground text-center">
-                      +{feirante.feiras.length - 2} feira{feirante.feiras.length - 2 > 1 ? 's' : ''}
+                    <p className="text-xs text-muted-foreground text-center pt-1">
+                      +{feirante.feiras.length - 2}
                     </p>
                   )}
                 </div>
