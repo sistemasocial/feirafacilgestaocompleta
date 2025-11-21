@@ -143,11 +143,7 @@ export const EnhancedStatsCards = ({ stats }: EnhancedStatsCardsProps) => {
           </div>
 
           <div className="flex gap-2 mb-2">
-            <div className="flex-1">
-              <div className="w-3 h-3 rounded-full bg-success mb-1" />
-              <div className="w-3 h-3 rounded-full bg-success mb-1" />
-              <div className="w-3 h-3 rounded-full bg-success" />
-            </div>
+            <div className="w-3 h-3 rounded-full bg-success" />
           </div>
 
           <div className="text-sm text-muted-foreground mb-1 mt-4">Valor pendente</div>
@@ -156,10 +152,7 @@ export const EnhancedStatsCards = ({ stats }: EnhancedStatsCardsProps) => {
           </div>
           
           <div className="flex gap-2 mt-2">
-            <div className="flex-1">
-              <div className="w-3 h-3 rounded-full bg-warning mb-1" />
-              <div className="w-3 h-3 rounded-full bg-warning" />
-            </div>
+            <div className="w-3 h-3 rounded-full bg-warning" />
           </div>
         </div>
       </Card>
