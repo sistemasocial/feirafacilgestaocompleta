@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { useBrasilAPI } from "@/hooks/useBrasilAPI";
+import { DraggableStatsCards } from "./DraggableStatsCards";
 
 const feiraSchema = z.object({
   nome: z.string().trim().min(1, { message: "Nome é obrigatório" }).max(100, { message: "Nome muito longo" }),
@@ -230,402 +231,413 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Informações Básicas</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+  const formCards = [
+    // Card 1: Informações Básicas
+    <Card key="info-basicas" className="h-full">
+      <CardHeader>
+        <CardTitle>Informações Básicas</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <Label htmlFor="nome">Nome da Feira *</Label>
+          <Input
+            id="nome"
+            value={formData.nome}
+            onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+            placeholder="Ex: Feira do Setor Bueno"
+            required
+          />
+          {errors.nome && <p className="text-sm text-destructive mt-1">{errors.nome}</p>}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="nome">Nome da Feira *</Label>
-            <Input
-              id="nome"
-              value={formData.nome}
-              onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-              placeholder="Ex: Feira do Setor Bueno"
-              required
-            />
-            {errors.nome && <p className="text-sm text-destructive mt-1">{errors.nome}</p>}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="estado">Estado *</Label>
-              <Select 
-                value={formData.estado} 
-                onValueChange={(value) => setFormData({ ...formData, estado: value })}
-                disabled={loadingEstados}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o estado" />
-                </SelectTrigger>
-                <SelectContent>
-                  {estados.map((estado) => (
-                    <SelectItem key={estado.sigla} value={estado.sigla}>
-                      {estado.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.estado && <p className="text-sm text-destructive mt-1">{errors.estado}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="cidade">Cidade *</Label>
-              <Select 
-                value={formData.cidade} 
-                onValueChange={(value) => {
-                  setFormData({ ...formData, cidade: value, bairro: "" });
-                  loadBairros(value);
-                }}
-                disabled={!formData.estado || loadingCidades}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione a cidade" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cidades.map((cidade) => (
-                    <SelectItem key={cidade} value={cidade}>
-                      {cidade}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.cidade && <p className="text-sm text-destructive mt-1">{errors.cidade}</p>}
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="bairro">Bairro *</Label>
-            {bairros.length > 0 ? (
-              <Select
-                value={formData.bairro}
-                onValueChange={(value) => setFormData({ ...formData, bairro: value })}
-                disabled={!formData.cidade || loadingBairros}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={loadingBairros ? "Carregando..." : "Selecione o bairro"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {bairros.map((bairro) => (
-                    <SelectItem key={bairro} value={bairro}>
-                      {bairro}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : (
-              <Input
-                id="bairro"
-                value={formData.bairro}
-                onChange={(e) => setFormData({ ...formData, bairro: e.target.value })}
-                placeholder="Digite o bairro"
-                disabled={loadingBairros}
-              />
-            )}
-            {errors.bairro && <p className="text-sm text-destructive mt-1">{errors.bairro}</p>}
-          </div>
-
-          <div>
-            <Label htmlFor="endereco">Endereço Completo *</Label>
-            <Input
-              id="endereco"
-              value={formData.endereco}
-              onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
-              placeholder="Rua, número, complemento"
-              required
-            />
-            {errors.endereco && <p className="text-sm text-destructive mt-1">{errors.endereco}</p>}
-          </div>
-
-          <div>
-            <Label htmlFor="tipo_feira">Tipo de Feira *</Label>
-            <Select value={formData.tipo_feira} onValueChange={(value) => setFormData({ ...formData, tipo_feira: value })}>
+            <Label htmlFor="estado">Estado *</Label>
+            <Select 
+              value={formData.estado} 
+              onValueChange={(value) => setFormData({ ...formData, estado: value })}
+              disabled={loadingEstados}
+            >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Selecione o estado" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="publica">Feira Pública</SelectItem>
-                <SelectItem value="condominio">Condomínio</SelectItem>
+                {estados.map((estado) => (
+                  <SelectItem key={estado.sigla} value={estado.sigla}>
+                    {estado.nome}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Valores e Taxas</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="valor_participacao">Valor de Participação (R$)</Label>
-              <Input
-                id="valor_participacao"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.valor_participacao}
-                onChange={(e) => setFormData({ ...formData, valor_participacao: e.target.value })}
-                placeholder="0.00"
-              />
-              {errors.valor_participacao && <p className="text-sm text-destructive mt-1">{errors.valor_participacao}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="taxa_energia">Taxa de Energia (R$)</Label>
-              <Input
-                id="taxa_energia"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.taxa_energia}
-                onChange={(e) => setFormData({ ...formData, taxa_energia: e.target.value })}
-                placeholder="0.00"
-              />
-              {errors.taxa_energia && <p className="text-sm text-destructive mt-1">{errors.taxa_energia}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="taxa_limpeza">Taxa de Limpeza (R$)</Label>
-              <Input
-                id="taxa_limpeza"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.taxa_limpeza}
-                onChange={(e) => setFormData({ ...formData, taxa_limpeza: e.target.value })}
-                placeholder="0.00"
-              />
-              {errors.taxa_limpeza && <p className="text-sm text-destructive mt-1">{errors.taxa_limpeza}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="taxa_seguranca">Taxa de Segurança (R$)</Label>
-              <Input
-                id="taxa_seguranca"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.taxa_seguranca}
-                onChange={(e) => setFormData({ ...formData, taxa_seguranca: e.target.value })}
-                placeholder="0.00"
-              />
-              {errors.taxa_seguranca && <p className="text-sm text-destructive mt-1">{errors.taxa_seguranca}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="prazo_pagamento_dias">Prazo de Pagamento (dias antes)</Label>
-              <Input
-                id="prazo_pagamento_dias"
-                type="number"
-                min="1"
-                value={formData.prazo_pagamento_dias}
-                onChange={(e) => setFormData({ ...formData, prazo_pagamento_dias: parseInt(e.target.value) || 3 })}
-                placeholder="3"
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                Feirantes devem pagar até X dias antes da feira
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Horários e Dias</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label>Dias da Semana *</Label>
-            <div className="grid grid-cols-4 gap-2 mt-2">
-              {DIAS_SEMANA.map((dia) => (
-                <div key={dia.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`dia-${dia.id}`}
-                    checked={formData.dias_semana.includes(dia.id)}
-                    onCheckedChange={() => handleDiaChange(dia.id)}
-                  />
-                  <Label htmlFor={`dia-${dia.id}`} className="text-sm cursor-pointer">
-                    {dia.label}
-                  </Label>
-                </div>
-              ))}
-            </div>
-            {errors.dias_semana && <p className="text-sm text-destructive mt-1">{errors.dias_semana}</p>}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="horario_inicio">Horário de Início *</Label>
-              <Input
-                id="horario_inicio"
-                type="time"
-                value={formData.horario_inicio}
-                onChange={(e) => setFormData({ ...formData, horario_inicio: e.target.value })}
-                required
-              />
-              {errors.horario_inicio && <p className="text-sm text-destructive mt-1">{errors.horario_inicio}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="horario_fim">Horário de Término *</Label>
-              <Input
-                id="horario_fim"
-                type="time"
-                value={formData.horario_fim}
-                onChange={(e) => setFormData({ ...formData, horario_fim: e.target.value })}
-                required
-              />
-              {errors.horario_fim && <p className="text-sm text-destructive mt-1">{errors.horario_fim}</p>}
-            </div>
+            {errors.estado && <p className="text-sm text-destructive mt-1">{errors.estado}</p>}
           </div>
 
           <div>
-            <Label htmlFor="tempo_antecedencia">Tempo de Antecedência (minutos)</Label>
+            <Label htmlFor="cidade">Cidade *</Label>
+            <Select 
+              value={formData.cidade} 
+              onValueChange={(value) => {
+                setFormData({ ...formData, cidade: value, bairro: "" });
+                loadBairros(value);
+              }}
+              disabled={!formData.estado || loadingCidades}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione a cidade" />
+              </SelectTrigger>
+              <SelectContent>
+                {cidades.map((cidade) => (
+                  <SelectItem key={cidade} value={cidade}>
+                    {cidade}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.cidade && <p className="text-sm text-destructive mt-1">{errors.cidade}</p>}
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="bairro">Bairro *</Label>
+          {bairros.length > 0 ? (
+            <Select
+              value={formData.bairro}
+              onValueChange={(value) => setFormData({ ...formData, bairro: value })}
+              disabled={!formData.cidade || loadingBairros}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={loadingBairros ? "Carregando..." : "Selecione o bairro"} />
+              </SelectTrigger>
+              <SelectContent>
+                {bairros.map((bairro) => (
+                  <SelectItem key={bairro} value={bairro}>
+                    {bairro}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
             <Input
-              id="tempo_antecedencia"
+              id="bairro"
+              value={formData.bairro}
+              onChange={(e) => setFormData({ ...formData, bairro: e.target.value })}
+              placeholder="Digite o bairro"
+              disabled={loadingBairros}
+            />
+          )}
+          {errors.bairro && <p className="text-sm text-destructive mt-1">{errors.bairro}</p>}
+        </div>
+
+        <div>
+          <Label htmlFor="endereco">Endereço Completo *</Label>
+          <Input
+            id="endereco"
+            value={formData.endereco}
+            onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
+            placeholder="Rua, número, complemento"
+            required
+          />
+          {errors.endereco && <p className="text-sm text-destructive mt-1">{errors.endereco}</p>}
+        </div>
+
+        <div>
+          <Label htmlFor="tipo_feira">Tipo de Feira *</Label>
+          <Select value={formData.tipo_feira} onValueChange={(value) => setFormData({ ...formData, tipo_feira: value })}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="publica">Feira Pública</SelectItem>
+              <SelectItem value="condominio">Condomínio</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </CardContent>
+    </Card>,
+
+    // Card 2: Valores e Taxas
+    <Card key="valores-taxas" className="h-full">
+      <CardHeader>
+        <CardTitle>Valores e Taxas</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="valor_participacao">Valor de Participação (R$)</Label>
+            <Input
+              id="valor_participacao"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.valor_participacao}
+              onChange={(e) => setFormData({ ...formData, valor_participacao: e.target.value })}
+              placeholder="0.00"
+            />
+            {errors.valor_participacao && <p className="text-sm text-destructive mt-1">{errors.valor_participacao}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="taxa_energia">Taxa de Energia (R$)</Label>
+            <Input
+              id="taxa_energia"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.taxa_energia}
+              onChange={(e) => setFormData({ ...formData, taxa_energia: e.target.value })}
+              placeholder="0.00"
+            />
+            {errors.taxa_energia && <p className="text-sm text-destructive mt-1">{errors.taxa_energia}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="taxa_limpeza">Taxa de Limpeza (R$)</Label>
+            <Input
+              id="taxa_limpeza"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.taxa_limpeza}
+              onChange={(e) => setFormData({ ...formData, taxa_limpeza: e.target.value })}
+              placeholder="0.00"
+            />
+            {errors.taxa_limpeza && <p className="text-sm text-destructive mt-1">{errors.taxa_limpeza}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="taxa_seguranca">Taxa de Segurança (R$)</Label>
+            <Input
+              id="taxa_seguranca"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.taxa_seguranca}
+              onChange={(e) => setFormData({ ...formData, taxa_seguranca: e.target.value })}
+              placeholder="0.00"
+            />
+            {errors.taxa_seguranca && <p className="text-sm text-destructive mt-1">{errors.taxa_seguranca}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="prazo_pagamento_dias">Prazo de Pagamento (dias antes)</Label>
+            <Input
+              id="prazo_pagamento_dias"
+              type="number"
+              min="1"
+              value={formData.prazo_pagamento_dias}
+              onChange={(e) => setFormData({ ...formData, prazo_pagamento_dias: parseInt(e.target.value) || 3 })}
+              placeholder="3"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Feirantes devem pagar até X dias antes da feira
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>,
+
+    // Card 3: Horários e Dias
+    <Card key="horarios-dias" className="h-full">
+      <CardHeader>
+        <CardTitle>Horários e Dias</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <Label>Dias da Semana *</Label>
+          <div className="grid grid-cols-4 gap-2 mt-2">
+            {DIAS_SEMANA.map((dia) => (
+              <div key={dia.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`dia-${dia.id}`}
+                  checked={formData.dias_semana.includes(dia.id)}
+                  onCheckedChange={() => handleDiaChange(dia.id)}
+                />
+                <Label htmlFor={`dia-${dia.id}`} className="text-sm cursor-pointer">
+                  {dia.label}
+                </Label>
+              </div>
+            ))}
+          </div>
+          {errors.dias_semana && <p className="text-sm text-destructive mt-1">{errors.dias_semana}</p>}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="horario_inicio">Horário de Início *</Label>
+            <Input
+              id="horario_inicio"
+              type="time"
+              value={formData.horario_inicio}
+              onChange={(e) => setFormData({ ...formData, horario_inicio: e.target.value })}
+              required
+            />
+            {errors.horario_inicio && <p className="text-sm text-destructive mt-1">{errors.horario_inicio}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="horario_fim">Horário de Término *</Label>
+            <Input
+              id="horario_fim"
+              type="time"
+              value={formData.horario_fim}
+              onChange={(e) => setFormData({ ...formData, horario_fim: e.target.value })}
+              required
+            />
+            {errors.horario_fim && <p className="text-sm text-destructive mt-1">{errors.horario_fim}</p>}
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="tempo_antecedencia">Tempo de Antecedência (minutos)</Label>
+          <Input
+            id="tempo_antecedencia"
+            type="number"
+            min="0"
+            value={formData.tempo_antecedencia_minutos}
+            onChange={(e) => setFormData({ ...formData, tempo_antecedencia_minutos: parseInt(e.target.value) || 0 })}
+          />
+        </div>
+      </CardContent>
+    </Card>,
+
+    // Card 4: Formas de Pagamento e Políticas
+    <Card key="pagamento-politicas" className="h-full">
+      <CardHeader>
+        <CardTitle>Formas de Pagamento e Políticas</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <Label>Formas de Pagamento Aceitas *</Label>
+          <div className="grid grid-cols-3 gap-2 mt-2">
+            {FORMAS_PAGAMENTO.map((forma) => (
+              <div key={forma.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`pagamento-${forma.id}`}
+                  checked={formData.formas_pagamento.includes(forma.id)}
+                  onCheckedChange={() => handlePagamentoChange(forma.id)}
+                />
+                <Label htmlFor={`pagamento-${forma.id}`} className="text-sm cursor-pointer">
+                  {forma.label}
+                </Label>
+              </div>
+            ))}
+          </div>
+          {errors.formas_pagamento && <p className="text-sm text-destructive mt-1">{errors.formas_pagamento}</p>}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="horas_cancelamento">Horas p/ Cancelamento sem Multa</Label>
+            <Input
+              id="horas_cancelamento"
               type="number"
               min="0"
-              value={formData.tempo_antecedencia_minutos}
-              onChange={(e) => setFormData({ ...formData, tempo_antecedencia_minutos: parseInt(e.target.value) || 0 })}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Formas de Pagamento e Políticas</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label>Formas de Pagamento Aceitas *</Label>
-            <div className="grid grid-cols-3 gap-2 mt-2">
-              {FORMAS_PAGAMENTO.map((forma) => (
-                <div key={forma.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`pagamento-${forma.id}`}
-                    checked={formData.formas_pagamento.includes(forma.id)}
-                    onCheckedChange={() => handlePagamentoChange(forma.id)}
-                  />
-                  <Label htmlFor={`pagamento-${forma.id}`} className="text-sm cursor-pointer">
-                    {forma.label}
-                  </Label>
-                </div>
-              ))}
-            </div>
-            {errors.formas_pagamento && <p className="text-sm text-destructive mt-1">{errors.formas_pagamento}</p>}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="horas_cancelamento">Horas p/ Cancelamento sem Multa</Label>
-              <Input
-                id="horas_cancelamento"
-                type="number"
-                min="0"
-                value={formData.horas_cancelamento_sem_multa}
-                onChange={(e) => setFormData({ ...formData, horas_cancelamento_sem_multa: parseInt(e.target.value) || 0 })}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="taxa_cancelamento">Taxa de Cancelamento (R$)</Label>
-              <Input
-                id="taxa_cancelamento"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.taxa_cancelamento}
-                onChange={(e) => setFormData({ ...formData, taxa_cancelamento: e.target.value })}
-                placeholder="0.00"
-              />
-              {errors.taxa_cancelamento && <p className="text-sm text-destructive mt-1">{errors.taxa_cancelamento}</p>}
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="regras_evento">Regras do Evento</Label>
-            <Textarea
-              id="regras_evento"
-              value={formData.regras_evento}
-              onChange={(e) => setFormData({ ...formData, regras_evento: e.target.value })}
-              rows={3}
-              placeholder="Descreva as regras do evento"
+              value={formData.horas_cancelamento_sem_multa}
+              onChange={(e) => setFormData({ ...formData, horas_cancelamento_sem_multa: parseInt(e.target.value) || 0 })}
             />
           </div>
 
           <div>
-            <Label htmlFor="politica_cancelamento">Política de Cancelamento</Label>
-            <Textarea
-              id="politica_cancelamento"
-              value={formData.politica_cancelamento}
-              onChange={(e) => setFormData({ ...formData, politica_cancelamento: e.target.value })}
-              rows={3}
-              placeholder="Descreva a política de cancelamento"
+            <Label htmlFor="taxa_cancelamento">Taxa de Cancelamento (R$)</Label>
+            <Input
+              id="taxa_cancelamento"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.taxa_cancelamento}
+              onChange={(e) => setFormData({ ...formData, taxa_cancelamento: e.target.value })}
+              placeholder="0.00"
             />
+            {errors.taxa_cancelamento && <p className="text-sm text-destructive mt-1">{errors.taxa_cancelamento}</p>}
           </div>
+        </div>
 
-          <div>
-            <Label htmlFor="avisos">Avisos</Label>
-            <Textarea
-              id="avisos"
-              value={formData.avisos}
-              onChange={(e) => setFormData({ ...formData, avisos: e.target.value })}
-              rows={2}
-              placeholder="Avisos importantes"
-            />
-          </div>
+        <div>
+          <Label htmlFor="regras_evento">Regras do Evento</Label>
+          <Textarea
+            id="regras_evento"
+            value={formData.regras_evento}
+            onChange={(e) => setFormData({ ...formData, regras_evento: e.target.value })}
+            rows={3}
+            placeholder="Descreva as regras do evento"
+          />
+        </div>
 
-          <div>
-            <Label htmlFor="observacoes">Observações</Label>
-            <Textarea
-              id="observacoes"
-              value={formData.observacoes}
-              onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-              rows={2}
-              placeholder="Observações adicionais"
-            />
-          </div>
-        </CardContent>
-      </Card>
+        <div>
+          <Label htmlFor="politica_cancelamento">Política de Cancelamento</Label>
+          <Textarea
+            id="politica_cancelamento"
+            value={formData.politica_cancelamento}
+            onChange={(e) => setFormData({ ...formData, politica_cancelamento: e.target.value })}
+            rows={3}
+            placeholder="Descreva a política de cancelamento"
+          />
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Configurações da Feira</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="recorrente"
-              checked={formData.recorrente}
-              onCheckedChange={(checked) => 
-                setFormData(prev => ({ ...prev, recorrente: checked as boolean }))
-              }
-            />
-            <Label htmlFor="recorrente" className="cursor-pointer">
-              Feira Recorrente (reaparece automaticamente nas próximas datas)
-            </Label>
-          </div>
+        <div>
+          <Label htmlFor="avisos">Avisos</Label>
+          <Textarea
+            id="avisos"
+            value={formData.avisos}
+            onChange={(e) => setFormData({ ...formData, avisos: e.target.value })}
+            rows={2}
+            placeholder="Avisos importantes"
+          />
+        </div>
 
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="segmento_exclusivo"
-              checked={formData.segmento_exclusivo}
-              onCheckedChange={(checked) => 
-                setFormData(prev => ({ ...prev, segmento_exclusivo: checked as boolean }))
-              }
-            />
-            <Label htmlFor="segmento_exclusivo" className="cursor-pointer">
-              Segmento Exclusivo (apenas um feirante por segmento)
-            </Label>
-          </div>
-        </CardContent>
-      </Card>
+        <div>
+          <Label htmlFor="observacoes">Observações</Label>
+          <Textarea
+            id="observacoes"
+            value={formData.observacoes}
+            onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
+            rows={2}
+            placeholder="Observações adicionais"
+          />
+        </div>
+      </CardContent>
+    </Card>,
+
+    // Card 5: Configurações da Feira
+    <Card key="configuracoes" className="h-full">
+      <CardHeader>
+        <CardTitle>Configurações da Feira</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="recorrente"
+            checked={formData.recorrente}
+            onCheckedChange={(checked) => 
+              setFormData(prev => ({ ...prev, recorrente: checked as boolean }))
+            }
+          />
+          <Label htmlFor="recorrente" className="cursor-pointer">
+            Feira Recorrente (reaparece automaticamente nas próximas datas)
+          </Label>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="segmento_exclusivo"
+            checked={formData.segmento_exclusivo}
+            onCheckedChange={(checked) => 
+              setFormData(prev => ({ ...prev, segmento_exclusivo: checked as boolean }))
+            }
+          />
+          <Label htmlFor="segmento_exclusivo" className="cursor-pointer">
+            Segmento Exclusivo (apenas um feirante por segmento)
+          </Label>
+        </div>
+      </CardContent>
+    </Card>,
+  ];
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <DraggableStatsCards layout="vertical" storageKey="criarFeiraCardsOrder">
+        {formCards}
+      </DraggableStatsCards>
 
       <div className="flex gap-4">
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
