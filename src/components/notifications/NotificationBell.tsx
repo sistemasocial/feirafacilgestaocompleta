@@ -34,6 +34,7 @@ export default function NotificationBell({ userId, onNavigate }: NotificationBel
 
   useEffect(() => {
     loadNotifications();
+    requestNotificationPermission();
 
     // Subscribe to new notifications
     const channel = supabase
@@ -46,8 +47,9 @@ export default function NotificationBell({ userId, onNavigate }: NotificationBel
           table: "notifications",
           filter: `user_id=eq.${userId}`,
         },
-        () => {
+        (payload) => {
           loadNotifications();
+          handleNewNotification(payload.new as Notification);
         }
       )
       .subscribe();
@@ -56,6 +58,62 @@ export default function NotificationBell({ userId, onNavigate }: NotificationBel
       supabase.removeChannel(channel);
     };
   }, [userId]);
+
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      await Notification.requestPermission();
+    }
+  };
+
+  const playNotificationSound = () => {
+    // Criar som de notificação usando Web Audio API
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (error) {
+      console.error('Erro ao tocar som:', error);
+    }
+  };
+
+  const showSystemNotification = (notification: Notification) => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const notif = new Notification(notification.title, {
+        body: notification.message,
+        icon: '/pwa-192x192.png',
+        badge: '/pwa-192x192.png',
+        tag: notification.id,
+        requireInteraction: false,
+        silent: false
+      });
+
+      notif.onclick = () => {
+        window.focus();
+        handleNotificationClick(notification);
+        notif.close();
+      };
+
+      // Auto-fechar após 5 segundos
+      setTimeout(() => notif.close(), 5000);
+    }
+  };
+
+  const handleNewNotification = (notification: Notification) => {
+    playNotificationSound();
+    showSystemNotification(notification);
+  };
 
   const loadNotifications = async () => {
     const { data } = await supabase
