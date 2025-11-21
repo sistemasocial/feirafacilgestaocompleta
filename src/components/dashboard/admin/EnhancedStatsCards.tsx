@@ -279,22 +279,22 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     </Card>,
 
     // Card 5: Feiras da Semana
-    <Card key="feiras-semana" className="h-full p-6 bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-0 relative overflow-hidden flex flex-col">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+    <Card key="feiras-semana" className="h-full p-6 bg-gradient-to-br from-blue-600 to-purple-600 text-white border-0 relative overflow-hidden flex flex-col shadow-lg">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/40 to-purple-500/40" />
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center shadow-md">
             <Calendar className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-sm font-medium text-white">Feiras da Semana</h3>
-            <p className="text-xs text-white/80">Últimas feiras criadas</p>
+            <h3 className="text-base font-bold text-white drop-shadow-md">Feiras da Semana</h3>
+            <p className="text-sm text-white/90 font-medium">Últimas feiras criadas</p>
           </div>
         </div>
       
         <div className="space-y-3 flex-1">
           {feiras.length === 0 ? (
-            <div className="text-center py-6 text-white/70 text-sm">
+            <div className="text-center py-6 text-white/90 text-sm font-medium">
               Nenhuma feira cadastrada
             </div>
           ) : (
@@ -306,16 +306,16 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
               return (
                 <div
                   key={feira.id}
-                  className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all"
+                  className="p-3 rounded-lg bg-white/25 backdrop-blur-sm border border-white/40 hover:bg-white/35 transition-all shadow-md"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm truncate text-white">{feira.nome}</h4>
-                      <p className="text-xs text-white/70 truncate">{feira.bairro}</p>
+                      <h4 className="font-bold text-sm truncate text-white drop-shadow">{feira.nome}</h4>
+                      <p className="text-sm text-white/95 truncate font-medium">{feira.bairro}</p>
                     </div>
                   </div>
                   <div className="mt-2">
-                    <div className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white/20 text-white text-xs font-medium">
+                    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-white/30 backdrop-blur-sm text-white text-xs font-bold shadow">
                       {diasFormatados}
                     </div>
                   </div>
