@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Calendar, Users, DollarSign, TrendingUp, CheckCircle2 } from "lucide-react";
 
@@ -10,12 +12,35 @@ interface EnhancedStatsCardsProps {
     pagamentosPendentes: number;
     pagamentosRecebidos: number;
   };
+  userId: string;
 }
 
-export const EnhancedStatsCards = ({ stats }: EnhancedStatsCardsProps) => {
+export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) => {
+  const [revenueGoal, setRevenueGoal] = useState<number>(10000);
+
+  useEffect(() => {
+    loadRevenueGoal();
+  }, [userId]);
+
+  const loadRevenueGoal = async () => {
+    try {
+      const { data } = await supabase
+        .from("admin_settings")
+        .select("revenue_goal")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (data) {
+        setRevenueGoal(data.revenue_goal || 10000);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar meta:", error);
+    }
+  };
+
   const totalPagamentos = stats.pagamentosPendentes + stats.pagamentosRecebidos;
-  const percentualRecebido = totalPagamentos > 0 
-    ? Math.round((stats.pagamentosRecebidos / totalPagamentos) * 100) 
+  const percentualRecebido = revenueGoal > 0 
+    ? Math.round((stats.pagamentosRecebidos / revenueGoal) * 100) 
     : 0;
 
   const percentualConfirmado = stats.totalFeirantes > 0
@@ -65,7 +90,7 @@ export const EnhancedStatsCards = ({ stats }: EnhancedStatsCardsProps) => {
                 <div className="text-4xl font-bold">
                   R$ {(stats.pagamentosRecebidos / 1000).toFixed(1)}K
                 </div>
-                <div className="text-sm text-slate-400">Total recebido</div>
+                <div className="text-sm text-slate-400">de R$ {(revenueGoal / 1000).toFixed(1)}K</div>
               </div>
             </div>
           </div>

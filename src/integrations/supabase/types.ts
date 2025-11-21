@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          created_at: string
+          id: string
+          revenue_goal: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          revenue_goal?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          revenue_goal?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       app_installs: {
         Row: {
           id: string
