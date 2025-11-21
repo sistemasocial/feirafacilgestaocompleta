@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Loader2, MapPin, Calendar as CalendarIcon, Users, DollarSign, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, MapPin, Users, DollarSign } from "lucide-react";
 import { toast } from "sonner";
-import { startOfMonth, endOfMonth, eachDayOfInterval, format, getDay, addMonths, subMonths } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 interface Feira {
   id: string;
@@ -22,15 +19,6 @@ interface Feira {
   inscricoes_confirmadas: number;
 }
 
-interface FeiraEvent {
-  date: string;
-  feiras: Array<{
-    id: string;
-    nome: string;
-    cidade: string;
-  }>;
-}
-
 const DIAS_SEMANA = [
   { key: "1", name: "Segunda-feira", shortName: "SEG", color: "from-blue-500 to-blue-600" },
   { key: "2", name: "Terça-feira", shortName: "TER", color: "from-green-500 to-green-600" },
@@ -44,14 +32,11 @@ const DIAS_SEMANA = [
 export const FeirasWeeklyOverview = () => {
   const [feiras, setFeiras] = useState<Feira[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDay, setSelectedDay] = useState<string>("1"); // Segunda por padrão
-  const [calendarEvents, setCalendarEvents] = useState<FeiraEvent[]>([]);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState<string>("1");
 
   useEffect(() => {
     loadFeiras();
-    loadCalendarEvents();
-  }, [currentMonth]);
+  }, []);
 
   const loadFeiras = async () => {
     try {
@@ -104,78 +89,6 @@ export const FeirasWeeklyOverview = () => {
     return { totalInscricoes, totalConfirmadas, totalReceita, totalFeiras: feirasNoDia.length };
   };
 
-  const loadCalendarEvents = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("feiras")
-        .select("id, nome, cidade, dias_semana")
-        .eq("recorrente", true);
-
-      if (error) throw error;
-
-      const diaSemanaMapa: { [key: string]: number } = {
-        'domingo': 0, '0': 0,
-        'segunda': 1, '1': 1,
-        'terca': 2, 'terça': 2, '2': 2,
-        'quarta': 3, '3': 3,
-        'quinta': 4, '4': 4,
-        'sexta': 5, '5': 5,
-        'sabado': 6, 'sábado': 6, '6': 6,
-      };
-
-      const eventMap: { [key: string]: Array<{ id: string; nome: string; cidade: string }> } = {};
-      const start = startOfMonth(currentMonth);
-      const end = endOfMonth(currentMonth);
-      const allDays = eachDayOfInterval({ start, end });
-
-      allDays.forEach((day) => {
-        const dayOfWeek = getDay(day);
-        const dateStr = format(day, "yyyy-MM-dd");
-
-        data?.forEach((feira) => {
-          const feiraHappenToday = feira.dias_semana.some((dia: string) => {
-            const diaKey = dia.toString().toLowerCase();
-            return diaSemanaMapa[diaKey] === dayOfWeek;
-          });
-
-          if (feiraHappenToday) {
-            if (!eventMap[dateStr]) {
-              eventMap[dateStr] = [];
-            }
-            eventMap[dateStr].push({
-              id: feira.id,
-              nome: feira.nome,
-              cidade: feira.cidade,
-            });
-          }
-        });
-      });
-
-      const eventList = Object.entries(eventMap).map(([date, feiras]) => ({
-        date,
-        feiras,
-      }));
-
-      setCalendarEvents(eventList);
-    } catch (error: any) {
-      console.error("Erro ao carregar eventos do calendário:", error);
-    }
-  };
-
-  const getEventForDay = (day: Date) => {
-    const dateStr = format(day, "yyyy-MM-dd");
-    return calendarEvents.find((e) => e.date === dateStr);
-  };
-
-  const daysInMonth = eachDayOfInterval({
-    start: startOfMonth(currentMonth),
-    end: endOfMonth(currentMonth),
-  });
-
-  const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-  const firstDayOfMonth = getDay(startOfMonth(currentMonth));
-  const emptyDays = Array(firstDayOfMonth).fill(null);
-
   if (loading) {
     return (
       <Card className="p-6">
@@ -191,120 +104,105 @@ export const FeirasWeeklyOverview = () => {
   const diaInfo = DIAS_SEMANA.find(d => d.key === selectedDay) || DIAS_SEMANA[0];
 
   return (
-    <div className="space-y-4">
-      {/* Seletor de dias */}
-      <Card className="p-4">
-        <h3 className="text-lg font-semibold mb-4">Feiras da Semana</h3>
-        <div className="flex gap-2 overflow-x-auto pb-2">
+    <div className="space-y-3">
+      {/* Seletor de dias - mais compacto */}
+      <Card className="p-3">
+        <h3 className="text-base font-semibold mb-3">Feiras da Semana</h3>
+        <div className="flex gap-1.5 overflow-x-auto pb-1">
           {DIAS_SEMANA.map((dia) => {
             const stats = getStatsForDay(dia.key);
             return (
               <button
                 key={dia.key}
                 onClick={() => setSelectedDay(dia.key)}
-                className={`flex-shrink-0 px-4 py-3 rounded-xl border-2 transition-all ${
+                className={`flex-shrink-0 px-3 py-2 rounded-lg border transition-all ${
                   selectedDay === dia.key
-                    ? `bg-gradient-to-r ${dia.color} text-white border-transparent shadow-lg`
+                    ? `bg-gradient-to-r ${dia.color} text-white border-transparent shadow-md`
                     : 'bg-card border-border hover:border-primary/50'
                 }`}
               >
-                <div className="text-xs font-bold">{dia.shortName}</div>
-                <div className="text-lg font-bold mt-1">{stats.totalFeiras}</div>
+                <div className="text-[10px] font-bold">{dia.shortName}</div>
+                <div className="text-sm font-bold mt-0.5">{stats.totalFeiras}</div>
               </button>
             );
           })}
         </div>
       </Card>
 
-      {/* Cards de estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Total Inscrições */}
-        <Card className={`p-6 bg-gradient-to-br ${diaInfo.color} text-white`}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6" />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm opacity-90">Total Inscrições</p>
-            <p className="text-3xl font-bold">{statsDoSelecionado.totalInscricoes}</p>
-          </div>
+      {/* Cards de estatísticas - mais compactos */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <Card className={`p-3 bg-gradient-to-br ${diaInfo.color} text-white`}>
+          <Users className="w-4 h-4 mb-2 opacity-80" />
+          <p className="text-[10px] opacity-90">Feiras</p>
+          <p className="text-xl font-bold">{statsDoSelecionado.totalFeiras}</p>
         </Card>
 
-        {/* Confirmadas */}
-        <Card className="p-6 bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6" />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm opacity-90">Confirmadas</p>
-            <p className="text-3xl font-bold">{statsDoSelecionado.totalConfirmadas}</p>
-          </div>
+        <Card className="p-3 bg-gradient-to-br from-blue-500 to-cyan-600 text-white">
+          <Users className="w-4 h-4 mb-2 opacity-80" />
+          <p className="text-[10px] opacity-90">Inscrições</p>
+          <p className="text-xl font-bold">{statsDoSelecionado.totalInscricoes}</p>
         </Card>
 
-        {/* Receita */}
-        <Card className="p-6 bg-gradient-to-br from-amber-500 to-orange-600 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <DollarSign className="w-6 h-6" />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm opacity-90">Receita Total</p>
-            <p className="text-2xl font-bold">
-              R$ {statsDoSelecionado.totalReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </p>
-          </div>
+        <Card className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+          <Users className="w-4 h-4 mb-2 opacity-80" />
+          <p className="text-[10px] opacity-90">Confirmadas</p>
+          <p className="text-xl font-bold">{statsDoSelecionado.totalConfirmadas}</p>
+        </Card>
+
+        <Card className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 text-white">
+          <DollarSign className="w-4 h-4 mb-2 opacity-80" />
+          <p className="text-[10px] opacity-90">Receita</p>
+          <p className="text-base font-bold">
+            R$ {(statsDoSelecionado.totalReceita / 1000).toFixed(1)}k
+          </p>
         </Card>
       </div>
 
-      {/* Lista de feiras */}
+      {/* Lista de feiras - compacta */}
       {feirasDoSelecionado.length > 0 && (
-        <Card className="p-6">
-          <h4 className="text-md font-semibold mb-4">
-            {diaInfo.name} - {feirasDoSelecionado.length} feira{feirasDoSelecionado.length !== 1 ? 's' : ''}
+        <Card className="p-3">
+          <h4 className="text-sm font-semibold mb-2">
+            {diaInfo.name} ({feirasDoSelecionado.length})
           </h4>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {feirasDoSelecionado.map((feira) => {
               const valorTotal = (feira.inscricoes_confirmadas || 0) * (feira.valor_participacao || 0);
               
               return (
                 <div
                   key={feira.id}
-                  className="p-4 rounded-xl bg-muted/50 border border-border hover:shadow-md transition-all"
+                  className="p-2 rounded-lg bg-muted/50 border border-border"
                 >
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div className="flex-1">
-                      <h5 className="font-semibold text-base">{feira.nome}</h5>
-                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
-                        <MapPin className="w-3.5 h-3.5" />
-                        <span>{feira.cidade} - {feira.bairro}</span>
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="flex-1 min-w-0">
+                      <h5 className="font-semibold text-sm truncate">{feira.nome}</h5>
+                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                        <MapPin className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{feira.cidade} - {feira.bairro}</span>
                       </div>
                     </div>
                     {feira.recorrente && (
-                      <Badge className="bg-success/10 text-success border-success/20">
+                      <Badge className="bg-success/10 text-success border-success/20 text-[10px] px-1.5 py-0">
                         Ativa
                       </Badge>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="text-center p-2 bg-background rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">Inscrições</p>
-                      <p className="text-lg font-bold">{feira.inscricoes_count}</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="text-center p-1.5 bg-background rounded">
+                      <p className="text-[10px] text-muted-foreground">Inscrições</p>
+                      <p className="text-sm font-bold">{feira.inscricoes_count}</p>
                     </div>
 
-                    <div className="text-center p-2 bg-background rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">Confirmadas</p>
-                      <p className="text-lg font-bold">{feira.inscricoes_confirmadas}</p>
+                    <div className="text-center p-1.5 bg-background rounded">
+                      <p className="text-[10px] text-muted-foreground">Confirmadas</p>
+                      <p className="text-sm font-bold">{feira.inscricoes_confirmadas}</p>
                     </div>
 
-                    <div className="text-center p-2 bg-background rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">Receita</p>
-                      <p className="text-sm font-bold">
-                        R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    <div className="text-center p-1.5 bg-background rounded">
+                      <p className="text-[10px] text-muted-foreground">Receita</p>
+                      <p className="text-xs font-bold">
+                        R$ {(valorTotal / 1000).toFixed(1)}k
                       </p>
                     </div>
                   </div>
@@ -316,8 +214,8 @@ export const FeirasWeeklyOverview = () => {
       )}
 
       {feirasDoSelecionado.length === 0 && (
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground">Nenhuma feira cadastrada para {diaInfo.name}</p>
+        <Card className="p-6 text-center">
+          <p className="text-sm text-muted-foreground">Nenhuma feira em {diaInfo.name}</p>
         </Card>
       )}
     </div>
