@@ -173,30 +173,30 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left side - Image */}
-      <div className="hidden lg:flex lg:w-1/2 relative">
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Hero Image - Mobile: top banner, Desktop: left side */}
+      <div className="relative w-full lg:w-1/2 h-48 lg:h-auto">
         <img 
           src={vendedoraHero} 
           alt="Feira" 
           className="absolute inset-0 w-full h-full object-cover brightness-110"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-transparent to-black/30" />
-        <div className="relative z-10 flex flex-col justify-center px-12 text-white">
-          <div className="w-20 h-20 rounded-full bg-primary/80 backdrop-blur-sm flex items-center justify-center shadow-lg mb-6">
-            <Store className="w-12 h-12" />
+        <div className="relative z-10 flex flex-col justify-center px-6 lg:px-12 h-full text-white">
+          <div className="w-12 h-12 lg:w-20 lg:h-20 rounded-full bg-primary/80 backdrop-blur-sm flex items-center justify-center shadow-lg mb-3 lg:mb-6">
+            <Store className="w-7 h-7 lg:w-12 lg:h-12" />
           </div>
-          <h1 className="text-5xl font-bold mb-4 drop-shadow-lg">Feira Fácil</h1>
-          <p className="text-xl text-white/95 max-w-md drop-shadow-md">
+          <h1 className="text-2xl lg:text-5xl font-bold mb-1 lg:mb-4 drop-shadow-lg">Feira Fácil</h1>
+          <p className="text-sm lg:text-xl text-white/95 max-w-md drop-shadow-md">
             Sua plataforma de gestão completa de feiras
           </p>
         </div>
       </div>
 
-      {/* Right side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+      {/* Form Section */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-8 bg-background">
         <div className="w-full max-w-md">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-start mb-6 lg:mb-8">
             <Button
               variant="ghost"
               size="icon"
@@ -205,16 +205,6 @@ const Auth = () => {
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            
-            {/* Mobile logo */}
-            <div className="lg:hidden flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
-                <Store className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold">Feira Fácil</span>
-            </div>
-            
-            <div className="w-10" />
           </div>
 
           <div className="mb-8">
