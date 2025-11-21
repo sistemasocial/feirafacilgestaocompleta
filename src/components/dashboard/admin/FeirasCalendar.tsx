@@ -199,9 +199,9 @@ export const FeirasCalendar = () => {
                 className={`
                   w-10 h-10 rounded-lg flex items-center justify-center 
                   text-sm font-medium transition-all
-                  ${event ? 'bg-primary text-primary-foreground shadow-sm' : ''}
-                  ${isToday && event ? 'ring-2 ring-accent shadow-md' : ''}
-                  ${isToday && !event ? 'ring-2 ring-primary bg-accent/50 text-accent-foreground' : ''}
+                  ${event && isToday ? 'bg-primary text-primary-foreground ring-2 ring-orange-500 ring-offset-2 shadow-md' : ''}
+                  ${event && !isToday ? 'bg-primary text-primary-foreground shadow-sm' : ''}
+                  ${!event && isToday ? 'bg-orange-500 text-white shadow-sm' : ''}
                   ${!event && !isToday ? 'text-foreground/80' : ''}
                 `}
               >
