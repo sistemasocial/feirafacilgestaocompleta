@@ -193,15 +193,10 @@ export const FeirasCalendar = () => {
             const event = getEventForDay(day);
             const isToday = format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
 
-            // Regra simples de prioridade de cores:
-            // 1) Se for hoje -> laranja
-            // 2) Senão, se tiver feira -> verde
-            // 3) Caso contrário -> neutro
+            // Apenas verde para dias com feira
             let colorClass = "text-foreground/80";
 
-            if (isToday) {
-              colorClass = "bg-orange-500 text-white shadow-sm";
-            } else if (event) {
+            if (event) {
               colorClass = "bg-primary text-primary-foreground shadow-sm";
             }
 
