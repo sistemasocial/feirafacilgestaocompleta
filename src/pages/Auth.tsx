@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PRODUCT_CATEGORIES, CATEGORY_LABELS } from "@/lib/productCategories";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import vendedoraHero from "@/assets/vendedora-hero.jpg";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Email inválido" }).max(255, { message: "Email muito longo" }),
@@ -176,7 +177,7 @@ const Auth = () => {
       {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <img 
-          src="/src/assets/vendedora-hero.jpg" 
+          src={vendedoraHero} 
           alt="Feira" 
           className="absolute inset-0 w-full h-full object-cover brightness-110"
         />
