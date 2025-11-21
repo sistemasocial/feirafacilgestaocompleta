@@ -139,10 +139,6 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
               </div>
 
               <EnhancedStatsCards stats={stats} userId={user.id} />
-              
-              <div className="mt-6">
-                <FeirasConsolidatedCard />
-              </div>
             </div>
           )}
 
