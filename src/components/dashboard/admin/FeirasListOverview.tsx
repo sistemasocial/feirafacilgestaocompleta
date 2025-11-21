@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Loader2, MapPin, Calendar, Users, DollarSign } from "lucide-react";
 import { toast } from "sonner";
-import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 interface Feira {
   id: string;
@@ -20,6 +19,16 @@ interface Feira {
   inscricoes_count: number;
   inscricoes_confirmadas: number;
 }
+
+const DIAS_SEMANA_MAP: { [key: string]: string } = {
+  "0": "Dom",
+  "1": "Seg",
+  "2": "Ter",
+  "3": "Qua",
+  "4": "Qui",
+  "5": "Sex",
+  "6": "Sáb",
+};
 
 export const FeirasListOverview = () => {
   const [feiras, setFeiras] = useState<Feira[]>([]);
@@ -36,7 +45,7 @@ export const FeirasListOverview = () => {
         .from("feiras")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(5);
+        .limit(10);
 
       if (feirasError) throw feirasError;
 
@@ -72,89 +81,105 @@ export const FeirasListOverview = () => {
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          </div>
-        </CardContent>
+      <Card className="p-6">
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
       </Card>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>Feiras Criadas</CardTitle>
-          <Button variant="link" className="text-primary">
-            Ver todas
-          </Button>
+    <Card className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <Calendar className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold">Feiras Criadas</h3>
+            <p className="text-sm text-muted-foreground">Últimas feiras cadastradas</p>
+          </div>
         </div>
-      </CardHeader>
-      <CardContent className="p-6 pt-0">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {feiras.map((feira) => {
+        <Button variant="link" className="text-primary">
+          Ver todas
+        </Button>
+      </div>
+
+      <div className="space-y-3">
+        {feiras.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            Nenhuma feira cadastrada ainda
+          </div>
+        ) : (
+          feiras.map((feira) => {
             const valorTotal = (feira.inscricoes_confirmadas || 0) * (feira.valor_participacao || 0);
             const isActive = feira.recorrente;
             
             return (
-              <div
+              <Card
                 key={feira.id}
-                className="p-4 border rounded-lg hover:bg-muted/50 transition-colors flex flex-col gap-3"
+                className="p-4 hover:shadow-md transition-all border-l-4 border-l-primary animate-fade-in"
               >
-                <div className="flex items-center justify-between">
-                  <h4 className="font-semibold text-base">{feira.nome}</h4>
-                  {isActive && (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
-                      Ativa
-                    </span>
-                  )}
-                </div>
-                
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 flex-shrink-0" />
-                    <span className="line-clamp-1">{feira.bairro}, {feira.cidade}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 flex-shrink-0" />
-                    <span className="line-clamp-1">{feira.dias_semana.join(", ")}</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3 pt-2 border-t">
-                  <div className="text-center">
-                    <div className="w-10 h-10 mx-auto rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-1">
-                      <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1">
+                      <h4 className="font-semibold">{feira.nome}</h4>
                     </div>
-                    <p className="text-xs text-muted-foreground">Inscrições</p>
-                    <p className="text-sm font-semibold">{feira.inscricoes_count}</p>
+                    {isActive && (
+                      <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
+                        Ativa
+                      </Badge>
+                    )}
                   </div>
 
-                  <div className="text-center">
-                    <div className="w-10 h-10 mx-auto rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-1">
-                      <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
-                    </div>
-                    <p className="text-xs text-muted-foreground">Confirmadas</p>
-                    <p className="text-sm font-semibold">{feira.inscricoes_confirmadas}</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <MapPin className="w-3 h-3" />
+                    <span>{feira.cidade} - {feira.bairro}</span>
                   </div>
 
-                  <div className="text-center">
-                    <div className="w-10 h-10 mx-auto rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center mb-1">
-                      <DollarSign className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                  <div className="flex flex-wrap gap-1">
+                    <Calendar className="w-3 h-3 text-muted-foreground mt-0.5" />
+                    {feira.dias_semana.map((dia) => (
+                      <Badge key={dia} variant="secondary" className="text-xs">
+                        {DIAS_SEMANA_MAP[dia]}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 pt-3 border-t">
+                    <div className="flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-1">
+                        <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <p className="text-xs text-muted-foreground">Inscrições</p>
+                      <p className="text-base font-bold">{feira.inscricoes_count}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">Valor Total</p>
-                    <p className="text-sm font-semibold">
-                      R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </p>
+
+                    <div className="flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-1">
+                        <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
+                      </div>
+                      <p className="text-xs text-muted-foreground">Confirmadas</p>
+                      <p className="text-base font-bold">{feira.inscricoes_confirmadas}</p>
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center mb-1">
+                        <DollarSign className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                      </div>
+                      <p className="text-xs text-muted-foreground">Valor Total</p>
+                      <p className="text-sm font-bold">
+                        R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Card>
             );
-          })}
-        </div>
-      </CardContent>
+          })
+        )}
+      </div>
     </Card>
   );
 };
