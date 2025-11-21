@@ -140,9 +140,10 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
               <EnhancedStatsCards stats={stats} userId={user.id} />
               
-              <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 mt-6">
+              <div className="space-y-6 mt-6">
                 <FeirasConsolidatedCard />
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <FinancialGoalsCard userId={user.id} onGoalUpdated={loadStats} />
                   <FeirasCalendar />
                 </div>
               </div>
