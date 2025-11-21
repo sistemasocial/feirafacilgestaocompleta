@@ -27,21 +27,8 @@ const FeiranteDashboard = ({
   const [profileKey, setProfileKey] = useState(0);
   const navigate = useNavigate();
 
-  // Inicializar notificações e FCM
+  // Inicializar notificações
   useNotifications(user.id);
-
-  useEffect(() => {
-    // Inicializar FCM para push notifications
-    const initFCM = async () => {
-      try {
-        const { initializeFCM } = await import('@/lib/fcmService');
-        await initializeFCM(user.id);
-      } catch (error) {
-        console.error('Erro ao inicializar FCM:', error);
-      }
-    };
-    initFCM();
-  }, [user.id]);
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success("Logout realizado com sucesso");

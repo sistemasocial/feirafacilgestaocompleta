@@ -85,8 +85,6 @@ Deno.serve(async (req) => {
     // Enviar notificação push via Firebase para cada token
     const pushPromises = tokens.map(async ({ token }) => {
       try {
-        console.log(`Enviando push para token: ${token.substring(0, 20)}...`);
-        
         const response = await fetch('https://fcm.googleapis.com/fcm/send', {
           method: 'POST',
           headers: {
@@ -95,14 +93,11 @@ Deno.serve(async (req) => {
           },
           body: JSON.stringify({
             to: token,
-            priority: 'high',
             notification: {
               title,
               body: message,
               icon: '/pwa-192x192.png',
               badge: '/pwa-192x192.png',
-              sound: 'default',
-              click_action: 'https://f890b9d8-fa05-428f-8739-0ccf652f8fd7.lovableproject.com/dashboard',
             },
             data: {
               type: type || 'geral',
@@ -114,15 +109,10 @@ Deno.serve(async (req) => {
 
         const result = await response.json();
         console.log('Resposta Firebase:', result);
-        
-        if (!response.ok) {
-          console.error('Erro ao enviar para Firebase:', result);
-        }
-        
         return result;
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error('Erro ao enviar para token:', token.substring(0, 20), error);
+        console.error('Erro ao enviar para token:', token, error);
         return { error: errorMessage };
       }
     });
