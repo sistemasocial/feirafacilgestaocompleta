@@ -41,7 +41,7 @@ const DraggableCard = ({ id, children }: DraggableCardProps) => {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="relative group">
+    <div ref={setNodeRef} style={style} className="relative group h-full">
       <div
         {...attributes}
         {...listeners}
@@ -49,7 +49,9 @@ const DraggableCard = ({ id, children }: DraggableCardProps) => {
       >
         <GripVertical className="w-4 h-4 text-muted-foreground" />
       </div>
-      {children}
+      <div className="h-full">
+        {children}
+      </div>
     </div>
   );
 };
@@ -98,7 +100,7 @@ export const DraggableStatsCards = ({ children }: DraggableStatsCardsProps) => {
   };
 
   if (items.length === 0) {
-    return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">{children}</div>;
+    return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">{children}</div>;
   }
 
   // Reordenar children baseado na ordem salva
@@ -114,7 +116,7 @@ export const DraggableStatsCards = ({ children }: DraggableStatsCardsProps) => {
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={items} strategy={rectSortingStrategy}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
           {orderedChildren.map((child, index) => (
             <DraggableCard key={items[index]} id={items[index]}>
               {child}

@@ -145,8 +145,8 @@ export const FeirasCalendar = () => {
   }
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-border shadow-sm">
-      <div className="space-y-4 h-full flex flex-col">
+    <Card className="h-full p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-border shadow-sm flex flex-col">
+      <div className="space-y-4 flex-1 flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold capitalize">
             {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
@@ -172,7 +172,7 @@ export const FeirasCalendar = () => {
         </div>
 
         {/* Cabeçalho dos dias da semana */}
-        <div className="grid grid-cols-7 gap-1 mb-2">
+        <div className="grid grid-cols-7 gap-2 mb-2">
           {weekDays.map((day, index) => (
             <div 
               key={index} 
