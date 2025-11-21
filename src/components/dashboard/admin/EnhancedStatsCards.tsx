@@ -25,9 +25,11 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
   const [editGoal, setEditGoal] = useState<number>(10000);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [feiras, setFeiras] = useState<any[]>([]);
 
   useEffect(() => {
     loadRevenueGoal();
+    loadFeiras();
   }, [userId]);
 
   const loadRevenueGoal = async () => {
@@ -44,6 +46,21 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
       }
     } catch (error) {
       console.error("Erro ao carregar meta:", error);
+    }
+  };
+
+  const loadFeiras = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("feiras")
+        .select("id, nome, bairro, dias_semana")
+        .order("nome", { ascending: true })
+        .limit(3);
+
+      if (error) throw error;
+      setFeiras(data || []);
+    } catch (error) {
+      console.error("Erro ao carregar feiras:", error);
     }
   };
 
@@ -79,6 +96,16 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
   const percentualConfirmado = stats.totalFeirantes > 0
     ? Math.round((stats.participacoesConfirmadas / stats.totalFeirantes) * 100)
     : 0;
+
+  const DIAS_MAP: { [key: string]: string } = {
+    "0": "DOM",
+    "1": "SEG",
+    "2": "TER",
+    "3": "QUA",
+    "4": "QUI",
+    "5": "SEX",
+    "6": "SÁB",
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -379,51 +406,47 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
 
       {/* Feiras da Semana - Quarto Card */}
       <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border">
-        <h3 className="text-sm font-medium mb-6 text-muted-foreground">Feiras da Semana</h3>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <Calendar className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-muted-foreground">Feiras da Semana</h3>
+            <p className="text-xs text-muted-foreground">Últimas feiras criadas</p>
+          </div>
+        </div>
         
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 rounded-lg bg-primary/10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">Total Feiras</div>
-                <div className="text-xl font-bold">{stats.totalFeiras}</div>
-              </div>
+        <div className="space-y-3">
+          {feiras.length === 0 ? (
+            <div className="text-center py-6 text-muted-foreground text-sm">
+              Nenhuma feira cadastrada
             </div>
-            <div className="text-xs text-primary font-medium">
-              {stats.totalFeiras > 0 ? 'Ativo' : 'Inativo'}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between p-3 rounded-lg bg-success/10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-success" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">Feiras Ativas</div>
-                <div className="text-xl font-bold">{stats.feirasAtivas}</div>
-              </div>
-            </div>
-            <div className="text-xs text-success font-medium">
-              {Math.round((stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100)}%
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between p-3 rounded-lg bg-accent/10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-accent" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">Ocupação</div>
-                <div className="text-xl font-bold">{Math.round((stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100)}%</div>
-              </div>
-            </div>
-            <div className="text-xs text-accent font-medium">Meta</div>
-          </div>
+          ) : (
+            feiras.map((feira) => {
+              const diasFormatados = feira.dias_semana
+                .map((d: string) => DIAS_MAP[d])
+                .join(", ");
+              
+              return (
+                <div
+                  key={feira.id}
+                  className="p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-all"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-sm truncate">{feira.nome}</h4>
+                      <p className="text-xs text-muted-foreground truncate">{feira.bairro}</p>
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <div className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">
+                      {diasFormatados}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </Card>
     </div>
