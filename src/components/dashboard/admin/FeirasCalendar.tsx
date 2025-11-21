@@ -148,38 +148,38 @@ export const FeirasCalendar = () => {
   }
 
   return (
-    <Card className="p-4 bg-gradient-to-br from-accent/5 to-primary/5 border-border shadow-sm h-fit">
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold capitalize">
+    <Card className="p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-border shadow-sm">
+      <div className="space-y-4 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold capitalize">
             {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
           </h3>
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-1">
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-5 w-5 hover:bg-muted rounded-md" 
+              className="h-7 w-7 hover:bg-muted rounded-md" 
               onClick={handlePreviousMonth}
             >
-              <ChevronLeft className="w-3 h-3" />
+              <ChevronLeft className="w-4 h-4" />
             </Button>
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-5 w-5 hover:bg-muted rounded-md" 
+              className="h-7 w-7 hover:bg-muted rounded-md" 
               onClick={handleNextMonth}
             >
-              <ChevronRight className="w-3 h-3" />
+              <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
         </div>
 
         {/* Cabeçalho dos dias da semana */}
-        <div className="grid grid-cols-7 gap-0.5">
+        <div className="grid grid-cols-7 gap-1 mb-2">
           {weekDays.map((day, index) => (
             <div 
               key={index} 
-              className="text-center text-[8px] font-semibold text-muted-foreground uppercase"
+              className="text-center text-xs font-semibold text-muted-foreground uppercase"
             >
               {day.substring(0, 3)}
             </div>
@@ -187,9 +187,9 @@ export const FeirasCalendar = () => {
         </div>
 
         {/* Grid do calendário */}
-        <div className="grid grid-cols-7 gap-0.5">
+        <div className="grid grid-cols-7 gap-1 flex-1">
           {emptyDays.map((_, index) => (
-            <div key={`empty-${index}`} className="w-7 h-7" />
+            <div key={`empty-${index}`} className="w-10 h-10" />
           ))}
           
           {daysInMonth.map((day, index) => {
@@ -201,8 +201,8 @@ export const FeirasCalendar = () => {
               <div
                 key={index}
                 className={`
-                  w-7 h-7 rounded-md flex items-center justify-center 
-                  text-[10px] font-medium transition-all cursor-pointer relative group
+                  w-10 h-10 rounded-lg flex items-center justify-center 
+                  text-sm font-medium transition-all cursor-pointer relative group
                   ${event ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-muted/40'}
                   ${isToday && !event ? 'bg-accent text-accent-foreground' : ''}
                   ${!event && !isToday ? 'text-foreground/80' : ''}
@@ -210,7 +210,7 @@ export const FeirasCalendar = () => {
               >
                 {format(day, "d")}
                 {event && tooltipText && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-popover text-popover-foreground text-[10px] rounded shadow-lg whitespace-pre-line opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 min-w-[120px] text-center">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded shadow-lg whitespace-pre-line opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 min-w-[120px] text-center">
                     {tooltipText}
                   </div>
                 )}
