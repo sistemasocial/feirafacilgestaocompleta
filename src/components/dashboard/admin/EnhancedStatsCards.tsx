@@ -81,7 +81,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
     : 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Revenue Goal - Circular Chart */}
       <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
@@ -169,50 +169,6 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
 
       {/* Calendário de Feiras ao lado da Meta de Receita */}
       <FeirasCalendar />
-
-      {/* Novo card: Feiras da Semana */}
-      <Card className="p-6 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-border">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-            <Calendar className="w-5 h-5 text-blue-600" />
-          </div>
-          <div className="flex-1">
-            <div className="text-sm text-muted-foreground">Esta Semana</div>
-            <div className="text-lg font-semibold">Feiras Ativas</div>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 rounded-lg bg-background/50">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              <span className="text-sm font-medium">Total de Feiras</span>
-            </div>
-            <span className="text-xl font-bold">{stats.totalFeiras}</span>
-          </div>
-
-          <div className="flex items-center justify-between p-3 rounded-lg bg-background/50">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary" />
-              <span className="text-sm font-medium">Feiras Ativas</span>
-            </div>
-            <span className="text-xl font-bold text-primary">{stats.feirasAtivas}</span>
-          </div>
-
-          <div className="pt-3 border-t border-border">
-            <div className="text-xs text-muted-foreground mb-2">Taxa de ocupação</div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden mb-1">
-              <div 
-                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500"
-                style={{ width: `${Math.round((stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100)}%` }}
-              />
-            </div>
-            <div className="text-right text-xs font-medium">
-              {Math.round((stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100)}%
-            </div>
-          </div>
-        </div>
-      </Card>
  
        {/* Feiras Targets */}
       <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border">
