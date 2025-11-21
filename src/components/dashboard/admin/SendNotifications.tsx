@@ -41,18 +41,35 @@ const SendNotifications = () => {
 
   const loadFeirantes = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: feirantesData, error: feirantesError } = await supabase
         .from("feirantes")
-        .select(`
-          id,
-          user_id,
-          profile:profiles(full_name)
-        `)
-        .eq("bloqueado", false)
-        .order("profile(full_name)");
+        .select("id, user_id")
+        .or("bloqueado.is.null,bloqueado.eq.false");
 
-      if (error) throw error;
-      setFeirantes(data as any || []);
+      if (feirantesError) throw feirantesError;
+
+      if (!feirantesData || feirantesData.length === 0) {
+        setFeirantes([]);
+        return;
+      }
+
+      const userIds = feirantesData.map(f => f.user_id);
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .in("id", userIds);
+
+      if (profilesError) throw profilesError;
+
+      const feirantesWithProfiles = feirantesData.map(feirante => {
+        const profile = profilesData?.find(p => p.id === feirante.user_id);
+        return {
+          ...feirante,
+          profile: profile || { full_name: "Nome não disponível" }
+        };
+      }).sort((a, b) => (a.profile?.full_name || "").localeCompare(b.profile?.full_name || ""));
+
+      setFeirantes(feirantesWithProfiles as any);
     } catch (error) {
       console.error("Erro ao carregar feirantes:", error);
       toast.error("Erro ao carregar lista de feirantes");
