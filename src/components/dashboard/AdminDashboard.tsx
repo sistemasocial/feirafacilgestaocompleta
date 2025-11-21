@@ -15,6 +15,7 @@ import { PagamentosVerificacao } from "./admin/PagamentosVerificacao";
 import { UnifiedStatsCard } from "./admin/UnifiedStatsCard";
 import { FeirasCalendar } from "./admin/FeirasCalendar";
 import { FeirasWeekView } from "./admin/FeirasWeekView";
+import { FeirasCreatedList } from "./admin/FeirasCreatedList";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
@@ -141,6 +142,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 <div className="space-y-6">
                   <UnifiedStatsCard stats={stats} />
                   <FeirasWeekView />
+                  <FeirasCreatedList />
                 </div>
                 <FeirasCalendar />
               </div>
