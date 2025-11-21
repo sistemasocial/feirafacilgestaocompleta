@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { FeiranteSidebar } from "./FeiranteSidebar";
+import { useNotifications } from "@/hooks/useNotifications";
 interface FeiranteDashboardProps {
   user: User;
 }
@@ -25,6 +26,22 @@ const FeiranteDashboard = ({
   const [activeSection, setActiveSection] = useState("home");
   const [profileKey, setProfileKey] = useState(0);
   const navigate = useNavigate();
+
+  // Inicializar notificações e FCM
+  useNotifications(user.id);
+
+  useEffect(() => {
+    // Inicializar FCM para push notifications
+    const initFCM = async () => {
+      try {
+        const { initializeFCM } = await import('@/lib/fcmService');
+        await initializeFCM(user.id);
+      } catch (error) {
+        console.error('Erro ao inicializar FCM:', error);
+      }
+    };
+    initFCM();
+  }, [user.id]);
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success("Logout realizado com sucesso");

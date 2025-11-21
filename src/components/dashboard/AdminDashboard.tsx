@@ -24,6 +24,8 @@ import { AdminSidebar } from "./AdminSidebar";
 import { DraggableStatsCards } from "./admin/DraggableStatsCards";
 import SendNotifications from "./admin/SendNotifications";
 import { NotificationPermission } from "@/components/notifications/NotificationPermission";
+import { useNotifications } from "@/hooks/useNotifications";
+import { FirebaseSetup } from "./admin/FirebaseSetup";
 
 interface AdminDashboardProps {
   user: User;
@@ -42,9 +44,23 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
   });
   const navigate = useNavigate();
 
+  // Inicializar notificações e FCM
+  useNotifications(user.id);
+
   useEffect(() => {
     loadStats();
-  }, []);
+    
+    // Inicializar FCM para push notifications
+    const initFCM = async () => {
+      try {
+        const { initializeFCM } = await import('@/lib/fcmService');
+        await initializeFCM(user.id);
+      } catch (error) {
+        console.error('Erro ao inicializar FCM:', error);
+      }
+    };
+    initFCM();
+  }, [user.id]);
 
   const loadStats = async () => {
     try {
@@ -209,11 +225,12 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           {activeSection === "notificacoes" && (
             <div className="space-y-6">
               <div>
-                <h1 className="text-3xl font-bold mb-2">Notificações</h1>
-                <p className="text-muted-foreground">Configure e envie notificações push</p>
+                <h1 className="text-3xl font-bold mb-2">Notificações Push</h1>
+                <p className="text-muted-foreground">Configure e envie notificações push para os usuários</p>
               </div>
               
               <NotificationPermission />
+              <FirebaseSetup />
               <SendNotifications />
             </div>
           )}
