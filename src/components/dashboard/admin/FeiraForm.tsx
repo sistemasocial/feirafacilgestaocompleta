@@ -627,18 +627,20 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <DraggableStatsCards layout="vertical" storageKey="criarFeiraCardsOrder">
-        {formCards}
-      </DraggableStatsCards>
+      <div className="max-w-4xl mx-auto space-y-6">
+        <DraggableStatsCards layout="vertical" storageKey="criarFeiraCardsOrder">
+          {formCards}
+        </DraggableStatsCards>
 
-      <div className="flex gap-4 pt-2">
-        <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
-          Cancelar
-        </Button>
-        <Button type="submit" disabled={loading} className="flex-1">
-          {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-          Cadastrar Feira
-        </Button>
+        <div className="flex gap-4 pt-2">
+          <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+            Cancelar
+          </Button>
+          <Button type="submit" disabled={loading} className="flex-1">
+            {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            Cadastrar Feira
+          </Button>
+        </div>
       </div>
     </form>
   );
