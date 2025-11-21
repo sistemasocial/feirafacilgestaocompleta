@@ -130,20 +130,20 @@ export const InscricoesList = () => {
   }
 
   return (
-    <Card className="p-4 bg-gradient-to-br from-primary/5 to-secondary/5 border-border">
+    <Card className="p-4 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 border-primary/20">
       <div className="space-y-3">
         {/* Header */}
         <div className="flex items-center justify-between pb-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <User className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+              <User className="w-5 h-5 text-white" />
             </div>
             <div>
               <h2 className="text-base font-semibold">Feirantes Aceitaram Participar</h2>
               <p className="text-sm text-muted-foreground">Inscrições recebidas</p>
             </div>
           </div>
-          <Badge className="bg-primary text-white text-sm h-6 px-3">{inscricoes.length}</Badge>
+          <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm h-6 px-3 border-0">{inscricoes.length}</Badge>
         </div>
 
         {/* Lista Vertical de Inscrições */}
@@ -151,18 +151,18 @@ export const InscricoesList = () => {
           {inscricoes.map((inscricao) => (
             <div 
               key={inscricao.id} 
-              className="p-3 rounded-lg bg-background border border-border hover:shadow-sm hover:border-primary/20 transition-all"
+              className="p-3 rounded-lg bg-background border border-border hover:shadow-md hover:border-purple-500/30 transition-all"
             >
               <div className="flex items-center gap-3 mb-2">
                 {inscricao.profile.foto_url ? (
                   <img 
                     src={inscricao.profile.foto_url} 
                     alt={inscricao.profile.full_name}
-                    className="w-10 h-10 rounded-full object-cover ring-2 ring-primary/20"
+                    className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/30"
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-primary/20">
-                    <span className="text-sm font-bold text-primary">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center ring-2 ring-purple-500/30">
+                    <span className="text-sm font-bold text-purple-600">
                       {inscricao.profile.full_name.charAt(0).toUpperCase()}
                     </span>
                   </div>
@@ -198,7 +198,7 @@ export const InscricoesList = () => {
                   <Button
                     size="sm"
                     onClick={() => handleUpdateStatus(inscricao.id, "aprovada")}
-                    className="flex-1 h-7 text-xs"
+                    className="flex-1 h-7 text-xs bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
                   >
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Aprovar

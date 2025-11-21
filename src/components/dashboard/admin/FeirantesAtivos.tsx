@@ -105,20 +105,20 @@ export const FeirantesAtivos = () => {
   }
 
   return (
-    <Card className="p-4 bg-gradient-to-br from-success/5 to-primary/5 border-border">
+    <Card className="p-4 bg-gradient-to-br from-emerald-500/10 via-green-500/10 to-teal-500/10 border-success/20">
       <div className="space-y-3">
         {/* Header */}
         <div className="flex items-center justify-between pb-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
-              <User className="w-5 h-5 text-success" />
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+              <User className="w-5 h-5 text-white" />
             </div>
             <div>
               <h2 className="text-base font-semibold">Feirantes Ativos</h2>
               <p className="text-sm text-muted-foreground">Todos os feirantes cadastrados</p>
             </div>
           </div>
-          <Badge className="bg-success text-white text-sm h-6 px-3">{feirantes.length}</Badge>
+          <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-sm h-6 px-3 border-0">{feirantes.length}</Badge>
         </div>
 
         {/* Lista Vertical de Feirantes */}
@@ -126,12 +126,12 @@ export const FeirantesAtivos = () => {
           {feirantes.map((feirante) => (
             <div 
               key={feirante.id} 
-              className="p-3 rounded-lg bg-background border border-border hover:shadow-sm hover:border-primary/20 transition-all"
+              className="p-3 rounded-lg bg-background border border-border hover:shadow-md hover:border-emerald-500/30 transition-all"
             >
               <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10 shrink-0 ring-2 ring-success/20">
+                <Avatar className="w-10 h-10 shrink-0 ring-2 ring-emerald-500/30">
                   <AvatarImage src={feirante.profile.foto_url || undefined} />
-                  <AvatarFallback className="text-sm bg-success/10 text-success font-semibold">
+                  <AvatarFallback className="text-sm bg-gradient-to-br from-emerald-500/20 to-teal-500/20 text-emerald-600 font-semibold">
                     {feirante.profile.full_name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -141,7 +141,7 @@ export const FeirantesAtivos = () => {
                     <h3 className="font-semibold text-sm truncate">
                       {feirante.profile.full_name}
                     </h3>
-                    <Badge variant="outline" className="shrink-0 border-success/30 bg-success/10 text-success text-xs px-2 py-0.5">
+                    <Badge variant="outline" className="shrink-0 border-emerald-500/40 bg-emerald-500/10 text-emerald-600 text-xs px-2 py-0.5">
                       {getSegmentoLabel(feirante.segmento)}
                     </Badge>
                   </div>
