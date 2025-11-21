@@ -115,7 +115,7 @@ export const FeirasCalendar = () => {
   }
 
   return (
-    <Card className="p-5 bg-card border-border shadow-sm">
+    <Card className="p-5 bg-gradient-to-br from-accent/5 to-primary/5 border-border shadow-sm">
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-base font-semibold capitalize">
