@@ -72,7 +72,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
 
   const totalPagamentos = stats.pagamentosPendentes + stats.pagamentosRecebidos;
   const percentualRecebido = revenueGoal > 0 
-    ? Math.round((stats.pagamentosRecebidos / revenueGoal) * 100) 
+    ? Math.min(100, Math.round((stats.pagamentosRecebidos / revenueGoal) * 100))
     : 0;
 
   const percentualConfirmado = stats.totalFeirantes > 0
