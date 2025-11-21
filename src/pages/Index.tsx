@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
+import { InstallPrompt } from "@/components/InstallPrompt";
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{
@@ -478,6 +479,8 @@ const Index = () => {
             Instalar App
           </button>
         </div>}
+      
+      <InstallPrompt />
     </div>;
 };
 export default Index;
