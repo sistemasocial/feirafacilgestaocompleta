@@ -115,59 +115,79 @@ export const FeirasCalendar = () => {
   }
 
   return (
-    <Card className="p-4">
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
+    <Card className="p-5 bg-card border-border">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <CalendarIcon className="w-4 h-4 text-primary" />
+            <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center">
+              <CalendarIcon className="w-4 h-4 text-accent" />
             </div>
             <div>
               <h3 className="text-sm font-semibold">Calendário</h3>
-              <p className="text-xs text-muted-foreground capitalize">
-                {format(currentMonth, "MMM yyyy", { locale: ptBR })}
+              <p className="text-xs text-muted-foreground capitalize font-medium">
+                {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
               </p>
             </div>
           </div>
           
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handlePreviousMonth}>
-              <ChevronLeft className="w-3 h-3" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 hover:bg-muted" 
+              onClick={handlePreviousMonth}
+            >
+              <ChevronLeft className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleNextMonth}>
-              <ChevronRight className="w-3 h-3" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 hover:bg-muted" 
+              onClick={handleNextMonth}
+            >
+              <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
         </div>
 
         {/* Cabeçalho dos dias da semana */}
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-1.5 mb-2">
           {weekDays.map((day, index) => (
-            <div key={index} className="text-center text-[10px] font-bold text-muted-foreground">
+            <div 
+              key={index} 
+              className="text-center text-[11px] font-bold text-muted-foreground uppercase"
+            >
               {day}
             </div>
           ))}
         </div>
 
         {/* Grid do calendário */}
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-1.5">
           {emptyDays.map((_, index) => (
             <div key={`empty-${index}`} className="aspect-square" />
           ))}
           
           {daysInMonth.map((day, index) => {
             const event = getEventForDay(day);
-            const dayClass = getDayClass(day);
+            const isToday = format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
             
             return (
               <div
                 key={index}
-                className={`aspect-square rounded-lg flex flex-col items-center justify-center text-[10px] transition-all cursor-pointer ${dayClass}`}
+                className={`
+                  aspect-square rounded-lg flex flex-col items-center justify-center 
+                  text-xs transition-all cursor-pointer relative
+                  ${event ? 'bg-success text-white font-bold shadow-md hover:shadow-lg hover:scale-105' : 'hover:bg-muted/60'}
+                  ${isToday && !event ? 'ring-2 ring-primary font-bold text-primary' : ''}
+                `}
                 title={event ? event.feiras.map(f => `${f.nome} - ${f.cidade}`).join('\n') : undefined}
               >
-                <span className="font-semibold">{format(day, "d")}</span>
+                <span className="text-xs font-semibold">{format(day, "d")}</span>
                 {event && event.feiras.length > 0 && (
-                  <div className="w-1 h-1 rounded-full bg-current mt-0.5" />
+                  <div className="absolute bottom-1">
+                    <div className="w-1 h-1 rounded-full bg-white" />
+                  </div>
                 )}
               </div>
             );
@@ -175,14 +195,14 @@ export const FeirasCalendar = () => {
         </div>
 
         {/* Legenda */}
-        <div className="flex items-center justify-center gap-3 pt-2 border-t text-[10px]">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded border-2 border-primary" />
-            <span className="text-muted-foreground">Hoje</span>
+        <div className="flex items-center justify-center gap-4 pt-3 border-t border-border">
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded ring-2 ring-primary" />
+            <span className="text-[10px] text-muted-foreground">Hoje</span>
           </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-primary" />
-            <span className="text-muted-foreground">Feira</span>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded bg-success" />
+            <span className="text-[10px] text-muted-foreground">Feira</span>
           </div>
         </div>
       </div>
