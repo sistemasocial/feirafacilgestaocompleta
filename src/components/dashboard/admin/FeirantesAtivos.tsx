@@ -122,14 +122,14 @@ export const FeirantesAtivos = () => {
         </div>
 
         {/* Lista Vertical de Feirantes */}
-        <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+        <div className="space-y-2 max-h-[350px] overflow-y-auto pr-2">
           {feirantes.map((feirante) => (
             <div 
               key={feirante.id} 
               className="p-3 rounded-lg bg-background border border-border hover:shadow-sm hover:border-primary/20 transition-all"
             >
               <div className="flex items-center gap-3">
-                <Avatar className="w-11 h-11 shrink-0 ring-2 ring-success/20">
+                <Avatar className="w-10 h-10 shrink-0 ring-2 ring-success/20">
                   <AvatarImage src={feirante.profile.foto_url || undefined} />
                   <AvatarFallback className="text-sm bg-success/10 text-success font-semibold">
                     {feirante.profile.full_name.charAt(0).toUpperCase()}
