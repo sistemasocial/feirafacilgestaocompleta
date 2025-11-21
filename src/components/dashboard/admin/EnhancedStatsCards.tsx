@@ -19,9 +19,10 @@ interface EnhancedStatsCardsProps {
     pagamentosRecebidos: number;
   };
   userId: string;
+  storageKey?: string;
 }
 
-export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) => {
+export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrder" }: EnhancedStatsCardsProps) => {
   const [revenueGoal, setRevenueGoal] = useState<number>(10000);
   const [editGoal, setEditGoal] = useState<number>(10000);
   const [loading, setLoading] = useState(false);
@@ -451,5 +452,5 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
     </Card>,
   ];
 
-  return <DraggableStatsCards>{cards}</DraggableStatsCards>;
+  return <DraggableStatsCards storageKey={storageKey}>{cards}</DraggableStatsCards>;
 };

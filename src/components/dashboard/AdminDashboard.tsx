@@ -138,7 +138,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 <p className="text-muted-foreground">Painel de controle das feiras</p>
               </div>
 
-              <EnhancedStatsCards stats={stats} userId={user.id} />
+              <EnhancedStatsCards stats={stats} userId={user.id} storageKey="overviewCardsOrder" />
             </div>
           )}
 
@@ -160,7 +160,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 <p className="text-muted-foreground">Gerencie suas metas e despesas</p>
               </div>
               
-              <DraggableStatsCards layout="config">
+              <DraggableStatsCards layout="config" storageKey="configCardsOrder">
                 {[
                   <FinancialGoalsCard key="financial-goals" userId={user.id} onGoalUpdated={loadStats} />,
                   <FeirasCalendar key="calendar-config" />,

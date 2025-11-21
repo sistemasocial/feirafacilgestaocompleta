@@ -59,9 +59,10 @@ const DraggableCard = ({ id, children }: DraggableCardProps) => {
 interface DraggableStatsCardsProps {
   children: React.ReactElement[];
   layout?: "grid" | "vertical" | "config";
+  storageKey?: string;
 }
 
-export const DraggableStatsCards = ({ children, layout = "grid" }: DraggableStatsCardsProps) => {
+export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "statsCardsOrder" }: DraggableStatsCardsProps) => {
   const [items, setItems] = useState<string[]>([]);
 
   const sensors = useSensors(
@@ -73,7 +74,7 @@ export const DraggableStatsCards = ({ children, layout = "grid" }: DraggableStat
 
   useEffect(() => {
     // Carregar ordem salva do localStorage
-    const savedOrder = localStorage.getItem("statsCardsOrder");
+    const savedOrder = localStorage.getItem(storageKey);
     if (savedOrder) {
       setItems(JSON.parse(savedOrder));
     } else {
@@ -81,7 +82,7 @@ export const DraggableStatsCards = ({ children, layout = "grid" }: DraggableStat
       const defaultOrder = children.map((_, index) => `card-${index}`);
       setItems(defaultOrder);
     }
-  }, [children.length]);
+  }, [children.length, storageKey]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -93,7 +94,7 @@ export const DraggableStatsCards = ({ children, layout = "grid" }: DraggableStat
         const newOrder = arrayMove(items, oldIndex, newIndex);
         
         // Salvar nova ordem no localStorage
-        localStorage.setItem("statsCardsOrder", JSON.stringify(newOrder));
+        localStorage.setItem(storageKey, JSON.stringify(newOrder));
         
         return newOrder;
       });
