@@ -12,6 +12,8 @@ import { InscricoesList } from "./admin/InscricoesList";
 import { FeirasListOverview } from "./admin/FeirasListOverview";
 import { FeirantesAtivos } from "./admin/FeirantesAtivos";
 import { PagamentosVerificacao } from "./admin/PagamentosVerificacao";
+import { UnifiedStatsCard } from "./admin/UnifiedStatsCard";
+import { FeirasCalendar } from "./admin/FeirasCalendar";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
@@ -134,67 +136,9 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 <p className="text-muted-foreground">Painel de controle das feiras</p>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-muted-foreground">Total de Feiras</p>
-                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                  </div>
-                  <p className="text-3xl font-bold">{stats.totalFeiras}</p>
-                </Card>
-
-                <Card className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-muted-foreground">Feiras Ativas</p>
-                    <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-green-600 dark:text-green-400" />
-                    </div>
-                  </div>
-                  <p className="text-3xl font-bold">{stats.feirasAtivas}</p>
-                </Card>
-
-                <Card className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-muted-foreground">Feirantes Cadastrados</p>
-                    <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
-                      <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                    </div>
-                  </div>
-                  <p className="text-3xl font-bold">{stats.totalFeirantes}</p>
-                </Card>
-
-                <Card className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-muted-foreground">Participações Confirmadas</p>
-                    <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                      <Users className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-                    </div>
-                  </div>
-                  <p className="text-3xl font-bold">{stats.participacoesConfirmadas}</p>
-                </Card>
-
-                <Card className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-muted-foreground">Pagamentos Pendentes</p>
-                    <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-                      <DollarSign className="w-5 h-5 text-red-600 dark:text-red-400" />
-                    </div>
-                  </div>
-                  <p className="text-3xl font-bold">R$ {stats.pagamentosPendentes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                </Card>
-
-                <Card className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-muted-foreground">Pagamentos Recebidos</p>
-                    <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/20 flex items-center justify-center">
-                      <DollarSign className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                    </div>
-                  </div>
-                  <p className="text-3xl font-bold">R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                </Card>
-              </div>
+              <UnifiedStatsCard stats={stats} />
+              
+              <FeirasCalendar />
               
               <FeirasListOverview />
             </div>
