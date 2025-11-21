@@ -13,7 +13,8 @@ import { FeirantesAtivos } from "./admin/FeirantesAtivos";
 import { PagamentosVerificacao } from "./admin/PagamentosVerificacao";
 import { EnhancedStatsCards } from "./admin/EnhancedStatsCards";
 import { FeirasCalendar } from "./admin/FeirasCalendar";
-import { FeirasWeeklyOverview } from "./admin/FeirasWeeklyOverview";
+import { FeirasConsolidatedCard } from "./admin/FeirasConsolidatedCard";
+import { RevenueGoalSettings } from "./admin/RevenueGoalSettings";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
@@ -136,10 +137,10 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 <p className="text-muted-foreground">Painel de controle das feiras</p>
               </div>
 
-              <EnhancedStatsCards stats={stats} />
+              <EnhancedStatsCards stats={stats} userId={user.id} />
               
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 mt-6">
-                <FeirasWeeklyOverview />
+                <FeirasConsolidatedCard />
                 <FeirasCalendar />
               </div>
             </div>
@@ -157,10 +158,9 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "config" && (
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Configurações do Sistema</h2>
-              <p className="text-muted-foreground">Área de configurações em desenvolvimento...</p>
-            </Card>
+            <div className="max-w-2xl mx-auto">
+              <RevenueGoalSettings userId={user.id} onGoalUpdated={loadStats} />
+            </div>
           )}
 
           {(activeSection === "criar" || activeSection === "feiras") && (
