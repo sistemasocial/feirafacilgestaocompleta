@@ -4,7 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Calendar, Users, DollarSign, TrendingUp, CheckCircle2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, Users, DollarSign, TrendingUp, CheckCircle2, Sparkles, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { FeirasCalendar } from "./FeirasCalendar";
 import { DraggableStatsCards } from "./DraggableStatsCards";
@@ -110,15 +111,19 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
   };
 
   const cards = [
-    // Card 1: Meta de Receita
-    <Card key="meta-receita" className="h-full p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden flex flex-col">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
+    // Card 1: Meta de Receita - VERDE ESMERALDA
+    <Card key="meta-receita" className="h-full p-6 bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white border-0 relative overflow-hidden flex flex-col shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 animate-fade-in group">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500" />
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-sm font-medium text-slate-300">Meta de Receita</h3>
+          <div className="flex items-center gap-2">
+            <DollarSign className="w-6 h-6 text-emerald-200 animate-pulse" />
+            <h3 className="text-sm font-bold text-emerald-100">Meta de Receita</h3>
+          </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <button className="text-xs text-primary hover:underline">
+              <button className="text-xs text-emerald-200 hover:text-white hover:underline transition-colors font-semibold">
                 Editar Meta
               </button>
             </DialogTrigger>
@@ -149,7 +154,7 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
         </div>
         
         <div className="flex items-center justify-center mb-6 flex-1">
-          <div className="relative w-48 h-48">
+          <div className="relative w-48 h-48 group-hover:scale-105 transition-transform duration-300">
             <svg className="w-full h-full transform -rotate-90">
               <circle
                 cx="96"
@@ -158,39 +163,43 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
                 stroke="currentColor"
                 strokeWidth="12"
                 fill="none"
-                className="text-slate-700"
+                className="text-emerald-800/30"
               />
               <circle
                 cx="96"
                 cy="96"
                 r="80"
-                stroke="url(#gradient)"
+                stroke="url(#gradient-receita)"
                 strokeWidth="12"
                 fill="none"
                 strokeDasharray={`${(percentualRecebido / 100) * 502.4} 502.4`}
                 strokeLinecap="round"
-                className="transition-all duration-1000"
+                className="transition-all duration-1000 drop-shadow-lg"
               />
               <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#fbbf24" />
-                  <stop offset="50%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
+                <linearGradient id="gradient-receita" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#10b981" />
+                  <stop offset="50%" stopColor="#14b8a6" />
+                  <stop offset="100%" stopColor="#06b6d4" />
                 </linearGradient>
               </defs>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-2">
-              <div className="text-3xl font-bold leading-tight">
+              <div className="text-3xl font-extrabold leading-tight drop-shadow-md">
                 R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </div>
-              <div className="text-xs text-slate-400 mt-1">de R$ {revenueGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+              <div className="text-xs text-emerald-100 mt-1 font-medium">
+                de R$ {revenueGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-slate-400">Progresso</span>
-          <span className="text-2xl font-bold">{percentualRecebido}%</span>
+        <div className="flex items-center justify-between text-sm border-t border-emerald-500/30 pt-4">
+          <span className="text-emerald-100 font-medium">Progresso</span>
+          <Badge className="bg-emerald-400 text-emerald-900 text-lg font-bold px-3 py-1 hover:bg-emerald-300 transition-colors">
+            {percentualRecebido}%
+          </Badge>
         </div>
       </div>
     </Card>,
@@ -198,107 +207,128 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     // Card 2: Calendário
     <FeirasCalendar key="calendario" />,
 
-    // Card 3: Status das Feiras
-    <Card key="status-feiras" className="h-full p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border flex flex-col">
-      <h3 className="text-sm font-medium mb-4 text-muted-foreground">Status das Feiras</h3>
+    // Card 3: Status das Feiras - AZUL INDIGO
+    <Card key="status-feiras" className="h-full p-6 bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200 flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in hover-scale group">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+          <Calendar className="w-6 h-6 text-white" />
+        </div>
+        <h3 className="text-base font-bold text-indigo-900">Status das Feiras</h3>
+      </div>
       
       <div className="mb-6 flex-1">
-        <div className="text-4xl font-bold mb-2">{stats.totalFeiras}</div>
-        <div className="h-2 bg-muted rounded-full overflow-hidden mb-4">
+        <div className="text-5xl font-extrabold mb-3 bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+          {stats.totalFeiras}
+        </div>
+        <div className="h-3 bg-indigo-100 rounded-full overflow-hidden mb-4 shadow-inner">
           <div 
-            className="h-full bg-gradient-to-r from-primary via-success to-accent transition-all duration-500"
+            className="h-full bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500 transition-all duration-1000 shadow-lg animate-pulse"
             style={{ width: `${(stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100}%` }}
           />
         </div>
       </div>
 
       <div className="space-y-3">
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between p-3 rounded-lg bg-indigo-100/50 hover:bg-indigo-100 transition-colors">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-primary" />
-            <span className="text-muted-foreground">Total</span>
+            <div className="w-3 h-3 rounded-full bg-indigo-500 animate-pulse" />
+            <span className="text-sm text-indigo-700 font-medium">Total</span>
           </div>
-          <span className="font-semibold">{stats.totalFeiras}</span>
+          <span className="font-bold text-indigo-900">{stats.totalFeiras}</span>
         </div>
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between p-3 rounded-lg bg-blue-100/50 hover:bg-blue-100 transition-colors">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-success" />
-            <span className="text-muted-foreground">Ativas</span>
+            <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
+            <span className="text-sm text-blue-700 font-medium">Ativas</span>
           </div>
-          <span className="font-semibold">{stats.feirasAtivas}</span>
+          <Badge className="bg-blue-500 text-white font-bold">{stats.feirasAtivas}</Badge>
         </div>
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between p-3 rounded-lg bg-cyan-100/50 hover:bg-cyan-100 transition-colors">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-accent" />
-            <span className="text-muted-foreground">Taxa de ativação</span>
+            <Activity className="w-4 h-4 text-cyan-600" />
+            <span className="text-sm text-cyan-700 font-medium">Taxa de ativação</span>
           </div>
-          <span className="font-semibold">
+          <span className="font-bold text-cyan-900">
             {Math.round((stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100)}%
           </span>
         </div>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-border">
-        <div className="text-sm text-muted-foreground">Total de feirantes</div>
-        <div className="text-2xl font-bold">{stats.totalFeirantes}</div>
+      <div className="mt-6 pt-4 border-t border-indigo-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Users className="w-5 h-5 text-indigo-500" />
+            <span className="text-sm text-indigo-700 font-medium">Total de feirantes</span>
+          </div>
+          <div className="text-3xl font-extrabold text-indigo-900">{stats.totalFeirantes}</div>
+        </div>
       </div>
     </Card>,
 
-    // Card 4: Pagamentos
-    <Card key="pagamentos" className="h-full p-6 bg-gradient-to-br from-success/5 to-primary/5 border-border flex flex-col">
+    // Card 4: Pagamentos - VERDE LIMA/ESMERALDA
+    <Card key="pagamentos" className="h-full p-6 bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in group">
       <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+            <DollarSign className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-base font-bold text-emerald-900">Pagamentos</h3>
+        </div>
         <div className="flex gap-2">
-          <button className="px-4 py-1.5 rounded-full bg-foreground text-background text-xs font-medium">
+          <Badge className="bg-emerald-500 text-white text-xs font-bold hover:bg-emerald-600 transition-colors">
             Recebido
-          </button>
-          <button className="px-4 py-1.5 rounded-full bg-muted text-muted-foreground text-xs font-medium">
+          </Badge>
+          <Badge variant="outline" className="border-orange-300 text-orange-700 text-xs font-bold hover:bg-orange-50 transition-colors">
             Pendente
-          </button>
+          </Badge>
         </div>
       </div>
 
-      <div className="mb-6 flex-1">
-        <div className="text-sm text-muted-foreground mb-1">Valor recebido</div>
-        <div className="text-2xl font-bold mb-4">
-          R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+      <div className="mb-6 flex-1 space-y-4">
+        <div className="p-4 rounded-xl bg-emerald-100/50 border border-emerald-200 hover:bg-emerald-100 transition-colors">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-sm text-emerald-700 font-medium">Valor recebido</span>
+          </div>
+          <div className="text-3xl font-extrabold text-emerald-900">
+            R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </div>
         </div>
 
-        <div className="flex gap-2 mb-2">
-          <div className="w-3 h-3 rounded-full bg-success" />
-        </div>
-
-        <div className="text-sm text-muted-foreground mb-1 mt-4">Valor pendente</div>
-        <div className="text-2xl font-bold">
-          R$ {stats.pagamentosPendentes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-        </div>
-        
-        <div className="flex gap-2 mt-2">
-          <div className="w-3 h-3 rounded-full bg-warning" />
+        <div className="p-4 rounded-xl bg-orange-100/50 border border-orange-200 hover:bg-orange-100 transition-colors">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse" />
+            <span className="text-sm text-orange-700 font-medium">Valor pendente</span>
+          </div>
+          <div className="text-3xl font-extrabold text-orange-900">
+            R$ {stats.pagamentosPendentes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </div>
         </div>
       </div>
     </Card>,
 
-    // Card 5: Feiras da Semana
-    <Card key="feiras-semana" className="h-full p-6 bg-gradient-to-br from-blue-600 to-purple-600 text-white border-0 relative overflow-hidden flex flex-col shadow-lg">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/40 to-purple-500/40" />
+    // Card 5: Feiras da Semana - ROXO/AZUL VIBRANTE
+    <Card key="feiras-semana" className="h-full p-6 bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 text-white border-0 relative overflow-hidden flex flex-col shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 animate-fade-in group">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-fuchsia-400/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500" />
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center shadow-md">
-            <Calendar className="w-5 h-5 text-white" />
+          <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+            <Sparkles className="w-6 h-6 text-white animate-pulse" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-white drop-shadow-md">Feiras da Semana</h3>
-            <p className="text-sm text-white/90 font-medium">Últimas feiras criadas</p>
+            <h3 className="text-lg font-extrabold text-white drop-shadow-md">Feiras da Semana</h3>
+            <p className="text-sm text-purple-100 font-medium">Últimas feiras criadas</p>
           </div>
         </div>
       
         <div className="space-y-3 flex-1">
           {feiras.length === 0 ? (
-            <div className="text-center py-6 text-white/90 text-sm font-medium">
+            <div className="text-center py-8 text-purple-100 text-sm font-medium">
               Nenhuma feira cadastrada
             </div>
           ) : (
-            feiras.map((feira) => {
+            feiras.map((feira, index) => {
               const diasFormatados = feira.dias_semana
                 .map((d: string) => DIAS_MAP[d])
                 .join(", ");
@@ -306,23 +336,22 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
               return (
                 <div
                   key={feira.id}
-                  className="p-3 rounded-lg bg-background text-foreground border border-border/60 hover:border-primary/60 transition-all shadow-md"
+                  className="p-4 rounded-xl bg-background text-foreground border-2 border-purple-200 hover:border-purple-400 hover:shadow-lg transition-all duration-300 hover-scale animate-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-sm truncate text-foreground">
+                      <h4 className="font-extrabold text-base truncate text-foreground">
                         {feira.nome}
                       </h4>
-                      <p className="text-sm text-muted-foreground truncate font-medium">
-                        {feira.bairro}
+                      <p className="text-sm text-muted-foreground truncate font-semibold mt-1">
+                        📍 {feira.bairro}
                       </p>
                     </div>
                   </div>
-                  <div className="mt-2">
-                    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-primary text-primary-foreground text-xs font-bold shadow">
-                      {diasFormatados}
-                    </div>
-                  </div>
+                  <Badge className="bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white text-sm font-bold px-4 py-1.5 shadow-md hover:shadow-lg transition-all">
+                    {diasFormatados}
+                  </Badge>
                 </div>
               );
             })
@@ -331,129 +360,158 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
       </div>
     </Card>,
 
-    // Card 6: Atividade dos Feirantes
-    <Card key="atividade-feirantes" className="h-full p-6 bg-gradient-to-br from-orange-500 to-red-500 text-white border-0 relative overflow-hidden flex flex-col">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+    // Card 6: Atividade dos Feirantes - LARANJA/VERMELHO VIBRANTE
+    <Card key="atividade-feirantes" className="h-full p-6 bg-gradient-to-br from-orange-500 via-red-500 to-rose-600 text-white border-0 relative overflow-hidden flex flex-col shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 animate-fade-in group">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute -top-10 -right-10 w-40 h-40 bg-yellow-300/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500" />
       <div className="relative z-10 flex flex-col h-full">
-        <h3 className="text-sm font-medium mb-2 text-white/80">Atividade dos Feirantes</h3>
+        <div className="flex items-center gap-2 mb-4">
+          <Activity className="w-6 h-6 text-orange-100 animate-pulse" />
+          <h3 className="text-base font-bold text-orange-50">Atividade dos Feirantes</h3>
+        </div>
         
-        <div className="text-5xl font-bold mb-2">{percentualConfirmado}%</div>
-        <div className="text-sm text-white/80 mb-6">Taxa de conversão</div>
+        <div className="text-6xl font-extrabold mb-2 drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
+          {percentualConfirmado}%
+        </div>
+        <div className="text-sm text-orange-100 font-semibold mb-6">Taxa de conversão</div>
 
         <div className="flex gap-2 mb-6 h-32 items-end flex-1">
           {[65, 45, 75, 55, 85, 50, 95, 60].map((height, i) => (
-            <div key={i} className="flex-1 flex flex-col justify-end">
+            <div 
+              key={i} 
+              className="flex-1 flex flex-col justify-end animate-fade-in" 
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
               <div 
-                className="w-full bg-gradient-to-t from-yellow-300 to-yellow-400 rounded-t-lg transition-all duration-500"
+                className="w-full bg-gradient-to-t from-yellow-300 via-yellow-400 to-amber-400 rounded-t-lg transition-all duration-500 hover:scale-105 shadow-lg"
                 style={{ height: `${height}%` }}
               />
             </div>
           ))}
         </div>
 
-        <div className="space-y-2 pt-4 border-t border-white/20">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-white/80">Total de inscrições</span>
-            <span className="font-bold">{stats.participacoesConfirmadas}</span>
+        <div className="space-y-3 pt-4 border-t border-orange-300/30">
+          <div className="flex items-center justify-between p-3 rounded-lg bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors">
+            <span className="text-orange-50 font-medium flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              Total de inscrições
+            </span>
+            <Badge className="bg-white text-orange-600 font-bold text-base">
+              {stats.participacoesConfirmadas}
+            </Badge>
           </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-white/80">Feirantes ativos</span>
-            <span className="font-bold">{stats.totalFeirantes}</span>
+          <div className="flex items-center justify-between p-3 rounded-lg bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors">
+            <span className="text-orange-50 font-medium flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Feirantes ativos
+            </span>
+            <Badge className="bg-white text-orange-600 font-bold text-base">
+              {stats.totalFeirantes}
+            </Badge>
           </div>
         </div>
       </div>
     </Card>,
 
-    // Card 7: Participações Confirmadas
-    <Card key="participacoes" className="h-full p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden flex flex-col">
-      <div className="absolute inset-0 bg-gradient-to-br from-success/20 to-transparent" />
+    // Card 7: Participações Confirmadas - CINZA ESCURO ELEGANTE
+    <Card key="participacoes" className="h-full p-6 bg-gradient-to-br from-slate-800 via-slate-900 to-gray-900 text-white border-0 relative overflow-hidden flex flex-col shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 animate-fade-in group">
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-full bg-success/20 flex items-center justify-center">
-            <CheckCircle2 className="w-6 h-6 text-success" />
+          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+            <CheckCircle2 className="w-7 h-7 text-white" />
           </div>
           <div className="flex-1">
-            <div className="text-sm text-slate-400">Tipo de evento</div>
-            <div className="text-lg font-semibold">Participações</div>
+            <div className="text-sm text-slate-400 font-medium">Tipo de evento</div>
+            <div className="text-xl font-bold text-white">Participações</div>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-4 flex-1">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <TrendingUp className="w-4 h-4 text-success" />
-              <span className="text-xs text-slate-400">Confirmadas</span>
+          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <TrendingUp className="w-5 h-5 text-emerald-400" />
+              <span className="text-xs text-slate-300 font-medium">Confirmadas</span>
             </div>
-            <div className="text-2xl font-bold">{stats.participacoesConfirmadas}</div>
+            <div className="text-3xl font-extrabold text-emerald-400">
+              {stats.participacoesConfirmadas}
+            </div>
           </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Users className="w-4 h-4 text-primary" />
-              <span className="text-xs text-slate-400">Feirantes</span>
+          <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="w-5 h-5 text-blue-400" />
+              <span className="text-xs text-slate-300 font-medium">Feirantes</span>
             </div>
-            <div className="text-2xl font-bold">{stats.totalFeirantes}</div>
+            <div className="text-3xl font-extrabold text-blue-400">
+              {stats.totalFeirantes}
+            </div>
           </div>
         </div>
 
         <div className="pt-4 border-t border-slate-700">
-          <div className="text-xs text-slate-400 mb-2">Receita total</div>
-          <div className="h-2 bg-slate-700 rounded-full overflow-hidden mb-2">
+          <div className="text-xs text-slate-400 mb-3 font-medium">Receita total</div>
+          <div className="h-3 bg-slate-700 rounded-full overflow-hidden mb-3 shadow-inner">
             <div 
-              className="h-full bg-gradient-to-r from-success to-primary rounded-full"
+              className="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 rounded-full shadow-lg transition-all duration-1000"
               style={{ width: `${percentualRecebido}%` }}
             />
           </div>
-          <div className="text-xl font-bold">
+          <div className="text-2xl font-extrabold text-emerald-400">
             R$ {totalPagamentos.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
         </div>
       </div>
     </Card>,
 
-    // Card 8: Estatísticas Rápidas
-    <Card key="estatisticas-rapidas" className="h-full p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-border flex flex-col">
-      <h3 className="text-sm font-medium mb-6 text-muted-foreground">Estatísticas Rápidas</h3>
+    // Card 8: Estatísticas Rápidas - NEUTRO MODERNO
+    <Card key="estatisticas-rapidas" className="h-full p-6 bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200 flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in group">
+      <div className="flex items-center gap-2 mb-6">
+        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+          <Activity className="w-5 h-5 text-white" />
+        </div>
+        <h3 className="text-base font-bold text-slate-900">Estatísticas Rápidas</h3>
+      </div>
       
-      <div className="space-y-4 flex-1">
-        <div className="flex items-center justify-between p-3 rounded-lg bg-primary/10">
+      <div className="space-y-3 flex-1">
+        <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-indigo-100 to-blue-100 border border-indigo-200 hover:shadow-md transition-all hover-scale">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-primary" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md">
+              <Calendar className="w-6 h-6 text-white" />
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Feiras Ativas</div>
-              <div className="text-xl font-bold">{stats.feirasAtivas}</div>
+              <div className="text-xs text-indigo-700 font-medium">Feiras Ativas</div>
+              <div className="text-2xl font-extrabold text-indigo-900">{stats.feirasAtivas}</div>
             </div>
           </div>
-          <div className="text-xs text-success font-medium">
+          <Badge className="bg-emerald-500 text-white font-bold text-sm">
             +{Math.round((stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100)}%
-          </div>
+          </Badge>
         </div>
 
-        <div className="flex items-center justify-between p-3 rounded-lg bg-success/10">
+        <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-emerald-100 to-green-100 border border-emerald-200 hover:shadow-md transition-all hover-scale">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
-              <Users className="w-5 h-5 text-success" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-md">
+              <Users className="w-6 h-6 text-white" />
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Total Feirantes</div>
-              <div className="text-xl font-bold">{stats.totalFeirantes}</div>
+              <div className="text-xs text-emerald-700 font-medium">Total Feirantes</div>
+              <div className="text-2xl font-extrabold text-emerald-900">{stats.totalFeirantes}</div>
             </div>
           </div>
-          <div className="text-xs text-success font-medium">Ativo</div>
+          <Badge className="bg-emerald-500 text-white font-bold">Ativo</Badge>
         </div>
 
-        <div className="flex items-center justify-between p-3 rounded-lg bg-accent/10">
+        <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-orange-100 to-amber-100 border border-orange-200 hover:shadow-md transition-all hover-scale">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-accent" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-md">
+              <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Taxa Conversão</div>
-              <div className="text-xl font-bold">{percentualConfirmado}%</div>
+              <div className="text-xs text-orange-700 font-medium">Taxa Conversão</div>
+              <div className="text-2xl font-extrabold text-orange-900">{percentualConfirmado}%</div>
             </div>
           </div>
-          <div className="text-xs text-success font-medium">+12%</div>
+          <Badge className="bg-emerald-500 text-white font-bold">+12%</Badge>
         </div>
       </div>
     </Card>,
