@@ -203,14 +203,15 @@ export const FeirasCalendar = () => {
                 className={`
                   w-10 h-10 rounded-lg flex items-center justify-center 
                   text-sm font-medium transition-all cursor-pointer relative group
-                  ${event ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-muted/40'}
-                  ${isToday && !event ? 'bg-accent text-accent-foreground' : ''}
+                  ${event ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 shadow-sm' : 'hover:bg-muted/40'}
+                  ${isToday && !event ? 'ring-2 ring-primary bg-accent text-accent-foreground' : ''}
                   ${!event && !isToday ? 'text-foreground/80' : ''}
                 `}
               >
                 {format(day, "d")}
                 {event && tooltipText && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded shadow-lg whitespace-pre-line opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 min-w-[120px] text-center">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-md shadow-lg whitespace-pre-line opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 min-w-[150px] border border-border">
+                    <div className="font-semibold mb-1 text-primary">Feiras:</div>
                     {tooltipText}
                   </div>
                 )}
