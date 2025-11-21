@@ -23,9 +23,11 @@ import { ProfileHeader } from "./ProfileHeader";
 import { AdminSidebar } from "./AdminSidebar";
 import { DraggableStatsCards } from "./admin/DraggableStatsCards";
 import SendNotifications from "./admin/SendNotifications";
+import { SendPushNotification } from "./admin/SendPushNotification";
 import { NotificationPermission } from "@/components/notifications/NotificationPermission";
 import { useNotifications } from "@/hooks/useNotifications";
 import { FirebaseSetup } from "./admin/FirebaseSetup";
+import { ConfigureFirebase } from "./admin/ConfigureFirebase";
 
 interface AdminDashboardProps {
   user: User;
@@ -230,7 +232,8 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
               </div>
               
               <NotificationPermission />
-              <FirebaseSetup />
+              <ConfigureFirebase />
+              <SendPushNotification />
               <SendNotifications />
             </div>
           )}

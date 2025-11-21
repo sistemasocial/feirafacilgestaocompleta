@@ -1,6 +1,8 @@
 // Service Worker para notificações push em background
+// IMPORTANTE: Este arquivo roda em um contexto separado do app principal
+
 self.addEventListener('install', (event) => {
-  console.log('[SW] Service Worker instalado');
+  console.log('[SW] Service Worker instalando...');
   self.skipWaiting();
 });
 
@@ -9,33 +11,42 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-// Manter o service worker ativo
+// Manter o service worker ativo - necessário para push notifications
 self.addEventListener('fetch', (event) => {
-  // Necessário para manter o SW ativo
+  // Deixar passar todas as requisições normalmente
 });
 
-// Escutar mensagens push do Firebase
+// Escutar mensagens push do Firebase (background)
 self.addEventListener('push', (event) => {
-  console.log('[SW] Push recebido:', event);
+  console.log('[SW] ===== PUSH RECEBIDO =====');
+  console.log('[SW] Event data:', event.data);
   
-  let data = {};
   let notificationTitle = 'FeiraFácil';
   let notificationBody = 'Você tem uma nova notificação';
+  let notificationData = {};
   
+  // Processar dados do push
   if (event.data) {
     try {
       const payload = event.data.json();
-      console.log('[SW] Payload:', payload);
+      console.log('[SW] Payload completo:', JSON.stringify(payload, null, 2));
       
-      // Firebase pode enviar em diferentes formatos
+      // Firebase envia em diferentes formatos dependendo se tem notification e data
       if (payload.notification) {
+        // Formato padrão do Firebase
         notificationTitle = payload.notification.title || notificationTitle;
         notificationBody = payload.notification.body || notificationBody;
-        data = payload.data || {};
+        notificationData = payload.data || {};
+      } else if (payload.data) {
+        // Apenas data payload
+        notificationTitle = payload.data.title || notificationTitle;
+        notificationBody = payload.data.message || payload.data.body || notificationBody;
+        notificationData = payload.data;
       } else {
+        // Fallback
         notificationTitle = payload.title || notificationTitle;
         notificationBody = payload.message || payload.body || notificationBody;
-        data = payload;
+        notificationData = payload;
       }
     } catch (e) {
       console.error('[SW] Erro ao parsear payload:', e);
@@ -43,22 +54,31 @@ self.addEventListener('push', (event) => {
     }
   }
 
-  const options = {
+  const notificationOptions = {
     body: notificationBody,
     icon: '/pwa-192x192.png',
     badge: '/pwa-192x192.png',
-    vibrate: [200, 100, 200],
-    tag: data.id || 'notification-' + Date.now(),
+    vibrate: [300, 100, 300],
+    tag: notificationData.id || 'notification-' + Date.now(),
     requireInteraction: false,
     silent: false,
-    data: data,
+    data: notificationData,
     actions: []
   };
 
-  console.log('[SW] Mostrando notificação:', notificationTitle, options);
+  console.log('[SW] Mostrando notificação:', {
+    title: notificationTitle,
+    options: notificationOptions
+  });
 
   event.waitUntil(
-    self.registration.showNotification(notificationTitle, options)
+    self.registration.showNotification(notificationTitle, notificationOptions)
+      .then(() => {
+        console.log('[SW] ✓ Notificação mostrada com sucesso');
+      })
+      .catch((error) => {
+        console.error('[SW] ✗ Erro ao mostrar notificação:', error);
+      })
   );
 });
 

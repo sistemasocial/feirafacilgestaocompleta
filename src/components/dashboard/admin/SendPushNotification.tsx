@@ -1,16 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
-import { Bell, Send } from "lucide-react";
+import { Bell, Send, AlertCircle, CheckCircle } from "lucide-react";
 
 export function SendPushNotification() {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [firebaseConfigured, setFirebaseConfigured] = useState(false);
+  const [fcmTokensCount, setFcmTokensCount] = useState(0);
+
+  useEffect(() => {
+    // Verificar se Firebase está configurado
+    const config = localStorage.getItem('firebase_config');
+    if (config) {
+      try {
+        const parsed = JSON.parse(config);
+        const isConfigured = parsed.apiKey && parsed.apiKey !== 'YOUR_FIREBASE_API_KEY';
+        setFirebaseConfigured(isConfigured);
+      } catch (e) {
+        setFirebaseConfigured(false);
+      }
+    }
+
+    // Buscar quantidade de tokens FCM
+    const fetchTokensCount = async () => {
+      const { count } = await supabase
+        .from('fcm_tokens')
+        .select('*', { count: 'exact', head: true });
+      setFcmTokensCount(count || 0);
+    };
+    fetchTokensCount();
+  }, []);
 
   const handleSendToAll = async () => {
     if (!title || !message) {
@@ -79,6 +105,24 @@ export function SendPushNotification() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {!firebaseConfigured && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Firebase não configurado! Configure acima para habilitar notificações push.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {firebaseConfigured && (
+          <Alert>
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription>
+              Firebase configurado. {fcmTokensCount} dispositivo(s) registrado(s).
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div>
           <label className="text-sm font-medium">Título</label>
           <Input
@@ -86,6 +130,7 @@ export function SendPushNotification() {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Título da notificação"
             maxLength={50}
+            disabled={!firebaseConfigured}
           />
         </div>
 
@@ -97,12 +142,13 @@ export function SendPushNotification() {
             placeholder="Mensagem da notificação"
             maxLength={200}
             rows={4}
+            disabled={!firebaseConfigured}
           />
         </div>
 
         <Button
           onClick={handleSendToAll}
-          disabled={loading || !title || !message}
+          disabled={loading || !title || !message || !firebaseConfigured}
           className="w-full"
         >
           <Send className="w-4 h-4 mr-2" />
