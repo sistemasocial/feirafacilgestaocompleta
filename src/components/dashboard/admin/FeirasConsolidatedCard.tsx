@@ -16,6 +16,7 @@ interface Feira {
   dias_semana: string[];
   inscricoes_count: number;
   inscricoes_confirmadas: number;
+  receita_real: number;
 }
 
 const DIAS_MAP: { [key: string]: string } = {
@@ -51,6 +52,11 @@ export const FeirasConsolidatedCard = () => {
 
       if (feirasError) throw feirasError;
 
+      // Buscar pagamentos reais
+      const { data: pagamentos } = await supabase
+        .from("pagamentos")
+        .select("feira_id, valor_total, status");
+
       const feirasWithCounts = await Promise.all(
         (feirasData || []).map(async (feira) => {
           const { count: totalCount } = await supabase
@@ -64,10 +70,16 @@ export const FeirasConsolidatedCard = () => {
             .eq("feira_id", feira.id)
             .eq("status", "aprovada");
 
+          // Calcular receita real dos pagamentos
+          const receitaFeira = pagamentos
+            ?.filter(p => p.feira_id === feira.id && p.status === 'pago')
+            .reduce((sum, p) => sum + Number(p.valor_total), 0) || 0;
+
           return {
             ...feira,
             inscricoes_count: totalCount || 0,
             inscricoes_confirmadas: confirmadasCount || 0,
+            receita_real: receitaFeira,
           };
         })
       );
@@ -77,10 +89,7 @@ export const FeirasConsolidatedCard = () => {
       // Calculate stats
       const totalInscricoes = feirasWithCounts.reduce((sum, f) => sum + f.inscricoes_count, 0);
       const totalConfirmadas = feirasWithCounts.reduce((sum, f) => sum + f.inscricoes_confirmadas, 0);
-      const receitaTotal = feirasWithCounts.reduce(
-        (sum, f) => sum + (f.inscricoes_confirmadas * (f.valor_participacao || 0)),
-        0
-      );
+      const receitaTotal = feirasWithCounts.reduce((sum, f) => sum + f.receita_real, 0);
 
       setStats({
         totalFeiras: feirasWithCounts.length,
@@ -106,7 +115,7 @@ export const FeirasConsolidatedCard = () => {
   }
 
   return (
-    <Card className="p-6 bg-card border-border">
+    <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border">
       <div className="space-y-6">
         {/* Header com estatísticas gerais */}
         <div>
@@ -151,8 +160,8 @@ export const FeirasConsolidatedCard = () => {
                 <DollarSign className="w-4 h-4 text-accent" />
                 <span className="text-xs text-muted-foreground">Receita</span>
               </div>
-              <p className="text-base font-bold">
-                R$ {(stats.receitaTotal / 1000).toFixed(1)}K
+              <p className="text-xl font-bold">
+                R$ {stats.receitaTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -167,7 +176,6 @@ export const FeirasConsolidatedCard = () => {
             </div>
           ) : (
             feiras.map((feira) => {
-              const valorTotal = (feira.inscricoes_confirmadas || 0) * (feira.valor_participacao || 0);
               const diasFormatados = feira.dias_semana
                 .map((d) => DIAS_MAP[d])
                 .join(", ");
@@ -214,7 +222,7 @@ export const FeirasConsolidatedCard = () => {
                       <div className="text-center p-2 bg-background rounded-lg">
                         <p className="text-xs text-muted-foreground mb-0.5">Receita</p>
                         <p className="text-sm font-bold">
-                          R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          R$ {feira.receita_real.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </p>
                       </div>
                     </div>
