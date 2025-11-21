@@ -197,7 +197,7 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                     <h3 className="text-lg font-bold line-clamp-2 pr-20 text-foreground">{feira.nome}</h3>
                     <div className="flex items-center gap-1 shrink-0">
                       {feira.recorrente && (
-                        <Badge variant="outline" className="border-success bg-success/10 text-success">
+                        <Badge className="bg-success text-white border-0">
                           Recorrente
                         </Badge>
                       )}
@@ -233,9 +233,9 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                 </div>
 
                 <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <MapPin className="w-4 h-4 shrink-0" />
-                    <span className="line-clamp-1">{feira.bairro} - {feira.cidade}</span>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 shrink-0 text-muted-foreground" />
+                    <span className="line-clamp-1 font-semibold text-foreground">{feira.bairro} - {feira.cidade}</span>
                   </div>
 
                   <div className="flex items-center gap-2 text-foreground">
@@ -266,11 +266,11 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                     <DollarSign className="w-4 h-4 mt-0.5 text-success shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm font-medium text-muted-foreground">Valor da Feira</p>
-                      <p className="text-lg font-bold text-primary">
+                      <p className="text-2xl font-extrabold text-foreground">
                         R$ {feira.valor_participacao?.toFixed(2) || "0,00"}
                       </p>
-                      <div className="mt-1 px-2 py-1 bg-accent/20 border border-accent/30 rounded-md inline-block">
-                        <p className="text-xs font-bold text-accent-foreground">
+                      <div className="mt-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-md">
+                        <p className="text-sm font-bold text-white">
                           Total Admin: R$ {(feirantesConfirmados * 3).toFixed(2)}
                         </p>
                       </div>
@@ -278,10 +278,10 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                   </div>
 
                   <div>
-                    <p className="text-xs font-medium mb-1 text-muted-foreground">Pagamento</p>
+                    <p className="text-xs font-semibold mb-1 text-foreground">Formas de Pagamento</p>
                     <div className="flex flex-wrap gap-1">
                       {feira.formas_pagamento.map((forma) => (
-                        <Badge key={forma} variant="secondary" className="text-xs">
+                        <Badge key={forma} variant="secondary" className="text-xs font-medium">
                           {forma.toUpperCase()}
                         </Badge>
                       ))}
