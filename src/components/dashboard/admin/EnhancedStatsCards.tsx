@@ -110,9 +110,9 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
 
   const cards = [
     // Card 1: Meta de Receita
-    <Card key="meta-receita" className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden">
+    <Card key="meta-receita" className="h-full p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden flex flex-col">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-sm font-medium text-slate-300">Meta de Receita</h3>
           <Dialog open={open} onOpenChange={setOpen}>
@@ -147,7 +147,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
           </Dialog>
         </div>
         
-        <div className="flex items-center justify-center mb-6">
+        <div className="flex items-center justify-center mb-6 flex-1">
           <div className="relative w-48 h-48">
             <svg className="w-full h-full transform -rotate-90">
               <circle
@@ -198,10 +198,10 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
     <FeirasCalendar key="calendario" />,
 
     // Card 3: Status das Feiras
-    <Card key="status-feiras" className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border">
+    <Card key="status-feiras" className="h-full p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border flex flex-col">
       <h3 className="text-sm font-medium mb-4 text-muted-foreground">Status das Feiras</h3>
       
-      <div className="mb-6">
+      <div className="mb-6 flex-1">
         <div className="text-4xl font-bold mb-2">{stats.totalFeiras}</div>
         <div className="h-2 bg-muted rounded-full overflow-hidden mb-4">
           <div 
@@ -244,7 +244,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
     </Card>,
 
     // Card 4: Pagamentos
-    <Card key="pagamentos" className="p-6 bg-gradient-to-br from-success/5 to-primary/5 border-border">
+    <Card key="pagamentos" className="h-full p-6 bg-gradient-to-br from-success/5 to-primary/5 border-border flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-2">
           <button className="px-4 py-1.5 rounded-full bg-foreground text-background text-xs font-medium">
@@ -256,7 +256,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
         </div>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-6 flex-1">
         <div className="text-sm text-muted-foreground mb-1">Valor recebido</div>
         <div className="text-2xl font-bold mb-4">
           R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
@@ -278,7 +278,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
     </Card>,
 
     // Card 5: Feiras da Semana
-    <Card key="feiras-semana" className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border">
+    <Card key="feiras-semana" className="h-full p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border flex flex-col">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
           <Calendar className="w-5 h-5 text-primary" />
@@ -289,7 +289,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
         </div>
       </div>
       
-      <div className="space-y-3">
+      <div className="space-y-3 flex-1">
         {feiras.length === 0 ? (
           <div className="text-center py-6 text-muted-foreground text-sm">
             Nenhuma feira cadastrada
@@ -324,15 +324,15 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
     </Card>,
 
     // Card 6: Atividade dos Feirantes
-    <Card key="atividade-feirantes" className="p-6 bg-gradient-to-br from-orange-500 to-red-500 text-white border-0 relative overflow-hidden">
+    <Card key="atividade-feirantes" className="h-full p-6 bg-gradient-to-br from-orange-500 to-red-500 text-white border-0 relative overflow-hidden flex flex-col">
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col h-full">
         <h3 className="text-sm font-medium mb-2 text-white/80">Atividade dos Feirantes</h3>
         
         <div className="text-5xl font-bold mb-2">{percentualConfirmado}%</div>
         <div className="text-sm text-white/80 mb-6">Taxa de conversão</div>
 
-        <div className="flex gap-2 mb-6 h-32 items-end">
+        <div className="flex gap-2 mb-6 h-32 items-end flex-1">
           {[65, 45, 75, 55, 85, 50, 95, 60].map((height, i) => (
             <div key={i} className="flex-1 flex flex-col justify-end">
               <div 
@@ -357,9 +357,9 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
     </Card>,
 
     // Card 7: Participações Confirmadas
-    <Card key="participacoes" className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden">
+    <Card key="participacoes" className="h-full p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden flex flex-col">
       <div className="absolute inset-0 bg-gradient-to-br from-success/20 to-transparent" />
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 rounded-full bg-success/20 flex items-center justify-center">
             <CheckCircle2 className="w-6 h-6 text-success" />
@@ -370,7 +370,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-4 flex-1">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <TrendingUp className="w-4 h-4 text-success" />
@@ -403,10 +403,10 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
     </Card>,
 
     // Card 8: Estatísticas Rápidas
-    <Card key="estatisticas-rapidas" className="p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-border">
+    <Card key="estatisticas-rapidas" className="h-full p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-border flex flex-col">
       <h3 className="text-sm font-medium mb-6 text-muted-foreground">Estatísticas Rápidas</h3>
       
-      <div className="space-y-4">
+      <div className="space-y-4 flex-1">
         <div className="flex items-center justify-between p-3 rounded-lg bg-primary/10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
