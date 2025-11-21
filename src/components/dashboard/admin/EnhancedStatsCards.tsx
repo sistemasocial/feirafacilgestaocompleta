@@ -322,6 +322,133 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
         )}
       </div>
     </Card>,
+
+    // Card 6: Atividade dos Feirantes
+    <Card key="atividade-feirantes" className="p-6 bg-gradient-to-br from-orange-500 to-red-500 text-white border-0 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+      <div className="relative z-10">
+        <h3 className="text-sm font-medium mb-2 text-white/80">Atividade dos Feirantes</h3>
+        
+        <div className="text-5xl font-bold mb-2">{percentualConfirmado}%</div>
+        <div className="text-sm text-white/80 mb-6">Taxa de conversão</div>
+
+        <div className="flex gap-2 mb-6 h-32 items-end">
+          {[65, 45, 75, 55, 85, 50, 95, 60].map((height, i) => (
+            <div key={i} className="flex-1 flex flex-col justify-end">
+              <div 
+                className="w-full bg-gradient-to-t from-yellow-300 to-yellow-400 rounded-t-lg transition-all duration-500"
+                style={{ height: `${height}%` }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="space-y-2 pt-4 border-t border-white/20">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-white/80">Total de inscrições</span>
+            <span className="font-bold">{stats.participacoesConfirmadas}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-white/80">Feirantes ativos</span>
+            <span className="font-bold">{stats.totalFeirantes}</span>
+          </div>
+        </div>
+      </div>
+    </Card>,
+
+    // Card 7: Participações Confirmadas
+    <Card key="participacoes" className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-success/20 to-transparent" />
+      <div className="relative z-10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 rounded-full bg-success/20 flex items-center justify-center">
+            <CheckCircle2 className="w-6 h-6 text-success" />
+          </div>
+          <div className="flex-1">
+            <div className="text-sm text-slate-400">Tipo de evento</div>
+            <div className="text-lg font-semibold">Participações</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <TrendingUp className="w-4 h-4 text-success" />
+              <span className="text-xs text-slate-400">Confirmadas</span>
+            </div>
+            <div className="text-2xl font-bold">{stats.participacoesConfirmadas}</div>
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Users className="w-4 h-4 text-primary" />
+              <span className="text-xs text-slate-400">Feirantes</span>
+            </div>
+            <div className="text-2xl font-bold">{stats.totalFeirantes}</div>
+          </div>
+        </div>
+
+        <div className="pt-4 border-t border-slate-700">
+          <div className="text-xs text-slate-400 mb-2">Receita total</div>
+          <div className="h-2 bg-slate-700 rounded-full overflow-hidden mb-2">
+            <div 
+              className="h-full bg-gradient-to-r from-success to-primary rounded-full"
+              style={{ width: `${percentualRecebido}%` }}
+            />
+          </div>
+          <div className="text-xl font-bold">
+            R$ {totalPagamentos.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </div>
+        </div>
+      </div>
+    </Card>,
+
+    // Card 8: Estatísticas Rápidas
+    <Card key="estatisticas-rapidas" className="p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-border">
+      <h3 className="text-sm font-medium mb-6 text-muted-foreground">Estatísticas Rápidas</h3>
+      
+      <div className="space-y-4">
+        <div className="flex items-center justify-between p-3 rounded-lg bg-primary/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Feiras Ativas</div>
+              <div className="text-xl font-bold">{stats.feirasAtivas}</div>
+            </div>
+          </div>
+          <div className="text-xs text-success font-medium">
+            +{Math.round((stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100)}%
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between p-3 rounded-lg bg-success/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+              <Users className="w-5 h-5 text-success" />
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Total Feirantes</div>
+              <div className="text-xl font-bold">{stats.totalFeirantes}</div>
+            </div>
+          </div>
+          <div className="text-xs text-success font-medium">Ativo</div>
+        </div>
+
+        <div className="flex items-center justify-between p-3 rounded-lg bg-accent/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Taxa Conversão</div>
+              <div className="text-xl font-bold">{percentualConfirmado}%</div>
+            </div>
+          </div>
+          <div className="text-xs text-success font-medium">+12%</div>
+        </div>
+      </div>
+    </Card>,
   ];
 
   return <DraggableStatsCards>{cards}</DraggableStatsCards>;
