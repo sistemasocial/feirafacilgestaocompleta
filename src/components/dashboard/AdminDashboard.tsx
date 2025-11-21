@@ -137,12 +137,13 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 <p className="text-muted-foreground">Painel de controle das feiras</p>
               </div>
 
-              <div className="grid lg:grid-cols-[350px_1fr] gap-6">
-                <UnifiedStatsCard stats={stats} />
+              <div className="grid lg:grid-cols-[400px_1fr] gap-6">
+                <div className="space-y-6">
+                  <UnifiedStatsCard stats={stats} />
+                  <FeirasWeekView />
+                </div>
                 <FeirasCalendar />
               </div>
-              
-              <FeirasWeekView />
               
               <FeirasListOverview />
             </div>
