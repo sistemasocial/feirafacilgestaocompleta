@@ -6,12 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 // 2. Em "Seus apps", selecione o app Web
 // 3. Copie as credenciais abaixo
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXX", // Substitua pelo seu
-  authDomain: "seu-projeto.firebaseapp.com", // Substitua pelo seu
-  projectId: "seu-projeto-id", // Substitua pelo seu
-  storageBucket: "seu-projeto.appspot.com", // Substitua pelo seu
-  messagingSenderId: "123456789012", // Substitua pelo seu
-  appId: "1:123456789012:web:abc123def456" // Substitua pelo seu
+  apiKey: "AIzaSyAJOp6dgp46kcmUb2e9DbPUMaXyWlQ13JY",
+  authDomain: "feira-facil-1d3bf.firebaseapp.com",
+  projectId: "feira-facil-1d3bf",
+  storageBucket: "feira-facil-1d3bf.firebasestorage.app",
+  messagingSenderId: "1099183570340",
+  appId: "1:1099183570340:web:d07edf2922e2fbbcd5d531"
 };
 
 // VAPID Key (Web Push Certificate)
