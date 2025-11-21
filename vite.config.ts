@@ -42,6 +42,7 @@ export default defineConfig(({ mode }) => ({
             purpose: "any maskable",
           },
         ],
+        permissions: ["notifications"],
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg}"],
