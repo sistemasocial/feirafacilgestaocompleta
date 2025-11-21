@@ -163,6 +163,21 @@ Deno.serve(async (req) => {
           }),
         });
 
+        // Verificar se a resposta é válida antes de fazer parse
+        const contentType = response.headers.get('content-type');
+        if (!response.ok) {
+          console.error('[Push] Resposta HTTP não OK:', response.status, response.statusText);
+          const text = await response.text();
+          console.error('[Push] Resposta completa:', text);
+          return { error: `HTTP ${response.status}: ${text.substring(0, 200)}` };
+        }
+
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error('[Push] Resposta não é JSON:', text.substring(0, 200));
+          return { error: 'Firebase retornou HTML em vez de JSON - verifique o FIREBASE_SERVER_KEY' };
+        }
+
         const result = await response.json();
         console.log('[Push] Resposta Firebase:', result);
         
