@@ -29,6 +29,18 @@ const FeiranteDashboard = ({
 
   // Inicializar notificações
   useNotifications(user.id);
+
+  // Inicializar FCM automaticamente quando o dashboard carregar
+  useEffect(() => {
+    if (user?.id) {
+      import('@/lib/fcmService').then(({ initializeFCM }) => {
+        initializeFCM(user.id).catch(err => {
+          console.log('FCM não inicializado:', err);
+        });
+      });
+    }
+  }, [user?.id]);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success("Logout realizado com sucesso");

@@ -136,6 +136,8 @@ Deno.serve(async (req) => {
     // Enviar notificação push via Firebase para cada token
     const pushPromises = tokens.map(async ({ token }) => {
       try {
+        console.log('[Push] Enviando para token:', token.substring(0, 20) + '...');
+        
         const response = await fetch('https://fcm.googleapis.com/fcm/send', {
           method: 'POST',
           headers: {
@@ -144,37 +146,51 @@ Deno.serve(async (req) => {
           },
           body: JSON.stringify({
             to: token,
+            priority: 'high',
             notification: {
               title,
               body: message,
               icon: '/pwa-192x192.png',
               badge: '/pwa-192x192.png',
+              click_action: 'https://f890b9d8-fa05-428f-8739-0ccf652f8fd7.lovableproject.com/dashboard',
             },
             data: {
               type: type || 'geral',
               relatedId: relatedId || '',
-              url: '/dashboard',
+              title,
+              message,
             },
           }),
         });
 
         const result = await response.json();
-        console.log('Resposta Firebase:', result);
+        console.log('[Push] Resposta Firebase:', result);
+        
+        if (result.success === 1) {
+          console.log('[Push] ✓ Enviado com sucesso');
+        } else if (result.failure === 1) {
+          console.error('[Push] ✗ Falha no envio:', result);
+        }
+        
         return result;
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error('Erro ao enviar para token:', token, error);
+        console.error('[Push] Erro ao enviar para token:', token.substring(0, 20) + '...', error);
         return { error: errorMessage };
       }
     });
 
     const results = await Promise.all(pushPromises);
-    const successCount = results.filter(r => r.success !== undefined ? r.success >= 1 : !r.error).length;
+    const successCount = results.filter(r => r.success === 1 || (r.success !== undefined && r.success >= 1) || (!r.error && !r.failure)).length;
+    const failureCount = results.filter(r => r.failure === 1 || r.error).length;
+
+    console.log(`[Push] Resumo: ${successCount} enviadas, ${failureCount} falharam`);
 
     return new Response(
       JSON.stringify({
-        message: 'Notificações enviadas',
+        message: 'Notificações processadas',
         sent: successCount,
+        failed: failureCount,
         total: tokens.length,
         results,
       }),
