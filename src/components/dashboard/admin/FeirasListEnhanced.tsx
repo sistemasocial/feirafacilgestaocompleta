@@ -253,10 +253,10 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                     <span className="font-semibold">{feirantesConfirmados} confirmados</span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-warning">
-                    <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span className="text-sm font-medium">
-                      Pagamento: <strong>{feira.prazo_pagamento_dias || 3} dias antes</strong>
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-warning" />
+                    <span className="text-sm font-bold text-foreground">
+                      Pagamento: <strong className="text-warning">{feira.prazo_pagamento_dias || 3} dias antes</strong>
                     </span>
                   </div>
                 </div>
