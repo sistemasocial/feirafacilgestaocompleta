@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Calendar, Users, DollarSign, TrendingUp, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { FeirasCalendar } from "./FeirasCalendar";
 
 interface EnhancedStatsCardsProps {
   stats: {
@@ -80,7 +81,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
     : 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Revenue Goal - Circular Chart */}
       <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
@@ -166,7 +167,10 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
         </div>
       </Card>
 
-      {/* Feiras Targets */}
+      {/* Calendário de Feiras ao lado da Meta de Receita */}
+      <FeirasCalendar />
+ 
+       {/* Feiras Targets */}
       <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border">
         <h3 className="text-sm font-medium mb-4 text-muted-foreground">Status das Feiras</h3>
         
