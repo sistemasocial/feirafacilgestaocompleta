@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Calendar, Users, DollarSign, TrendingUp, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface EnhancedStatsCardsProps {
   stats: {
@@ -17,6 +21,9 @@ interface EnhancedStatsCardsProps {
 
 export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) => {
   const [revenueGoal, setRevenueGoal] = useState<number>(10000);
+  const [editGoal, setEditGoal] = useState<number>(10000);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     loadRevenueGoal();
@@ -32,9 +39,34 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
 
       if (data) {
         setRevenueGoal(data.revenue_goal || 10000);
+        setEditGoal(data.revenue_goal || 10000);
       }
     } catch (error) {
       console.error("Erro ao carregar meta:", error);
+    }
+  };
+
+  const handleSaveGoal = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from("admin_settings")
+        .upsert({
+          user_id: userId,
+          revenue_goal: editGoal,
+        }, {
+          onConflict: "user_id"
+        });
+
+      if (error) throw error;
+
+      setRevenueGoal(editGoal);
+      setOpen(false);
+      toast.success("Meta atualizada com sucesso!");
+    } catch (error: any) {
+      toast.error("Erro ao salvar: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,60 +82,87 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {/* Revenue Goal - Circular Chart */}
-      <Card className="p-6 bg-card border-border">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium text-muted-foreground">Meta de Receita</h3>
-          <button 
-            onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-            className="text-xs text-primary hover:underline"
-          >
-            Editar Meta
-          </button>
-        </div>
-        
-        <div className="flex items-center justify-center mb-6">
-          <div className="relative w-48 h-48">
-            <svg className="w-full h-full transform -rotate-90">
-              <circle
-                cx="96"
-                cy="96"
-                r="80"
-                stroke="currentColor"
-                strokeWidth="12"
-                fill="none"
-                className="text-muted"
-              />
-              <circle
-                cx="96"
-                cy="96"
-                r="80"
-                stroke="url(#gradient)"
-                strokeWidth="12"
-                fill="none"
-                strokeDasharray={`${(percentualRecebido / 100) * 502.4} 502.4`}
-                strokeLinecap="round"
-                className="transition-all duration-1000"
-              />
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#fbbf24" />
-                  <stop offset="50%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-4xl font-bold">
-                R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-sm font-medium text-slate-300">Meta de Receita</h3>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <button className="text-xs text-primary hover:underline">
+                  Editar Meta
+                </button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Editar Meta de Receita</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Meta de Receita (R$)</label>
+                    <Input
+                      type="number"
+                      value={editGoal}
+                      onChange={(e) => setEditGoal(Number(e.target.value))}
+                      min={0}
+                      step={100}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Valor: R$ {editGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </p>
+                  </div>
+                  <Button onClick={handleSaveGoal} disabled={loading} className="w-full">
+                    {loading ? "Salvando..." : "Salvar Meta"}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+          
+          <div className="flex items-center justify-center mb-6">
+            <div className="relative w-48 h-48">
+              <svg className="w-full h-full transform -rotate-90">
+                <circle
+                  cx="96"
+                  cy="96"
+                  r="80"
+                  stroke="currentColor"
+                  strokeWidth="12"
+                  fill="none"
+                  className="text-slate-700"
+                />
+                <circle
+                  cx="96"
+                  cy="96"
+                  r="80"
+                  stroke="url(#gradient)"
+                  strokeWidth="12"
+                  fill="none"
+                  strokeDasharray={`${(percentualRecebido / 100) * 502.4} 502.4`}
+                  strokeLinecap="round"
+                  className="transition-all duration-1000"
+                />
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#fbbf24" />
+                    <stop offset="50%" stopColor="#10b981" />
+                    <stop offset="100%" stopColor="#8b5cf6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-4xl font-bold">
+                  R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+                <div className="text-sm text-slate-400">de R$ {revenueGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               </div>
-              <div className="text-sm text-muted-foreground">de R$ {revenueGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Progresso</span>
-          <span className="text-2xl font-bold">{percentualRecebido}%</span>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-400">Progresso</span>
+            <span className="text-2xl font-bold">{percentualRecebido}%</span>
+          </div>
         </div>
       </Card>
 
