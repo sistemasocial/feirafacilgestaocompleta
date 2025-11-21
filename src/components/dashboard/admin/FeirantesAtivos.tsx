@@ -105,43 +105,43 @@ export const FeirantesAtivos = () => {
   }
 
   return (
-    <Card className="p-3 bg-gradient-to-br from-success/5 to-primary/5 border-border max-w-md">
-      <div className="space-y-2">
+    <Card className="p-4 bg-gradient-to-br from-success/5 to-primary/5 border-border">
+      <div className="space-y-3">
         {/* Header */}
-        <div className="flex items-center justify-between pb-1">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-success/10 flex items-center justify-center">
-              <User className="w-3.5 h-3.5 text-success" />
+        <div className="flex items-center justify-between pb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
+              <User className="w-5 h-5 text-success" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold">Feirantes Ativos</h2>
-              <p className="text-xs text-muted-foreground">Todos os feirantes cadastrados</p>
+              <h2 className="text-base font-semibold">Feirantes Ativos</h2>
+              <p className="text-sm text-muted-foreground">Todos os feirantes cadastrados</p>
             </div>
           </div>
-          <Badge className="bg-success text-white text-xs h-5">{feirantes.length}</Badge>
+          <Badge className="bg-success text-white text-sm h-6 px-3">{feirantes.length}</Badge>
         </div>
 
         {/* Lista Vertical de Feirantes */}
-        <div className="space-y-1 max-h-[280px] overflow-y-auto pr-1">
+        <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
           {feirantes.map((feirante) => (
             <div 
               key={feirante.id} 
-              className="p-2 rounded-md bg-background border border-border hover:shadow-sm hover:border-primary/20 transition-all"
+              className="p-3 rounded-lg bg-background border border-border hover:shadow-sm hover:border-primary/20 transition-all"
             >
-              <div className="flex items-center gap-2">
-                <Avatar className="w-8 h-8 shrink-0 ring-1 ring-success/20">
+              <div className="flex items-center gap-3">
+                <Avatar className="w-11 h-11 shrink-0 ring-2 ring-success/20">
                   <AvatarImage src={feirante.profile.foto_url || undefined} />
-                  <AvatarFallback className="text-xs bg-success/10 text-success font-semibold">
+                  <AvatarFallback className="text-sm bg-success/10 text-success font-semibold">
                     {feirante.profile.full_name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-semibold text-xs truncate">
+                    <h3 className="font-semibold text-sm truncate">
                       {feirante.profile.full_name}
                     </h3>
-                    <Badge variant="outline" className="shrink-0 border-success/30 bg-success/10 text-success text-xs px-1.5 py-0 h-4">
+                    <Badge variant="outline" className="shrink-0 border-success/30 bg-success/10 text-success text-xs px-2 py-0.5">
                       {getSegmentoLabel(feirante.segmento)}
                     </Badge>
                   </div>
