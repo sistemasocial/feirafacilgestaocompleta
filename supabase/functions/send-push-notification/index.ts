@@ -15,20 +15,38 @@ interface NotificationPayload {
 }
 
 Deno.serve(async (req) => {
+  // Sempre retornar CORS headers em todas as respostas
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    console.log('=== Início do envio de notificação ===');
+    console.log('Método:', req.method);
+    console.log('Headers:', Object.fromEntries(req.headers.entries()));
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const firebaseServerKey = Deno.env.get('FIREBASE_SERVER_KEY')!;
+    const firebaseServerKey = Deno.env.get('FIREBASE_SERVER_KEY');
+
+    console.log('Variáveis de ambiente:', {
+      supabaseUrl: !!supabaseUrl,
+      supabaseKey: !!supabaseKey,
+      firebaseServerKey: !!firebaseServerKey
+    });
+
+    if (!firebaseServerKey) {
+      console.warn('FIREBASE_SERVER_KEY não configurada - notificações push não serão enviadas');
+    }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { title, message, userId, userIds, type, relatedId }: NotificationPayload = await req.json();
+    const body = await req.json();
+    console.log('Body recebido:', body);
 
-    console.log('Enviando notificação push:', { title, message, userId, userIds });
+    const { title, message, userId, userIds, type, relatedId }: NotificationPayload = body;
+
+    console.log('Enviando notificação push:', { title, message, userId, userIds, type });
 
     // Determinar quais usuários receberão a notificação
     let targetUserIds: string[] = [];
@@ -56,8 +74,30 @@ Deno.serve(async (req) => {
 
     if (!tokens || tokens.length === 0) {
       console.log('Nenhum token FCM encontrado para os usuários');
+      
+      // Mesmo sem tokens FCM, criar notificações no banco
+      const notifications = targetUserIds.map(uid => ({
+        user_id: uid,
+        title,
+        message,
+        type: type || 'geral',
+        related_id: relatedId,
+        read: false
+      }));
+
+      const { error: notifError } = await supabase
+        .from('notifications')
+        .insert(notifications);
+
+      if (notifError) {
+        console.error('Erro ao criar notificações:', notifError);
+      }
+
       return new Response(
-        JSON.stringify({ message: 'Nenhum dispositivo registrado para notificações' }),
+        JSON.stringify({ 
+          message: 'Notificações criadas no banco, mas nenhum dispositivo registrado para push',
+          notificationsCreated: targetUserIds.length
+        }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -80,6 +120,17 @@ Deno.serve(async (req) => {
 
     if (notifError) {
       console.error('Erro ao criar notificações:', notifError);
+    }
+
+    // Se não houver FIREBASE_SERVER_KEY, retornar apenas com as notificações criadas
+    if (!firebaseServerKey) {
+      return new Response(
+        JSON.stringify({
+          message: 'Notificações criadas no banco (Firebase não configurado)',
+          notificationsCreated: targetUserIds.length
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Enviar notificação push via Firebase para cada token
