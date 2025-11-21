@@ -150,11 +150,11 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
                   </linearGradient>
                 </defs>
               </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-4xl font-bold">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-2">
+                <div className="text-3xl font-bold leading-tight">
                   R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
-                <div className="text-sm text-slate-400">de R$ {revenueGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div className="text-xs text-slate-400 mt-1">de R$ {revenueGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               </div>
             </div>
           </div>
@@ -167,7 +167,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
       </Card>
 
       {/* Feiras Targets */}
-      <Card className="p-6 bg-card border-border">
+      <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border">
         <h3 className="text-sm font-medium mb-4 text-muted-foreground">Status das Feiras</h3>
         
         <div className="mb-6">
@@ -213,7 +213,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
       </Card>
 
       {/* Pagamentos Card */}
-      <Card className="p-6 bg-card border-border">
+      <Card className="p-6 bg-gradient-to-br from-success/5 to-primary/5 border-border">
         <div className="flex items-center justify-between mb-4">
           <div className="flex gap-2">
             <button className="px-4 py-1.5 rounded-full bg-foreground text-background text-xs font-medium">
@@ -326,7 +326,7 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
       </Card>
 
       {/* Quick Stats */}
-      <Card className="p-6 bg-card border-border">
+      <Card className="p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-border">
         <h3 className="text-sm font-medium mb-6 text-muted-foreground">Estatísticas Rápidas</h3>
         
         <div className="space-y-4">

@@ -115,26 +115,17 @@ export const FeirasCalendar = () => {
   }
 
   return (
-    <Card className="p-5 bg-card border-border">
+    <Card className="p-5 bg-card border-border shadow-sm">
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center">
-              <CalendarIcon className="w-4 h-4 text-accent" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold">Calendário</h3>
-              <p className="text-xs text-muted-foreground capitalize font-medium">
-                {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
-              </p>
-            </div>
-          </div>
-          
+          <h3 className="text-base font-semibold capitalize">
+            {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
+          </h3>
           <div className="flex items-center gap-1">
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-8 w-8 hover:bg-muted" 
+              className="h-7 w-7 hover:bg-muted rounded-md" 
               onClick={handlePreviousMonth}
             >
               <ChevronLeft className="w-4 h-4" />
@@ -142,7 +133,7 @@ export const FeirasCalendar = () => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-8 w-8 hover:bg-muted" 
+              className="h-7 w-7 hover:bg-muted rounded-md" 
               onClick={handleNextMonth}
             >
               <ChevronRight className="w-4 h-4" />
@@ -151,11 +142,11 @@ export const FeirasCalendar = () => {
         </div>
 
         {/* Cabeçalho dos dias da semana */}
-        <div className="grid grid-cols-7 gap-1.5 mb-2">
+        <div className="grid grid-cols-7 gap-1 mb-2">
           {weekDays.map((day, index) => (
             <div 
               key={index} 
-              className="text-center text-[11px] font-bold text-muted-foreground uppercase"
+              className="text-center text-[10px] font-semibold text-muted-foreground uppercase tracking-tight"
             >
               {day}
             </div>
@@ -163,7 +154,7 @@ export const FeirasCalendar = () => {
         </div>
 
         {/* Grid do calendário */}
-        <div className="grid grid-cols-7 gap-1.5">
+        <div className="grid grid-cols-7 gap-1">
           {emptyDays.map((_, index) => (
             <div key={`empty-${index}`} className="aspect-square" />
           ))}
@@ -176,35 +167,20 @@ export const FeirasCalendar = () => {
               <div
                 key={index}
                 className={`
-                  aspect-square rounded-lg flex flex-col items-center justify-center 
-                  text-xs transition-all cursor-pointer relative
-                  ${event ? 'bg-success text-white font-bold shadow-md hover:shadow-lg hover:scale-105' : 'hover:bg-muted/60'}
-                  ${isToday && !event ? 'ring-2 ring-primary font-bold text-primary' : ''}
+                  aspect-square rounded-full flex items-center justify-center 
+                  text-[13px] font-medium transition-all cursor-pointer
+                  ${event ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-muted/50'}
+                  ${isToday && !event ? 'bg-accent text-accent-foreground' : ''}
+                  ${!event && !isToday ? 'text-foreground' : ''}
                 `}
                 title={event ? event.feiras.map(f => `${f.nome} - ${f.cidade}`).join('\n') : undefined}
               >
-                <span className="text-xs font-semibold">{format(day, "d")}</span>
-                {event && event.feiras.length > 0 && (
-                  <div className="absolute bottom-1">
-                    <div className="w-1 h-1 rounded-full bg-white" />
-                  </div>
-                )}
+                {format(day, "d")}
               </div>
             );
           })}
         </div>
 
-        {/* Legenda */}
-        <div className="flex items-center justify-center gap-4 pt-3 border-t border-border">
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded ring-2 ring-primary" />
-            <span className="text-[10px] text-muted-foreground">Hoje</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-success" />
-            <span className="text-[10px] text-muted-foreground">Feira</span>
-          </div>
-        </div>
       </div>
     </Card>
   );
