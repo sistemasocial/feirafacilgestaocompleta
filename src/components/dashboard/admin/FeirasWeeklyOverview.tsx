@@ -92,10 +92,10 @@ export const FeirasWeeklyOverview = () => {
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 bg-card border-border">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-          <CalendarIcon className="w-5 h-5 text-primary" />
+        <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
+          <CalendarIcon className="w-5 h-5 text-success" />
         </div>
         <div>
           <h3 className="text-lg font-semibold">Feiras da Semana</h3>
@@ -103,88 +103,87 @@ export const FeirasWeeklyOverview = () => {
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {DIAS_SEMANA.map((dia) => {
           const feirasNoDia = getFeirasForDay(dia.key);
 
           return (
-            <Collapsible key={dia.key}>
-              <CollapsibleTrigger className="w-full">
+            <Collapsible key={dia.key} defaultOpen={feirasNoDia.length > 0}>
+              <CollapsibleTrigger className="w-full group">
                 <div
-                  className={`flex items-center justify-between p-4 rounded-lg bg-gradient-to-r ${dia.color} text-white hover:shadow-lg transition-all cursor-pointer`}
+                  className={`flex items-center justify-between p-3 rounded-xl bg-gradient-to-r ${dia.color} text-white hover:shadow-lg transition-all cursor-pointer`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="font-bold text-sm">{dia.shortName}</div>
+                    <div className="font-bold text-xs bg-white/20 rounded-lg px-2 py-1">{dia.shortName}</div>
                     <div className="font-medium text-sm">{dia.name}</div>
                   </div>
                   
-                  <div className="flex items-center gap-3">
-                    <Badge variant="secondary" className="bg-white/20 text-white border-white/30 text-xs">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-0 text-xs px-2 py-0.5">
                       {feirasNoDia.length} feira{feirasNoDia.length !== 1 ? "s" : ""}
                     </Badge>
                     {feirasNoDia.length > 0 && (
-                      <ChevronDown className="w-4 h-4 transition-transform" />
+                      <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
                     )}
                   </div>
                 </div>
               </CollapsibleTrigger>
 
               {feirasNoDia.length > 0 && (
-                <CollapsibleContent className="mt-2 space-y-2">
+                <CollapsibleContent className="mt-2 ml-2 space-y-2 animate-fade-in">
                   {feirasNoDia.map((feira) => {
                     const valorTotal = (feira.inscricoes_confirmadas || 0) * (feira.valor_participacao || 0);
                     
                     return (
-                      <Card
+                      <div
                         key={feira.id}
-                        className="p-4 ml-4 hover:shadow-md transition-all border-l-4 border-l-primary animate-fade-in"
+                        className="p-4 rounded-lg bg-muted/50 hover:bg-muted transition-all border-l-2 border-l-primary"
                       >
                         <div className="space-y-3">
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex-1">
-                              <h4 className="font-semibold">{feira.nome}</h4>
+                              <h4 className="font-semibold text-sm">{feira.nome}</h4>
+                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
+                                <MapPin className="w-3 h-3" />
+                                <span>{feira.cidade} - {feira.bairro}</span>
+                              </div>
                             </div>
                             {feira.recorrente && (
-                              <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
+                              <Badge className="bg-success/10 text-success border-success/20 text-xs">
                                 Ativa
                               </Badge>
                             )}
                           </div>
 
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <MapPin className="w-3 h-3" />
-                            <span>{feira.cidade} - {feira.bairro}</span>
-                          </div>
-
-                          <div className="grid grid-cols-3 gap-3 pt-3 border-t">
-                            <div className="flex flex-col items-center">
-                              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-1">
-                                <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="flex flex-col items-center p-2 bg-background rounded-lg">
+                              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
+                                <Users className="w-3.5 h-3.5 text-primary" />
                               </div>
-                              <p className="text-xs text-muted-foreground">Inscrições</p>
-                              <p className="text-base font-bold">{feira.inscricoes_count}</p>
+                              <p className="text-[10px] text-muted-foreground">Inscrições</p>
+                              <p className="text-sm font-bold">{feira.inscricoes_count}</p>
                             </div>
 
-                            <div className="flex flex-col items-center">
-                              <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-1">
-                                <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
+                            <div className="flex flex-col items-center p-2 bg-background rounded-lg">
+                              <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center mb-1">
+                                <Users className="w-3.5 h-3.5 text-success" />
                               </div>
-                              <p className="text-xs text-muted-foreground">Confirmadas</p>
-                              <p className="text-base font-bold">{feira.inscricoes_confirmadas}</p>
+                              <p className="text-[10px] text-muted-foreground">Confirmadas</p>
+                              <p className="text-sm font-bold">{feira.inscricoes_confirmadas}</p>
                             </div>
 
-                            <div className="flex flex-col items-center">
-                              <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center mb-1">
-                                <DollarSign className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                            <div className="flex flex-col items-center p-2 bg-background rounded-lg">
+                              <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center mb-1">
+                                <DollarSign className="w-3.5 h-3.5 text-accent" />
                               </div>
-                              <p className="text-xs text-muted-foreground">Valor Total</p>
-                              <p className="text-sm font-bold">
-                                R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              <p className="text-[10px] text-muted-foreground">Total</p>
+                              <p className="text-xs font-bold">
+                                R$ {(valorTotal / 1000).toFixed(1)}K
                               </p>
                             </div>
                           </div>
                         </div>
-                      </Card>
+                      </div>
                     );
                   })}
                 </CollapsibleContent>
