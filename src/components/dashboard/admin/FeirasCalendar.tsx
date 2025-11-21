@@ -193,18 +193,25 @@ export const FeirasCalendar = () => {
             const event = getEventForDay(day);
             const isToday = format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
             
+            // Determinar a classe base para cada dia
+            let dayClasses = "w-10 h-10 rounded-lg flex items-center justify-center text-sm font-medium";
+            
+            if (event && isToday) {
+              // Dia com feira E dia atual → verde com borda laranja
+              dayClasses += " bg-primary text-primary-foreground ring-2 ring-orange-500 shadow-md";
+            } else if (event && !isToday) {
+              // Dia com feira mas não é hoje → verde
+              dayClasses += " bg-primary text-primary-foreground shadow-sm";
+            } else if (!event && isToday) {
+              // Dia atual sem feira → laranja
+              dayClasses += " bg-orange-500 text-white shadow-sm";
+            } else {
+              // Dia normal sem feira → sem cor
+              dayClasses += " text-foreground/80";
+            }
+            
             return (
-              <div
-                key={index}
-                className={`
-                  w-10 h-10 rounded-lg flex items-center justify-center 
-                  text-sm font-medium transition-all
-                  ${event && isToday ? 'bg-primary text-primary-foreground ring-2 ring-orange-500 ring-offset-2 shadow-md' : ''}
-                  ${event && !isToday ? 'bg-primary text-primary-foreground shadow-sm' : ''}
-                  ${!event && isToday ? 'bg-orange-500 text-white shadow-sm' : ''}
-                  ${!event && !isToday ? 'text-foreground/80' : ''}
-                `}
-              >
+              <div key={index} className={dayClasses}>
                 {format(day, "d")}
               </div>
             );
