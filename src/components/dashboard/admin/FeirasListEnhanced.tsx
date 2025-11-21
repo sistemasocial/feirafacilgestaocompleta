@@ -64,12 +64,12 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
 
   // Gradientes elegantes para os cards
   const cardGradients = [
-    "bg-gradient-to-br from-slate-900 to-slate-800 text-white",
-    "bg-gradient-to-br from-orange-500 to-red-500 text-white",
-    "bg-gradient-to-br from-blue-600 to-purple-600 text-white",
-    "bg-gradient-to-br from-emerald-600 to-teal-600 text-white",
-    "bg-gradient-to-br from-pink-600 to-rose-600 text-white",
-    "bg-gradient-to-br from-indigo-600 to-blue-600 text-white",
+    "bg-gradient-to-br from-primary/5 to-accent/5",
+    "bg-gradient-to-br from-orange-500/5 to-red-500/10",
+    "bg-gradient-to-br from-blue-500/5 to-purple-500/10",
+    "bg-gradient-to-br from-emerald-500/5 to-teal-500/10",
+    "bg-gradient-to-br from-pink-500/5 to-rose-500/10",
+    "bg-gradient-to-br from-indigo-500/5 to-blue-500/10",
   ];
 
   useEffect(() => {
@@ -190,22 +190,21 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
           const gradientClass = cardGradients[index % cardGradients.length];
           
           return (
-            <Card key={feira.id} className={`flex flex-col h-full relative border-0 overflow-hidden ${gradientClass}`}>
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
-              <div className="p-4 space-y-3 relative z-10">
+            <Card key={feira.id} className={`flex flex-col h-full relative border-border ${gradientClass}`}>
+              <div className="p-4 space-y-3">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="text-lg font-bold line-clamp-2 pr-20">{feira.nome}</h3>
+                    <h3 className="text-lg font-bold line-clamp-2 pr-20 text-foreground">{feira.nome}</h3>
                     <div className="flex items-center gap-1 shrink-0">
                       {feira.recorrente && (
-                        <Badge variant="outline" className="border-white/30 bg-white/10 text-white">
+                        <Badge variant="outline" className="border-success bg-success/10 text-success">
                           Recorrente
                         </Badge>
                       )}
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-white hover:text-white hover:bg-white/20"
+                        className="h-8 w-8 text-primary hover:text-primary hover:bg-primary/10"
                         onClick={() => setFeiraToEdit(feira.id)}
                       >
                         <Pencil className="h-4 w-4" />
@@ -213,7 +212,7 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-white hover:text-white hover:bg-red-500/30"
+                        className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                         onClick={() => setFeiraToDelete(feira.id)}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -222,11 +221,11 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                   </div>
                   
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="bg-white/20 text-white border-0">
+                    <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
                       {feira.tipo_feira === "publica" ? "Pública" : "Condomínio"}
                     </Badge>
                     {feira.segmento_exclusivo && (
-                      <Badge variant="outline" className="border-yellow-300/50 bg-yellow-400/20 text-yellow-100">
+                      <Badge variant="outline" className="border-warning bg-warning/10 text-warning">
                         Segmento Exclusivo
                       </Badge>
                     )}
@@ -234,44 +233,44 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                 </div>
 
                 <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-white/90">
+                  <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="w-4 h-4 shrink-0" />
                     <span className="line-clamp-1">{feira.bairro} - {feira.cidade}</span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-white/90">
-                    <Calendar className="w-4 h-4 shrink-0" />
-                    <span className="line-clamp-1">{formatDate(feira)}</span>
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Calendar className="w-4 h-4 shrink-0 text-primary" />
+                    <span className="line-clamp-1 font-medium">{formatDate(feira)}</span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-white/90">
-                    <Clock className="w-4 h-4 shrink-0" />
-                    <span>{feira.horario_inicio} - {feira.horario_fim}</span>
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Clock className="w-4 h-4 shrink-0 text-primary" />
+                    <span className="font-medium">{feira.horario_inicio} - {feira.horario_fim}</span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-white/90">
-                    <Users className="w-4 h-4 shrink-0" />
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Users className="w-4 h-4 shrink-0 text-success" />
                     <span className="font-semibold">{feirantesConfirmados} confirmados</span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-yellow-200">
+                  <div className="flex items-center gap-2 text-warning">
                     <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span className="text-sm">
+                    <span className="text-sm font-medium">
                       Pagamento: <strong>{feira.prazo_pagamento_dias || 3} dias antes</strong>
                     </span>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-white/20 space-y-2">
+                <div className="pt-2 border-t border-border space-y-2">
                   <div className="flex items-start gap-2">
-                    <DollarSign className="w-4 h-4 mt-0.5 text-green-300 shrink-0" />
+                    <DollarSign className="w-4 h-4 mt-0.5 text-success shrink-0" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-white/90">Valor da Feira</p>
-                      <p className="text-lg font-bold text-white">
+                      <p className="text-sm font-medium text-muted-foreground">Valor da Feira</p>
+                      <p className="text-lg font-bold text-primary">
                         R$ {feira.valor_participacao?.toFixed(2) || "0,00"}
                       </p>
-                      <div className="mt-1 px-2 py-1 bg-yellow-400/20 border border-yellow-300/30 rounded-md inline-block">
-                        <p className="text-xs font-bold text-yellow-100">
+                      <div className="mt-1 px-2 py-1 bg-accent/20 border border-accent/30 rounded-md inline-block">
+                        <p className="text-xs font-bold text-accent-foreground">
                           Total Admin: R$ {(feirantesConfirmados * 3).toFixed(2)}
                         </p>
                       </div>
@@ -279,10 +278,10 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                   </div>
 
                   <div>
-                    <p className="text-xs font-medium mb-1 text-white/80">Pagamento</p>
+                    <p className="text-xs font-medium mb-1 text-muted-foreground">Pagamento</p>
                     <div className="flex flex-wrap gap-1">
                       {feira.formas_pagamento.map((forma) => (
-                        <Badge key={forma} variant="secondary" className="text-xs bg-white/20 text-white border-0">
+                        <Badge key={forma} variant="secondary" className="text-xs">
                           {forma.toUpperCase()}
                         </Badge>
                       ))}
@@ -291,9 +290,9 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                 </div>
 
                 {feira.avisos && (
-                  <div className="bg-yellow-400/20 border border-yellow-300/30 rounded-lg p-3">
-                    <p className="text-xs font-medium text-yellow-100 mb-1">⚠️ Avisos</p>
-                    <p className="text-xs text-white/80 line-clamp-2">{feira.avisos}</p>
+                  <div className="bg-warning/10 border border-warning/30 rounded-lg p-3">
+                    <p className="text-xs font-medium text-warning mb-1">⚠️ Avisos</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2">{feira.avisos}</p>
                   </div>
                 )}
               </div>
