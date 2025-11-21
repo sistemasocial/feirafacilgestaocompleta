@@ -76,7 +76,7 @@ export const SegmentosSection = () => {
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="max-w-3xl mx-auto space-y-4">
         {Object.entries(groupedFeiras).map(([cidade, cityFeiras]) => (
           <Card key={cidade} className="overflow-hidden">
             <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-3 border-b">
