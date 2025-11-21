@@ -105,7 +105,7 @@ export const FeirantesAtivos = () => {
   }
 
   return (
-    <Card className="p-3 bg-gradient-to-br from-success/5 to-primary/5 border-border">
+    <Card className="p-3 bg-gradient-to-br from-success/5 to-primary/5 border-border max-w-md">
       <div className="space-y-2">
         {/* Header */}
         <div className="flex items-center justify-between pb-1">
