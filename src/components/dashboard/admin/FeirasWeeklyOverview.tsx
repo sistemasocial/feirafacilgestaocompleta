@@ -34,6 +34,7 @@ const DIAS_SEMANA = [
 export const FeirasWeeklyOverview = () => {
   const [feiras, setFeiras] = useState<Feira[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDay, setSelectedDay] = useState<string>("1"); // Segunda por padrão
 
   useEffect(() => {
     loadFeiras();
@@ -81,6 +82,15 @@ export const FeirasWeeklyOverview = () => {
     return feiras.filter((feira) => feira.dias_semana.includes(diaKey));
   };
 
+  const getStatsForDay = (diaKey: string) => {
+    const feirasNoDia = getFeirasForDay(diaKey);
+    const totalInscricoes = feirasNoDia.reduce((sum, f) => sum + f.inscricoes_count, 0);
+    const totalConfirmadas = feirasNoDia.reduce((sum, f) => sum + f.inscricoes_confirmadas, 0);
+    const totalReceita = feirasNoDia.reduce((sum, f) => sum + (f.inscricoes_confirmadas * (f.valor_participacao || 0)), 0);
+    
+    return { totalInscricoes, totalConfirmadas, totalReceita, totalFeiras: feirasNoDia.length };
+  };
+
   if (loading) {
     return (
       <Card className="p-6">
@@ -91,113 +101,140 @@ export const FeirasWeeklyOverview = () => {
     );
   }
 
+  const feirasDoSelecionado = getFeirasForDay(selectedDay);
+  const statsDoSelecionado = getStatsForDay(selectedDay);
+  const diaInfo = DIAS_SEMANA.find(d => d.key === selectedDay) || DIAS_SEMANA[0];
+
   return (
-    <Card className="p-6 bg-card border-border">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
-          <CalendarIcon className="w-5 h-5 text-success" />
+    <div className="space-y-4">
+      {/* Seletor de dias */}
+      <Card className="p-4">
+        <h3 className="text-lg font-semibold mb-4">Feiras da Semana</h3>
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {DIAS_SEMANA.map((dia) => {
+            const stats = getStatsForDay(dia.key);
+            return (
+              <button
+                key={dia.key}
+                onClick={() => setSelectedDay(dia.key)}
+                className={`flex-shrink-0 px-4 py-3 rounded-xl border-2 transition-all ${
+                  selectedDay === dia.key
+                    ? `bg-gradient-to-r ${dia.color} text-white border-transparent shadow-lg`
+                    : 'bg-card border-border hover:border-primary/50'
+                }`}
+              >
+                <div className="text-xs font-bold">{dia.shortName}</div>
+                <div className="text-lg font-bold mt-1">{stats.totalFeiras}</div>
+              </button>
+            );
+          })}
         </div>
-        <div>
-          <h3 className="text-lg font-semibold">Feiras da Semana</h3>
-          <p className="text-sm text-muted-foreground">Feiras organizadas por dia</p>
-        </div>
+      </Card>
+
+      {/* Cards de estatísticas */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Total Inscrições */}
+        <Card className={`p-6 bg-gradient-to-br ${diaInfo.color} text-white`}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm opacity-90">Total Inscrições</p>
+            <p className="text-3xl font-bold">{statsDoSelecionado.totalInscricoes}</p>
+          </div>
+        </Card>
+
+        {/* Confirmadas */}
+        <Card className="p-6 bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm opacity-90">Confirmadas</p>
+            <p className="text-3xl font-bold">{statsDoSelecionado.totalConfirmadas}</p>
+          </div>
+        </Card>
+
+        {/* Receita */}
+        <Card className="p-6 bg-gradient-to-br from-amber-500 to-orange-600 text-white">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+              <DollarSign className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm opacity-90">Receita Total</p>
+            <p className="text-2xl font-bold">
+              R$ {statsDoSelecionado.totalReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </p>
+          </div>
+        </Card>
       </div>
 
-      <div className="space-y-2">
-        {DIAS_SEMANA.map((dia) => {
-          const feirasNoDia = getFeirasForDay(dia.key);
-
-          return (
-            <Collapsible key={dia.key} defaultOpen={feirasNoDia.length > 0}>
-              <CollapsibleTrigger className="w-full group">
+      {/* Lista de feiras */}
+      {feirasDoSelecionado.length > 0 && (
+        <Card className="p-6">
+          <h4 className="text-md font-semibold mb-4">
+            {diaInfo.name} - {feirasDoSelecionado.length} feira{feirasDoSelecionado.length !== 1 ? 's' : ''}
+          </h4>
+          <div className="space-y-3">
+            {feirasDoSelecionado.map((feira) => {
+              const valorTotal = (feira.inscricoes_confirmadas || 0) * (feira.valor_participacao || 0);
+              
+              return (
                 <div
-                  className={`flex items-center justify-between p-3 rounded-xl bg-gradient-to-r ${dia.color} text-white hover:shadow-lg transition-all cursor-pointer`}
+                  key={feira.id}
+                  className="p-4 rounded-xl bg-muted/50 border border-border hover:shadow-md transition-all"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="font-bold text-xs bg-white/20 rounded-lg px-2 py-1">{dia.shortName}</div>
-                    <div className="font-medium text-sm">{dia.name}</div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-0 text-xs px-2 py-0.5">
-                      {feirasNoDia.length} feira{feirasNoDia.length !== 1 ? "s" : ""}
-                    </Badge>
-                    {feirasNoDia.length > 0 && (
-                      <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div className="flex-1">
+                      <h5 className="font-semibold text-base">{feira.nome}</h5>
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span>{feira.cidade} - {feira.bairro}</span>
+                      </div>
+                    </div>
+                    {feira.recorrente && (
+                      <Badge className="bg-success/10 text-success border-success/20">
+                        Ativa
+                      </Badge>
                     )}
                   </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="text-center p-2 bg-background rounded-lg">
+                      <p className="text-xs text-muted-foreground mb-1">Inscrições</p>
+                      <p className="text-lg font-bold">{feira.inscricoes_count}</p>
+                    </div>
+
+                    <div className="text-center p-2 bg-background rounded-lg">
+                      <p className="text-xs text-muted-foreground mb-1">Confirmadas</p>
+                      <p className="text-lg font-bold">{feira.inscricoes_confirmadas}</p>
+                    </div>
+
+                    <div className="text-center p-2 bg-background rounded-lg">
+                      <p className="text-xs text-muted-foreground mb-1">Receita</p>
+                      <p className="text-sm font-bold">
+                        R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </CollapsibleTrigger>
+              );
+            })}
+          </div>
+        </Card>
+      )}
 
-              {feirasNoDia.length > 0 && (
-                <CollapsibleContent className="mt-2 ml-2 space-y-2 animate-fade-in">
-                  {feirasNoDia.map((feira) => {
-                    const valorTotal = (feira.inscricoes_confirmadas || 0) * (feira.valor_participacao || 0);
-                    
-                    return (
-                      <div
-                        key={feira.id}
-                        className="p-4 rounded-xl bg-card border border-border hover:shadow-md transition-all"
-                      >
-                        <div className="space-y-4">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-base">{feira.nome}</h4>
-                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
-                                <MapPin className="w-3.5 h-3.5" />
-                                <span>{feira.cidade} - {feira.bairro}</span>
-                              </div>
-                            </div>
-                            {feira.recorrente && (
-                              <Badge className="bg-success/10 text-success border-success/20">
-                                Ativa
-                              </Badge>
-                            )}
-                          </div>
-
-                          <div className="grid grid-cols-3 gap-3">
-                            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
-                              <div className="flex items-center gap-2 mb-1">
-                                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                  <Users className="w-4 h-4 text-primary" />
-                                </div>
-                              </div>
-                              <p className="text-xs text-muted-foreground mb-0.5">Inscrições</p>
-                              <p className="text-xl font-bold">{feira.inscricoes_count}</p>
-                            </div>
-
-                            <div className="p-3 bg-success/5 rounded-lg border border-success/10">
-                              <div className="flex items-center gap-2 mb-1">
-                                <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
-                                  <Users className="w-4 h-4 text-success" />
-                                </div>
-                              </div>
-                              <p className="text-xs text-muted-foreground mb-0.5">Confirmadas</p>
-                              <p className="text-xl font-bold">{feira.inscricoes_confirmadas}</p>
-                            </div>
-
-                            <div className="p-3 bg-accent/5 rounded-lg border border-accent/10">
-                              <div className="flex items-center gap-2 mb-1">
-                                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-                                  <DollarSign className="w-4 h-4 text-accent" />
-                                </div>
-                              </div>
-                              <p className="text-xs text-muted-foreground mb-0.5">Receita</p>
-                              <p className="text-base font-bold">
-                                R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </CollapsibleContent>
-              )}
-            </Collapsible>
-          );
-        })}
-      </div>
-    </Card>
+      {feirasDoSelecionado.length === 0 && (
+        <Card className="p-8 text-center">
+          <p className="text-muted-foreground">Nenhuma feira cadastrada para {diaInfo.name}</p>
+        </Card>
+      )}
+    </div>
   );
 };
