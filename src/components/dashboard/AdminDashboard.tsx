@@ -23,6 +23,7 @@ import { ProfileHeader } from "./ProfileHeader";
 import { AdminSidebar } from "./AdminSidebar";
 import { DraggableStatsCards } from "./admin/DraggableStatsCards";
 import SendNotifications from "./admin/SendNotifications";
+import { NotificationPermission } from "@/components/notifications/NotificationPermission";
 
 interface AdminDashboardProps {
   user: User;
@@ -206,7 +207,15 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "notificacoes" && (
-            <SendNotifications />
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">Notificações</h1>
+                <p className="text-muted-foreground">Configure e envie notificações push</p>
+              </div>
+              
+              <NotificationPermission />
+              <SendNotifications />
+            </div>
           )}
 
           {activeSection === "suporte" && (
