@@ -9,12 +9,11 @@ import { useNavigate } from "react-router-dom";
 import { FeiraForm } from "./admin/FeiraForm";
 import { FeirasListEnhanced } from "./admin/FeirasListEnhanced";
 import { InscricoesList } from "./admin/InscricoesList";
-import { FeirasListOverview } from "./admin/FeirasListOverview";
 import { FeirantesAtivos } from "./admin/FeirantesAtivos";
 import { PagamentosVerificacao } from "./admin/PagamentosVerificacao";
 import { UnifiedStatsCard } from "./admin/UnifiedStatsCard";
 import { FeirasCalendar } from "./admin/FeirasCalendar";
-import { FeirasWeekView } from "./admin/FeirasWeekView";
+import { FeirasWeeklyOverview } from "./admin/FeirasWeeklyOverview";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
@@ -137,13 +136,13 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 <p className="text-muted-foreground">Painel de controle das feiras</p>
               </div>
 
-              <div className="grid lg:grid-cols-[400px_1fr] gap-6">
-                <div className="space-y-6">
-                  <UnifiedStatsCard stats={stats} />
-                  <FeirasWeekView />
-                  <FeirasListOverview />
+              <div className="space-y-6">
+                <UnifiedStatsCard stats={stats} />
+                
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+                  <FeirasWeeklyOverview />
+                  <FeirasCalendar />
                 </div>
-                <FeirasCalendar />
               </div>
             </div>
           )}
