@@ -137,48 +137,54 @@ export const FeirasWeeklyOverview = () => {
                     return (
                       <div
                         key={feira.id}
-                        className="p-4 rounded-lg bg-muted/50 hover:bg-muted transition-all border-l-2 border-l-primary"
+                        className="p-4 rounded-xl bg-card border border-border hover:shadow-md transition-all"
                       >
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex-1">
-                              <h4 className="font-semibold text-sm">{feira.nome}</h4>
+                              <h4 className="font-semibold text-base">{feira.nome}</h4>
                               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
-                                <MapPin className="w-3 h-3" />
+                                <MapPin className="w-3.5 h-3.5" />
                                 <span>{feira.cidade} - {feira.bairro}</span>
                               </div>
                             </div>
                             {feira.recorrente && (
-                              <Badge className="bg-success/10 text-success border-success/20 text-xs">
+                              <Badge className="bg-success/10 text-success border-success/20">
                                 Ativa
                               </Badge>
                             )}
                           </div>
 
-                          <div className="grid grid-cols-3 gap-2">
-                            <div className="flex flex-col items-center p-2 bg-background rounded-lg">
-                              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
-                                <Users className="w-3.5 h-3.5 text-primary" />
+                          <div className="grid grid-cols-3 gap-3">
+                            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+                              <div className="flex items-center gap-2 mb-1">
+                                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                                  <Users className="w-4 h-4 text-primary" />
+                                </div>
                               </div>
-                              <p className="text-[10px] text-muted-foreground">Inscrições</p>
-                              <p className="text-sm font-bold">{feira.inscricoes_count}</p>
+                              <p className="text-xs text-muted-foreground mb-0.5">Inscrições</p>
+                              <p className="text-xl font-bold">{feira.inscricoes_count}</p>
                             </div>
 
-                            <div className="flex flex-col items-center p-2 bg-background rounded-lg">
-                              <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center mb-1">
-                                <Users className="w-3.5 h-3.5 text-success" />
+                            <div className="p-3 bg-success/5 rounded-lg border border-success/10">
+                              <div className="flex items-center gap-2 mb-1">
+                                <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+                                  <Users className="w-4 h-4 text-success" />
+                                </div>
                               </div>
-                              <p className="text-[10px] text-muted-foreground">Confirmadas</p>
-                              <p className="text-sm font-bold">{feira.inscricoes_confirmadas}</p>
+                              <p className="text-xs text-muted-foreground mb-0.5">Confirmadas</p>
+                              <p className="text-xl font-bold">{feira.inscricoes_confirmadas}</p>
                             </div>
 
-                            <div className="flex flex-col items-center p-2 bg-background rounded-lg">
-                              <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center mb-1">
-                                <DollarSign className="w-3.5 h-3.5 text-accent" />
+                            <div className="p-3 bg-accent/5 rounded-lg border border-accent/10">
+                              <div className="flex items-center gap-2 mb-1">
+                                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                                  <DollarSign className="w-4 h-4 text-accent" />
+                                </div>
                               </div>
-                              <p className="text-[10px] text-muted-foreground">Total</p>
-                              <p className="text-xs font-bold">
-                                R$ {(valorTotal / 1000).toFixed(1)}K
+                              <p className="text-xs text-muted-foreground mb-0.5">Receita</p>
+                              <p className="text-base font-bold">
+                                R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                               </p>
                             </div>
                           </div>
