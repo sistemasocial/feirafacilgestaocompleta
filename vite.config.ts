@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => ({
       injectManifest: {
         injectionPoint: undefined
       },
-      includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
+      includeAssets: ["favicon.png", "robots.txt", "apple-touch-icon.png"],
       manifest: {
         name: "FeiraFácil! - Gestão Completa",
         short_name: "FeiraFácil",
