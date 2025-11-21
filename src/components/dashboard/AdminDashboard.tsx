@@ -15,6 +15,8 @@ import { EnhancedStatsCards } from "./admin/EnhancedStatsCards";
 import { FeirasCalendar } from "./admin/FeirasCalendar";
 import { FeirasConsolidatedCard } from "./admin/FeirasConsolidatedCard";
 import { RevenueGoalSettings } from "./admin/RevenueGoalSettings";
+import { FeirasWeeklyStats } from "./admin/FeirasWeeklyStats";
+import { FinancialGoalsCard } from "./admin/FinancialGoalsCard";
 import { ExpensesSettings } from "./admin/ExpensesSettings";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
 import ChangePassword from "@/components/profile/ChangePassword";
@@ -143,6 +145,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
               <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 mt-6">
                 <FeirasConsolidatedCard />
                 <div className="space-y-6">
+                  <FeirasWeeklyStats />
                   <FeirasCalendar />
                 </div>
               </div>
@@ -163,7 +166,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           {activeSection === "config" && (
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <RevenueGoalSettings userId={user.id} onGoalUpdated={loadStats} />
+                <FinancialGoalsCard userId={user.id} onGoalUpdated={loadStats} />
                 <ExpensesSettings userId={user.id} />
               </div>
             </div>
