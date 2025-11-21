@@ -192,36 +192,20 @@ export const FeirasCalendar = () => {
           {daysInMonth.map((day, index) => {
             const event = getEventForDay(day);
             const isToday = format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
-            const uniqueFeiras = event ? getUniqueFeiras(event.feiras) : [];
             
             return (
               <div
                 key={index}
                 className={`
                   w-10 h-10 rounded-lg flex items-center justify-center 
-                  text-sm font-medium transition-all cursor-pointer relative group
-                  ${event ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm' : 'hover:bg-muted/40'}
+                  text-sm font-medium transition-all
+                  ${event ? 'bg-primary text-primary-foreground shadow-sm' : ''}
                   ${isToday && event ? 'ring-2 ring-accent shadow-md' : ''}
                   ${isToday && !event ? 'ring-2 ring-primary bg-accent/50 text-accent-foreground' : ''}
                   ${!event && !isToday ? 'text-foreground/80' : ''}
                 `}
               >
                 {format(day, "d")}
-                {event && uniqueFeiras.length > 0 && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 min-w-[200px] max-w-[300px] border border-border">
-                    <div className="font-semibold mb-2 text-primary border-b border-border pb-1">
-                      {uniqueFeiras.length} {uniqueFeiras.length === 1 ? 'Feira' : 'Feiras'}
-                    </div>
-                    <div className="space-y-1.5">
-                      {uniqueFeiras.map((feira, idx) => (
-                        <div key={feira.id} className="text-left">
-                          <div className="font-medium text-foreground">{feira.nome}</div>
-                          <div className="text-muted-foreground text-[10px]">{feira.cidade}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             );
           })}
