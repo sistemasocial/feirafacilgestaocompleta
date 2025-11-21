@@ -20,17 +20,29 @@ export function SendPushNotification() {
 
     setLoading(true);
     try {
+      console.log('Iniciando envio de notificação...', { title, message });
+
       // Buscar todos os feirantes
       const { data: feirantes, error: feirantesError } = await supabase
         .from('feirantes')
         .select('user_id');
 
-      if (feirantesError) throw feirantesError;
+      if (feirantesError) {
+        console.error('Erro ao buscar feirantes:', feirantesError);
+        throw feirantesError;
+      }
 
       const userIds = feirantes?.map(f => f.user_id) || [];
+      console.log('Feirantes encontrados:', userIds.length);
+
+      if (userIds.length === 0) {
+        toast.error("Nenhum feirante encontrado para enviar notificação");
+        return;
+      }
 
       // Enviar notificação push
-      const { error } = await supabase.functions.invoke('send-push-notification', {
+      console.log('Chamando edge function...');
+      const { data, error } = await supabase.functions.invoke('send-push-notification', {
         body: {
           title,
           message,
@@ -39,14 +51,20 @@ export function SendPushNotification() {
         },
       });
 
-      if (error) throw error;
+      console.log('Resposta do edge function:', { data, error });
 
-      toast.success("Notificação enviada para todos os feirantes!");
+      if (error) {
+        console.error('Erro na edge function:', error);
+        throw error;
+      }
+
+      toast.success(`Notificação enviada para ${userIds.length} feirantes!`);
       setTitle("");
       setMessage("");
-    } catch (error) {
-      console.error('Erro ao enviar notificação:', error);
-      toast.error("Erro ao enviar notificação");
+    } catch (error: any) {
+      console.error('Erro completo ao enviar notificação:', error);
+      const errorMessage = error?.message || 'Erro desconhecido';
+      toast.error(`Erro ao enviar notificação: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
