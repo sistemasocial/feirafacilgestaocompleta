@@ -44,23 +44,12 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
   });
   const navigate = useNavigate();
 
-  // Inicializar notificações e FCM
+  // Inicializar notificações
   useNotifications(user.id);
 
   useEffect(() => {
     loadStats();
-    
-    // Inicializar FCM para push notifications
-    const initFCM = async () => {
-      try {
-        const { initializeFCM } = await import('@/lib/fcmService');
-        await initializeFCM(user.id);
-      } catch (error) {
-        console.error('Erro ao inicializar FCM:', error);
-      }
-    };
-    initFCM();
-  }, [user.id]);
+  }, []);
 
   const loadStats = async () => {
     try {
