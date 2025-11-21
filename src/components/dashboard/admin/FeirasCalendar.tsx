@@ -192,21 +192,19 @@ export const FeirasCalendar = () => {
           {daysInMonth.map((day, index) => {
             const event = getEventForDay(day);
             const isToday = format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
-            
-            // Define a classe de cor baseada no estado
-            let colorClass = "text-foreground/80"; // Padrão: sem cor
-            
-            if (event && isToday) {
-              // Dia com feira E é hoje → verde com borda laranja
-              colorClass = "bg-primary text-primary-foreground ring-2 ring-orange-500 shadow-md";
-            } else if (event) {
-              // Dia com feira → verde
-              colorClass = "bg-primary text-primary-foreground shadow-sm";
-            } else if (isToday) {
-              // Apenas dia atual → laranja
+
+            // Regra simples de prioridade de cores:
+            // 1) Se for hoje -> laranja
+            // 2) Senão, se tiver feira -> verde
+            // 3) Caso contrário -> neutro
+            let colorClass = "text-foreground/80";
+
+            if (isToday) {
               colorClass = "bg-orange-500 text-white shadow-sm";
+            } else if (event) {
+              colorClass = "bg-primary text-primary-foreground shadow-sm";
             }
-            
+
             return (
               <div
                 key={index}
