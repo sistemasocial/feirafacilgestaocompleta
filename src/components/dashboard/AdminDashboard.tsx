@@ -11,7 +11,7 @@ import { FeirasListEnhanced } from "./admin/FeirasListEnhanced";
 import { InscricoesList } from "./admin/InscricoesList";
 import { FeirantesAtivos } from "./admin/FeirantesAtivos";
 import { PagamentosVerificacao } from "./admin/PagamentosVerificacao";
-import { UnifiedStatsCard } from "./admin/UnifiedStatsCard";
+import { EnhancedStatsCards } from "./admin/EnhancedStatsCards";
 import { FeirasCalendar } from "./admin/FeirasCalendar";
 import { FeirasWeeklyOverview } from "./admin/FeirasWeeklyOverview";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
@@ -136,13 +136,11 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 <p className="text-muted-foreground">Painel de controle das feiras</p>
               </div>
 
-              <div className="space-y-6">
-                <UnifiedStatsCard stats={stats} />
-                
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
-                  <FeirasWeeklyOverview />
-                  <FeirasCalendar />
-                </div>
+              <EnhancedStatsCards stats={stats} />
+              
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 mt-6">
+                <FeirasWeeklyOverview />
+                <FeirasCalendar />
               </div>
             </div>
           )}
