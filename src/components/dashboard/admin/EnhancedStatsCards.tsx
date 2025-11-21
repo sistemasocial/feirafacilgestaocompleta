@@ -279,48 +279,51 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     </Card>,
 
     // Card 5: Feiras da Semana
-    <Card key="feiras-semana" className="h-full p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-border flex flex-col">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-          <Calendar className="w-5 h-5 text-primary" />
-        </div>
-        <div>
-          <h3 className="text-sm font-medium text-muted-foreground">Feiras da Semana</h3>
-          <p className="text-xs text-muted-foreground">Últimas feiras criadas</p>
-        </div>
-      </div>
-      
-      <div className="space-y-3 flex-1">
-        {feiras.length === 0 ? (
-          <div className="text-center py-6 text-muted-foreground text-sm">
-            Nenhuma feira cadastrada
+    <Card key="feiras-semana" className="h-full p-6 bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-0 relative overflow-hidden flex flex-col">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+            <Calendar className="w-5 h-5 text-white" />
           </div>
-        ) : (
-          feiras.map((feira) => {
-            const diasFormatados = feira.dias_semana
-              .map((d: string) => DIAS_MAP[d])
-              .join(", ");
-            
-            return (
-              <div
-                key={feira.id}
-                className="p-3 rounded-lg bg-background border border-border hover:border-primary/50 transition-all"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-sm truncate">{feira.nome}</h4>
-                    <p className="text-xs text-muted-foreground truncate">{feira.bairro}</p>
+          <div>
+            <h3 className="text-sm font-medium text-white">Feiras da Semana</h3>
+            <p className="text-xs text-white/80">Últimas feiras criadas</p>
+          </div>
+        </div>
+      
+        <div className="space-y-3 flex-1">
+          {feiras.length === 0 ? (
+            <div className="text-center py-6 text-white/70 text-sm">
+              Nenhuma feira cadastrada
+            </div>
+          ) : (
+            feiras.map((feira) => {
+              const diasFormatados = feira.dias_semana
+                .map((d: string) => DIAS_MAP[d])
+                .join(", ");
+              
+              return (
+                <div
+                  key={feira.id}
+                  className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-sm truncate text-white">{feira.nome}</h4>
+                      <p className="text-xs text-white/70 truncate">{feira.bairro}</p>
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <div className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white/20 text-white text-xs font-medium">
+                      {diasFormatados}
+                    </div>
                   </div>
                 </div>
-                <div className="mt-2">
-                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">
-                    {diasFormatados}
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )}
+              );
+            })
+          )}
+        </div>
       </div>
     </Card>,
 
