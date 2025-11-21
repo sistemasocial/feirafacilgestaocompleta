@@ -266,7 +266,7 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
                     <DollarSign className="w-4 h-4 mt-0.5 text-success shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm font-medium text-muted-foreground">Valor da Feira</p>
-                      <p className="text-2xl font-extrabold text-foreground">
+                      <p className="text-2xl font-extrabold text-emerald-600">
                         R$ {feira.valor_participacao?.toFixed(2) || "0,00"}
                       </p>
                       <div className="mt-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-md">
