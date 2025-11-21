@@ -76,49 +76,72 @@ export const SegmentosSection = () => {
         </p>
       </div>
 
-      <div className="max-w-3xl mx-auto space-y-4">
+      <div className="max-w-4xl mx-auto space-y-6">
         {Object.entries(groupedFeiras).map(([cidade, cityFeiras]) => (
-          <Card key={cidade} className="overflow-hidden">
-            <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-3 border-b">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-primary" />
-                <h3 className="text-lg font-bold">{cidade}</h3>
-                <Badge variant="outline" className="ml-auto text-xs">
-                  <Users className="w-3 h-3 mr-1" />
-                  {cityFeiras.length} {cityFeiras.length === 1 ? "feira" : "feiras"}
-                </Badge>
-              </div>
+          <div key={cidade} className="space-y-4">
+            <div className="flex items-center gap-2 mb-3">
+              <MapPin className="w-5 h-5 text-primary" />
+              <h3 className="text-xl font-bold">{cidade}</h3>
+              <Badge variant="outline" className="ml-2">
+                <Users className="w-3 h-3 mr-1" />
+                {cityFeiras.length} {cityFeiras.length === 1 ? "feira" : "feiras"}
+              </Badge>
             </div>
-
-            <div className="p-4 space-y-3">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cityFeiras.map((feira) => (
-                <div key={feira.id} className="border rounded-lg p-3 space-y-2 hover:border-primary/50 transition-colors">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-base truncate">{feira.nome}</h4>
-                      <p className="text-sm text-muted-foreground truncate">{feira.bairro}</p>
+                <Card key={feira.id} className="bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
+                  
+                  <div className="relative z-10 p-6 space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center shrink-0">
+                        <Tag className="w-5 h-5 text-success" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs text-slate-400 mb-1">Feira disponível</div>
+                        <h4 className="font-bold text-lg truncate">{feira.nome}</h4>
+                      </div>
                     </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="flex items-center gap-1 text-slate-400 text-xs mb-1">
+                          <MapPin className="w-3 h-3" />
+                          <span>Localização</span>
+                        </div>
+                        <div className="font-semibold text-sm truncate">{feira.bairro}</div>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1 text-slate-400 text-xs mb-1">
+                          <Tag className="w-3 h-3" />
+                          <span>Segmentos</span>
+                        </div>
+                        <div className="font-semibold text-sm">Todos</div>
+                      </div>
+                    </div>
+
                     {feira.segmento_exclusivo && (
-                      <Badge className="bg-accent text-accent-foreground text-xs shrink-0">
-                        Exclusivo
-                      </Badge>
+                      <div>
+                        <div className="h-1 bg-slate-700 rounded-full overflow-hidden mb-2">
+                          <div className="h-full bg-gradient-to-r from-accent to-primary rounded-full w-full" />
+                        </div>
+                        <Badge className="bg-accent text-accent-foreground text-xs">
+                          Segmento Exclusivo
+                        </Badge>
+                      </div>
+                    )}
+
+                    {feira.created_by && (
+                      <div className="pt-4 border-t border-slate-700">
+                        <AdminInfo adminId={feira.created_by} />
+                      </div>
                     )}
                   </div>
-
-                  <div className="flex items-center gap-2">
-                    <Tag className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground">Todos os segmentos</span>
-                  </div>
-
-                  {feira.created_by && (
-                    <div className="pt-2 border-t">
-                      <AdminInfo adminId={feira.created_by} />
-                    </div>
-                  )}
-                </div>
+                </Card>
               ))}
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </div>
