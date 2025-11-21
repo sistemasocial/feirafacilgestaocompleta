@@ -62,20 +62,27 @@ export const RevenueGoalSettings = ({ userId, onGoalUpdated }: RevenueGoalSettin
   };
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-cyan-500/5 border-border">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-          <Settings className="w-5 h-5 text-primary" />
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+          <Settings className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold">Configurar Meta de Receita</h3>
-          <p className="text-sm text-muted-foreground">Defina sua meta mensal de receita</p>
+          <h3 className="text-lg font-semibold">Meta de Receita</h3>
+          <p className="text-sm text-muted-foreground">Defina sua meta mensal</p>
         </div>
       </div>
 
       <div className="space-y-4">
+        <div className="p-4 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-lg border border-emerald-500/20">
+          <p className="text-sm text-muted-foreground mb-1">Meta Mensal</p>
+          <p className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            R$ {revenueGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </p>
+        </div>
+
         <div>
-          <Label htmlFor="revenue-goal">Meta de Receita (R$)</Label>
+          <Label htmlFor="revenue-goal">Valor da Meta (R$)</Label>
           <Input
             id="revenue-goal"
             type="number"
@@ -85,9 +92,6 @@ export const RevenueGoalSettings = ({ userId, onGoalUpdated }: RevenueGoalSettin
             step={100}
             className="mt-2"
           />
-          <p className="text-xs text-muted-foreground mt-1">
-            Valor: R$ {revenueGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-          </p>
         </div>
 
         <Button onClick={handleSave} disabled={loading} className="w-full">

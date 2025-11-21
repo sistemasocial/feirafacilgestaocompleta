@@ -33,12 +33,12 @@ export const ExpensesSettings = ({ userId }: ExpensesSettingsProps) => {
         .from("admin_expenses")
         .select("*")
         .eq("user_id", userId)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false }) as any;
 
       if (error) throw error;
 
       if (data) {
-        setExpenses(data);
+        setExpenses(data as Expense[]);
       }
     } catch (error: any) {
       console.error("Erro ao carregar despesas:", error);
@@ -59,7 +59,7 @@ export const ExpensesSettings = ({ userId }: ExpensesSettingsProps) => {
           user_id: userId,
           description: newExpense.description,
           amount: newExpense.amount,
-        });
+        } as any);
 
       if (error) throw error;
 
@@ -78,7 +78,7 @@ export const ExpensesSettings = ({ userId }: ExpensesSettingsProps) => {
       const { error } = await supabase
         .from("admin_expenses")
         .delete()
-        .eq("id", id);
+        .eq("id", id) as any;
 
       if (error) throw error;
 
