@@ -184,9 +184,9 @@ export const FeirasCalendar = () => {
         </div>
 
         {/* Grid do calendário */}
-        <div className="grid grid-cols-7 gap-1 flex-1">
+        <div className="grid grid-cols-7 gap-2 flex-1">
           {emptyDays.map((_, index) => (
-            <div key={`empty-${index}`} className="w-10 h-10" />
+            <div key={`empty-${index}`} className="w-9 h-9" />
           ))}
           
           {daysInMonth.map((day, index) => {
@@ -208,7 +208,7 @@ export const FeirasCalendar = () => {
             return (
               <div
                 key={index}
-                className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-medium ${colorClass}`}
+                className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm font-medium ${colorClass}`}
               >
                 {format(day, "d")}
               </div>
