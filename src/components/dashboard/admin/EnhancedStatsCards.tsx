@@ -50,55 +50,60 @@ export const EnhancedStatsCards = ({ stats, userId }: EnhancedStatsCardsProps) =
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {/* Revenue Goal - Circular Chart */}
-      <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
-        <div className="relative z-10">
-          <h3 className="text-sm font-medium mb-6 text-slate-300">Meta de Receita</h3>
-          
-          <div className="flex items-center justify-center mb-6">
-            <div className="relative w-48 h-48">
-              <svg className="w-full h-full transform -rotate-90">
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="80"
-                  stroke="currentColor"
-                  strokeWidth="12"
-                  fill="none"
-                  className="text-slate-700"
-                />
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="80"
-                  stroke="url(#gradient)"
-                  strokeWidth="12"
-                  fill="none"
-                  strokeDasharray={`${(percentualRecebido / 100) * 502.4} 502.4`}
-                  strokeLinecap="round"
-                  className="transition-all duration-1000"
-                />
-                <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#fbbf24" />
-                    <stop offset="50%" stopColor="#10b981" />
-                    <stop offset="100%" stopColor="#8b5cf6" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-4xl font-bold">
-                  R$ {(stats.pagamentosRecebidos / 1000).toFixed(1)}K
-                </div>
-                <div className="text-sm text-slate-400">de R$ {(revenueGoal / 1000).toFixed(1)}K</div>
+      <Card className="p-6 bg-card border-border">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-muted-foreground">Meta de Receita</h3>
+          <button 
+            onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+            className="text-xs text-primary hover:underline"
+          >
+            Editar Meta
+          </button>
+        </div>
+        
+        <div className="flex items-center justify-center mb-6">
+          <div className="relative w-48 h-48">
+            <svg className="w-full h-full transform -rotate-90">
+              <circle
+                cx="96"
+                cy="96"
+                r="80"
+                stroke="currentColor"
+                strokeWidth="12"
+                fill="none"
+                className="text-muted"
+              />
+              <circle
+                cx="96"
+                cy="96"
+                r="80"
+                stroke="url(#gradient)"
+                strokeWidth="12"
+                fill="none"
+                strokeDasharray={`${(percentualRecebido / 100) * 502.4} 502.4`}
+                strokeLinecap="round"
+                className="transition-all duration-1000"
+              />
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#fbbf24" />
+                  <stop offset="50%" stopColor="#10b981" />
+                  <stop offset="100%" stopColor="#8b5cf6" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-4xl font-bold">
+                R$ {stats.pagamentosRecebidos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </div>
+              <div className="text-sm text-muted-foreground">de R$ {revenueGoal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
             </div>
           </div>
+        </div>
 
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-slate-400">Progresso</span>
-            <span className="text-2xl font-bold">{percentualRecebido}%</span>
-          </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Progresso</span>
+          <span className="text-2xl font-bold">{percentualRecebido}%</span>
         </div>
       </Card>
 
