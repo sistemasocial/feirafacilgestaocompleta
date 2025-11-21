@@ -5,12 +5,16 @@ import { User, Session } from "@supabase/supabase-js";
 import AdminDashboard from "@/components/dashboard/AdminDashboard";
 import FeiranteDashboard from "@/components/dashboard/FeiranteDashboard";
 import { Loader2 } from "lucide-react";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Configurar listener de notificações push
+  useNotifications(user?.id);
 
   useEffect(() => {
     // Helper to fetch or create the user's role to avoid "Perfil não configurado"

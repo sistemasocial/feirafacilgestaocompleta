@@ -61,12 +61,21 @@ export default function NotificationBell({ userId, onNavigate }: NotificationBel
 
   const requestNotificationPermission = async () => {
     if ('Notification' in window && Notification.permission === 'default') {
-      await Notification.requestPermission();
+      const permission = await Notification.requestPermission();
+      console.log('Permissão de notificação:', permission);
+      
+      if (permission === 'granted' && 'serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          console.log('Service Worker registrado:', registration);
+        } catch (error) {
+          console.error('Erro ao registrar service worker:', error);
+        }
+      }
     }
   };
 
   const playNotificationSound = () => {
-    // Criar som de notificação usando Web Audio API
     try {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
@@ -88,25 +97,23 @@ export default function NotificationBell({ userId, onNavigate }: NotificationBel
     }
   };
 
-  const showSystemNotification = (notification: Notification) => {
-    if ('Notification' in window && Notification.permission === 'granted') {
-      const notif = new Notification(notification.title, {
-        body: notification.message,
-        icon: '/pwa-192x192.png',
-        badge: '/pwa-192x192.png',
-        tag: notification.id,
-        requireInteraction: false,
-        silent: false
-      });
-
-      notif.onclick = () => {
-        window.focus();
-        handleNotificationClick(notification);
-        notif.close();
-      };
-
-      // Auto-fechar após 5 segundos
-      setTimeout(() => notif.close(), 5000);
+  const showSystemNotification = async (notification: Notification) => {
+    if ('serviceWorker' in navigator && 'Notification' in window && Notification.permission === 'granted') {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        
+        // Enviar mensagem para o service worker mostrar a notificação
+        if (registration.active) {
+          registration.active.postMessage({
+            type: 'SHOW_NOTIFICATION',
+            title: notification.title,
+            message: notification.message,
+            id: notification.id
+          });
+        }
+      } catch (error) {
+        console.error('Erro ao mostrar notificação:', error);
+      }
     }
   };
 
