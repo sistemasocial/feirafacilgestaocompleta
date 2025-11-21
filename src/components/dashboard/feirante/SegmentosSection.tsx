@@ -90,30 +90,28 @@ export const SegmentosSection = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cityFeiras.map((feira) => (
-                <Card key={feira.id} className="bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
-                  
-                  <div className="relative z-10 p-6 space-y-4">
+                <Card key={feira.id} className="bg-background border-border hover:border-primary/50 transition-colors">
+                  <div className="p-6 space-y-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center shrink-0">
-                        <Tag className="w-5 h-5 text-success" />
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <Tag className="w-5 h-5 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs text-slate-400 mb-1">Feira disponível</div>
+                        <div className="text-xs text-muted-foreground mb-1">Feira disponível</div>
                         <h4 className="font-bold text-lg truncate">{feira.nome}</h4>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <div className="flex items-center gap-1 text-slate-400 text-xs mb-1">
+                        <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
                           <MapPin className="w-3 h-3" />
                           <span>Localização</span>
                         </div>
                         <div className="font-semibold text-sm truncate">{feira.bairro}</div>
                       </div>
                       <div>
-                        <div className="flex items-center gap-1 text-slate-400 text-xs mb-1">
+                        <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
                           <Tag className="w-3 h-3" />
                           <span>Segmentos</span>
                         </div>
@@ -123,7 +121,7 @@ export const SegmentosSection = () => {
 
                     {feira.segmento_exclusivo && (
                       <div>
-                        <div className="h-1 bg-slate-700 rounded-full overflow-hidden mb-2">
+                        <div className="h-1 bg-muted rounded-full overflow-hidden mb-2">
                           <div className="h-full bg-gradient-to-r from-accent to-primary rounded-full w-full" />
                         </div>
                         <Badge className="bg-accent text-accent-foreground text-xs">
@@ -133,7 +131,7 @@ export const SegmentosSection = () => {
                     )}
 
                     {feira.created_by && (
-                      <div className="pt-4 border-t border-slate-700">
+                      <div className="pt-4 border-t border-border">
                         <AdminInfo adminId={feira.created_by} />
                       </div>
                     )}
