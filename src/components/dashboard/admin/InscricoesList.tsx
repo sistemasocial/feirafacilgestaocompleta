@@ -130,95 +130,101 @@ export const InscricoesList = () => {
   }
 
   return (
-    <Card className="p-4 bg-gradient-to-br from-primary/5 to-secondary/5 border-border">
-      <div className="space-y-3">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-2">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <User className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <h2 className="text-base font-semibold">Feirantes Aceitaram Participar</h2>
-              <p className="text-sm text-muted-foreground">Inscrições recebidas</p>
-            </div>
-          </div>
-          <Badge className="bg-primary text-white text-sm h-6 px-3">{inscricoes.length}</Badge>
-        </div>
-
-        {/* Lista Vertical de Inscrições */}
-        <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-          {inscricoes.map((inscricao) => (
-            <div 
-              key={inscricao.id} 
-              className="p-3 rounded-lg bg-background border border-border hover:shadow-sm hover:border-primary/20 transition-all"
-            >
-              <div className="flex items-center gap-3">
-                {inscricao.profile.foto_url ? (
-                  <img 
-                    src={inscricao.profile.foto_url} 
-                    alt={inscricao.profile.full_name}
-                    className="w-11 h-11 rounded-full object-cover ring-2 ring-primary/20"
-                  />
-                ) : (
-                  <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-primary/20">
-                    <span className="text-sm font-bold text-primary">
-                      {inscricao.profile.full_name.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <h3 className="font-semibold text-sm truncate">
-                      {inscricao.profile.full_name}
-                    </h3>
-                    <Badge 
-                      variant={
-                        inscricao.status === "aprovada" ? "default" : 
-                        inscricao.status === "rejeitada" ? "destructive" : 
-                        "secondary"
-                      }
-                      className="text-xs shrink-0 px-2 py-0.5"
-                    >
-                      {inscricao.status === "aprovada" ? "Aprovado" : 
-                       inscricao.status === "rejeitada" ? "Rejeitado" : 
-                       "Pendente"}
-                    </Badge>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <MapPin className="w-3 h-3" />
-                    <span className="truncate">{inscricao.feira.nome}</span>
-                  </div>
-                </div>
-              </div>
-
-              {inscricao.status === "pendente" && (
-                <div className="flex gap-2 mt-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleUpdateStatus(inscricao.id, "aprovada")}
-                    className="flex-1 h-7 text-xs"
-                  >
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Aprovar
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => handleUpdateStatus(inscricao.id, "rejeitada")}
-                    className="flex-1 h-7 text-xs"
-                  >
-                    <XCircle className="w-3 h-3 mr-1" />
-                    Rejeitar
-                  </Button>
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold">Feirantes Aceitaram Participar ({inscricoes.length})</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {inscricoes.map((inscricao) => (
+          <Card key={inscricao.id} className="p-6 flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              {inscricao.profile.foto_url ? (
+                <img 
+                  src={inscricao.profile.foto_url} 
+                  alt={inscricao.profile.full_name}
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">
+                    {inscricao.profile.full_name.charAt(0).toUpperCase()}
+                  </span>
                 </div>
               )}
+              <div className="flex-1 space-y-1">
+                <h3 className="font-semibold">{inscricao.profile.full_name}</h3>
+                <Badge 
+                  variant={
+                    inscricao.status === "aprovada" ? "default" : 
+                    inscricao.status === "rejeitada" ? "destructive" : 
+                    "secondary"
+                  }
+                  className="text-xs"
+                >
+                  {inscricao.status === "aprovada" ? "Aprovado" : 
+                   inscricao.status === "rejeitada" ? "Rejeitado" : 
+                   "Pendente"}
+                </Badge>
+              </div>
             </div>
-          ))}
-        </div>
+
+            <div className="space-y-2 text-sm">
+              <div>
+                <span className="text-muted-foreground text-xs">Segmento:</span>
+                <p className="font-medium capitalize">
+                  {getSegmentoLabel(
+                    inscricao.segmento_inscrito || inscricao.feirante.segmento
+                  )}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-muted-foreground text-xs">WhatsApp:</span>
+                <p className="font-medium">{inscricao.profile.whatsapp || inscricao.profile.phone || "N/A"}</p>
+              </div>
+
+              <div>
+                <span className="text-muted-foreground text-xs">CPF/CNPJ:</span>
+                <p className="font-medium">{inscricao.feirante.cpf_cnpj}</p>
+              </div>
+            </div>
+
+            <div className="bg-muted/30 rounded-lg p-3 space-y-2 text-sm">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <MapPin className="w-4 h-4 shrink-0" />
+                <span className="line-clamp-1">{inscricao.feira.nome}</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Calendar className="w-4 h-4 shrink-0" />
+                <span>
+                  {new Date(inscricao.data_inscricao).toLocaleDateString("pt-BR")}
+                </span>
+              </div>
+            </div>
+
+            {inscricao.status === "pendente" && (
+              <div className="flex gap-2 pt-2">
+                <Button
+                  size="sm"
+                  onClick={() => handleUpdateStatus(inscricao.id, "aprovada")}
+                  className="flex-1"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Aprovar
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => handleUpdateStatus(inscricao.id, "rejeitada")}
+                  className="flex-1"
+                >
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Rejeitar
+                </Button>
+              </div>
+            )}
+          </Card>
+        ))}
       </div>
-    </Card>
+    </div>
   );
 };
