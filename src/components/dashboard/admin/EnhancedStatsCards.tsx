@@ -306,16 +306,20 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
               return (
                 <div
                   key={feira.id}
-                  className="p-3 rounded-lg bg-white/25 backdrop-blur-sm border border-white/40 hover:bg-white/35 transition-all shadow-md"
+                  className="p-3 rounded-lg bg-background text-foreground border border-border/60 hover:border-primary/60 transition-all shadow-md"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-sm truncate text-white drop-shadow">{feira.nome}</h4>
-                      <p className="text-sm text-white/95 truncate font-medium">{feira.bairro}</p>
+                      <h4 className="font-bold text-sm truncate text-foreground">
+                        {feira.nome}
+                      </h4>
+                      <p className="text-sm text-muted-foreground truncate font-medium">
+                        {feira.bairro}
+                      </p>
                     </div>
                   </div>
                   <div className="mt-2">
-                    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-white/30 backdrop-blur-sm text-white text-xs font-bold shadow">
+                    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-primary text-primary-foreground text-xs font-bold shadow">
                       {diasFormatados}
                     </div>
                   </div>
