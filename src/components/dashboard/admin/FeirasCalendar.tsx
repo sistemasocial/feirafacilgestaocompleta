@@ -28,30 +28,53 @@ export const FeirasCalendar = () => {
 
   const loadFeiraEvents = async () => {
     try {
-      const start = startOfMonth(currentMonth);
-      const end = endOfMonth(currentMonth);
-
-      // Buscar todas as feiras criadas no mês atual
+      // Buscar todas as feiras recorrentes
       const { data, error } = await supabase
         .from("feiras")
-        .select("id, nome, cidade, created_at")
-        .gte("created_at", format(start, "yyyy-MM-dd"))
-        .lte("created_at", format(end, "yyyy-MM-dd"))
-        .order("created_at", { ascending: true });
+        .select("id, nome, cidade, dias_semana")
+        .eq("recorrente", true);
 
       if (error) throw error;
 
-      // Agrupar por data
+      // Mapear dias da semana para números (0 = Domingo, 1 = Segunda, etc)
+      const diaSemanaMapa: { [key: string]: number } = {
+        'domingo': 0,
+        'segunda': 1,
+        'terca': 2,
+        'quarta': 3,
+        'quinta': 4,
+        'sexta': 5,
+        'sabado': 6,
+      };
+
+      // Criar mapa de eventos por data
       const eventMap: { [key: string]: Array<{ id: string; nome: string; cidade: string }> } = {};
-      data?.forEach((feira) => {
-        const date = format(parseISO(feira.created_at), "yyyy-MM-dd");
-        if (!eventMap[date]) {
-          eventMap[date] = [];
-        }
-        eventMap[date].push({
-          id: feira.id,
-          nome: feira.nome,
-          cidade: feira.cidade,
+      
+      // Para cada dia do mês atual
+      const start = startOfMonth(currentMonth);
+      const end = endOfMonth(currentMonth);
+      const allDays = eachDayOfInterval({ start, end });
+
+      allDays.forEach((day) => {
+        const dayOfWeek = getDay(day); // 0-6 (Domingo-Sábado)
+        const dateStr = format(day, "yyyy-MM-dd");
+
+        // Verificar quais feiras acontecem neste dia da semana
+        data?.forEach((feira) => {
+          const feiraHappenToday = feira.dias_semana.some((dia: string) => {
+            return diaSemanaMapa[dia.toLowerCase()] === dayOfWeek;
+          });
+
+          if (feiraHappenToday) {
+            if (!eventMap[dateStr]) {
+              eventMap[dateStr] = [];
+            }
+            eventMap[dateStr].push({
+              id: feira.id,
+              nome: feira.nome,
+              cidade: feira.cidade,
+            });
+          }
         });
       });
 
