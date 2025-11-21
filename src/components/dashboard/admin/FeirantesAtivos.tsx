@@ -105,56 +105,71 @@ export const FeirantesAtivos = () => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Feirantes Ativos</h2>
-        <Badge variant="secondary">{feirantes.length} feirantes</Badge>
-      </div>
+    <Card className="p-6 bg-gradient-to-br from-success/5 to-primary/5 border-border">
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
+              <User className="w-5 h-5 text-success" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">Feirantes Ativos</h2>
+              <p className="text-sm text-muted-foreground">Todos os feirantes cadastrados</p>
+            </div>
+          </div>
+          <Badge className="bg-success text-white">{feirantes.length} feirantes</Badge>
+        </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {feirantes.map((feirante) => (
-          <Card key={feirante.id} className="p-6">
-            <div className="flex items-start gap-4">
-              <Avatar className="w-16 h-16">
-                <AvatarImage src={feirante.profile.foto_url || undefined} />
-                <AvatarFallback className="text-lg">
-                  {feirante.profile.full_name.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+        {/* Grid de Feirantes */}
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {feirantes.map((feirante) => (
+            <div 
+              key={feirante.id} 
+              className="p-4 rounded-xl bg-background border border-border hover:shadow-md transition-all"
+            >
+              <div className="flex items-start gap-3">
+                <Avatar className="w-12 h-12 shrink-0">
+                  <AvatarImage src={feirante.profile.foto_url || undefined} />
+                  <AvatarFallback className="text-sm bg-primary/10">
+                    {feirante.profile.full_name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
 
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold truncate mb-1">
-                  {feirante.profile.full_name}
-                </h3>
-                <Badge variant="outline" className="mb-2">
-                  {getSegmentoLabel(feirante.segmento)}
-                </Badge>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold truncate text-sm mb-1">
+                    {feirante.profile.full_name}
+                  </h3>
+                  <Badge variant="outline" className="text-xs mb-2">
+                    {getSegmentoLabel(feirante.segmento)}
+                  </Badge>
 
-                <div className="space-y-1 text-sm text-muted-foreground">
-                  {feirante.profile.phone && (
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-3 h-3" />
-                      <span className="truncate">{feirante.profile.phone}</span>
-                    </div>
-                  )}
-                  {feirante.ponto_fixo && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-3 h-3" />
-                      <span>Ponto Fixo</span>
-                    </div>
+                  <div className="space-y-1 text-xs text-muted-foreground">
+                    {feirante.profile.phone && (
+                      <div className="flex items-center gap-1.5">
+                        <Phone className="w-3 h-3" />
+                        <span className="truncate">{feirante.profile.phone}</span>
+                      </div>
+                    )}
+                    {feirante.ponto_fixo && (
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3 h-3 text-success" />
+                        <span className="font-medium text-success">Ponto Fixo</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {feirante.descricao && (
+                    <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                      {feirante.descricao}
+                    </p>
                   )}
                 </div>
-
-                {feirante.descricao && (
-                  <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
-                    {feirante.descricao}
-                  </p>
-                )}
               </div>
             </div>
-          </Card>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </Card>
   );
 };
