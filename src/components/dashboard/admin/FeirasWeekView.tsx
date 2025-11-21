@@ -72,68 +72,48 @@ export const FeirasWeekView = () => {
         </div>
         <div>
           <h3 className="text-lg font-semibold">Feiras da Semana</h3>
-          <p className="text-sm text-muted-foreground">Organização por dias da semana</p>
+          <p className="text-sm text-muted-foreground">Distribuição por dias</p>
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-2">
         {DIAS_SEMANA.map((dia) => {
           const feirasNoDia = getFeirasForDay(dia.key);
 
           return (
-            <div key={dia.key} className="space-y-3">
-              <div className={`flex items-center gap-2 p-3 rounded-lg bg-gradient-to-r ${dia.color} text-white`}>
-                <div className="font-bold text-lg">{dia.shortName}</div>
-                <div className="flex-1 font-semibold">{dia.name}</div>
-                <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+            <div
+              key={dia.key}
+              className={`flex items-center justify-between p-3 rounded-lg bg-gradient-to-r ${dia.color} text-white hover:shadow-md transition-all`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="font-bold text-sm">{dia.shortName}</div>
+                <div className="font-medium text-sm">{dia.name}</div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Badge variant="secondary" className="bg-white/20 text-white border-white/30 text-xs">
                   {feirasNoDia.length} feira{feirasNoDia.length !== 1 ? "s" : ""}
                 </Badge>
-              </div>
-
-              {feirasNoDia.length > 0 ? (
-                <div className="grid gap-3 pl-4">
-                  {feirasNoDia.map((feira) => (
-                    <Card
-                      key={feira.id}
-                      className="p-4 hover:shadow-md transition-all animate-fade-in border-l-4"
-                      style={{
-                        borderLeftColor: `hsl(var(--primary))`,
-                      }}
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-semibold text-sm">{feira.nome}</h4>
-                          {feira.recorrente && (
-                            <Badge variant="outline" className="text-xs">
-                              Recorrente
-                            </Badge>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />
-                            <span>
-                              {feira.cidade} - {feira.bairro}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            <span>
-                              {feira.horario_inicio} - {feira.horario_fim}
-                            </span>
-                          </div>
-                        </div>
+                
+                {feirasNoDia.length > 0 && (
+                  <div className="flex -space-x-1">
+                    {feirasNoDia.slice(0, 3).map((feira) => (
+                      <div
+                        key={feira.id}
+                        className="w-6 h-6 rounded-full bg-white/30 border-2 border-white flex items-center justify-center"
+                        title={feira.nome}
+                      >
+                        <span className="text-xs font-bold">{feira.nome.charAt(0)}</span>
                       </div>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <div className="pl-4 py-2 text-sm text-muted-foreground italic">
-                  Nenhuma feira programada para este dia
-                </div>
-              )}
+                    ))}
+                    {feirasNoDia.length > 3 && (
+                      <div className="w-6 h-6 rounded-full bg-white/30 border-2 border-white flex items-center justify-center">
+                        <span className="text-xs font-bold">+{feirasNoDia.length - 3}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}
