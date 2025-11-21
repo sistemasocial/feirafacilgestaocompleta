@@ -62,6 +62,16 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
   const [feiraToDelete, setFeiraToDelete] = useState<string | null>(null);
   const [feiraToEdit, setFeiraToEdit] = useState<string | null>(null);
 
+  // Gradientes elegantes para os cards
+  const cardGradients = [
+    "bg-gradient-to-br from-primary/5 to-accent/5",
+    "bg-gradient-to-br from-success/5 to-primary/5",
+    "bg-gradient-to-br from-accent/5 to-success/5",
+    "bg-gradient-to-br from-blue-500/5 to-purple-500/5",
+    "bg-gradient-to-br from-orange-500/5 to-red-500/5",
+    "bg-gradient-to-br from-emerald-500/5 to-teal-500/5",
+  ];
+
   useEffect(() => {
     loadFeiras();
   }, []);
@@ -175,11 +185,12 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {feiras.map((feira) => {
+        {feiras.map((feira, index) => {
           const feirantesConfirmados = inscricoesCount[feira.id] || 0;
+          const gradientClass = cardGradients[index % cardGradients.length];
           
           return (
-            <Card key={feira.id} className="flex flex-col h-full relative bg-gradient-to-br from-primary/5 to-accent/5 border-border">
+            <Card key={feira.id} className={`flex flex-col h-full relative border-border ${gradientClass}`}>
               <div className="p-4 space-y-3">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
