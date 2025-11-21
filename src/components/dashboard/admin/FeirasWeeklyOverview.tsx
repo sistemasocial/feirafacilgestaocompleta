@@ -192,103 +192,29 @@ export const FeirasWeeklyOverview = () => {
 
   return (
     <div className="space-y-4">
-      {/* Seletor de dias e Calendário */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
-        <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">Feiras da Semana</h3>
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            {DIAS_SEMANA.map((dia) => {
-              const stats = getStatsForDay(dia.key);
-              return (
-                <button
-                  key={dia.key}
-                  onClick={() => setSelectedDay(dia.key)}
-                  className={`flex-shrink-0 px-4 py-3 rounded-xl border-2 transition-all ${
-                    selectedDay === dia.key
-                      ? `bg-gradient-to-r ${dia.color} text-white border-transparent shadow-lg`
-                      : 'bg-card border-border hover:border-primary/50'
-                  }`}
-                >
-                  <div className="text-xs font-bold">{dia.shortName}</div>
-                  <div className="text-lg font-bold mt-1">{stats.totalFeiras}</div>
-                </button>
-              );
-            })}
-          </div>
-        </Card>
-
-        {/* Calendário Compacto */}
-        <Card className="p-4 bg-gradient-to-br from-accent/5 to-primary/5 border-border shadow-sm">
-          <div className="space-y-2.5">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold capitalize">
-                {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
-              </h3>
-              <div className="flex items-center gap-0.5">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-5 w-5 hover:bg-muted rounded-md" 
-                  onClick={() => setCurrentMonth((prev) => subMonths(prev, 1))}
-                >
-                  <ChevronLeft className="w-3 h-3" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-5 w-5 hover:bg-muted rounded-md" 
-                  onClick={() => setCurrentMonth((prev) => addMonths(prev, 1))}
-                >
-                  <ChevronRight className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-7 gap-0.5">
-              {weekDays.map((day, index) => (
-                <div 
-                  key={index} 
-                  className="text-center text-[8px] font-semibold text-muted-foreground uppercase"
-                >
-                  {day.substring(0, 3)}
-                </div>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-7 gap-0.5">
-              {emptyDays.map((_, index) => (
-                <div key={`empty-${index}`} className="w-7 h-7" />
-              ))}
-              
-              {daysInMonth.map((day, index) => {
-                const event = getEventForDay(day);
-                const isToday = format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
-                const tooltipText = event ? event.feiras.map(f => `${f.nome} - ${f.cidade}`).join('\n') : '';
-                
-                return (
-                  <div
-                    key={index}
-                    className={`
-                      w-7 h-7 rounded-md flex items-center justify-center 
-                      text-[10px] font-medium transition-all cursor-pointer relative group
-                      ${event ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-muted/40'}
-                      ${isToday && !event ? 'bg-accent text-accent-foreground' : ''}
-                      ${!event && !isToday ? 'text-foreground/80' : ''}
-                    `}
-                  >
-                    {format(day, "d")}
-                    {event && tooltipText && (
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-popover text-popover-foreground text-[10px] rounded shadow-lg whitespace-pre-line opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 min-w-[120px] text-center">
-                        {tooltipText}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </Card>
-      </div>
+      {/* Seletor de dias */}
+      <Card className="p-4">
+        <h3 className="text-lg font-semibold mb-4">Feiras da Semana</h3>
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {DIAS_SEMANA.map((dia) => {
+            const stats = getStatsForDay(dia.key);
+            return (
+              <button
+                key={dia.key}
+                onClick={() => setSelectedDay(dia.key)}
+                className={`flex-shrink-0 px-4 py-3 rounded-xl border-2 transition-all ${
+                  selectedDay === dia.key
+                    ? `bg-gradient-to-r ${dia.color} text-white border-transparent shadow-lg`
+                    : 'bg-card border-border hover:border-primary/50'
+                }`}
+              >
+                <div className="text-xs font-bold">{dia.shortName}</div>
+                <div className="text-lg font-bold mt-1">{stats.totalFeiras}</div>
+              </button>
+            );
+          })}
+        </div>
+      </Card>
 
       {/* Cards de estatísticas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
