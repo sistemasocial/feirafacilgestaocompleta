@@ -17,6 +17,8 @@ interface BeforeInstallPromptEvent extends Event {
 }
 const Index = () => {
   const navigate = useNavigate();
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
   const [previousCount, setPreviousCount] = useState(0);
   const [shouldPulse, setShouldPulse] = useState(false);
 
