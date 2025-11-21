@@ -17,7 +17,7 @@ const FIREBASE_CONFIG = {
 // VAPID Key (Web Push Certificate)
 // Acesse: Firebase Console → Configurações do Projeto → Cloud Messaging
 // Em "Web Push certificates", clique em "Gerar par de chaves"
-const VAPID_KEY = "BHq6gocWa_b9xlZCl0gcWlnDpeB1jd0X_FjM0zMvG4j_j65nQz0hZsvlUKAVbRBgQN_7xPfMEuZvkNHpWjxWr04";
+const VAPID_KEY = "BHq6ogocWa_b9kZIC0gcWInDpeB1jd0X_FjM0zMvG4jI_j65n9z2OhZsvIUKAVbRBq0N_7xPfMEuZWbNHpwWjxr04";
 
 export const initializeFCM = async (userId: string) => {
   try {
