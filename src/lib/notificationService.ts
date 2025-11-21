@@ -1,6 +1,9 @@
 import { supabase } from "@/integrations/supabase/client";
+import { initializeFCM } from "./fcmService";
 
 export const setupNotificationListener = (userId: string) => {
+  // Inicializar FCM para push notifications
+  initializeFCM(userId).catch(console.error);
   // Criar listener de notificações em tempo real
   const channel = supabase
     .channel(`notifications-${userId}`)
