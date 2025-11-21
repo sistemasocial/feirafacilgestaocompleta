@@ -1,27 +1,87 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// Configuração do Firebase (substitua com suas credenciais)
-const FIREBASE_CONFIG = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+// Carregar configuração do Firebase do localStorage
+const getFirebaseConfig = () => {
+  try {
+    const saved = localStorage.getItem('firebase_config');
+    if (saved) {
+      const config = JSON.parse(saved);
+      console.log('Firebase config carregada do localStorage');
+      return {
+        apiKey: config.apiKey,
+        authDomain: config.authDomain,
+        projectId: config.projectId,
+        storageBucket: config.storageBucket,
+        messagingSenderId: config.messagingSenderId,
+        appId: config.appId
+      };
+    }
+  } catch (error) {
+    console.error('Erro ao carregar config do Firebase:', error);
+  }
+  
+  // Configuração padrão (será substituída pela do localStorage)
+  return {
+    apiKey: "YOUR_FIREBASE_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+};
+
+const getVapidKey = () => {
+  try {
+    const saved = localStorage.getItem('firebase_config');
+    if (saved) {
+      const config = JSON.parse(saved);
+      return config.vapidKey || 'YOUR_VAPID_KEY';
+    }
+  } catch (error) {
+    console.error('Erro ao carregar VAPID key:', error);
+  }
+  return 'YOUR_VAPID_KEY';
 };
 
 export const initializeFCM = async (userId: string) => {
   try {
+    console.log('[FCM] Iniciando inicialização...');
+    
     // Verificar suporte a notificações
     if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-      console.log('Push notifications não suportadas');
+      console.log('[FCM] Push notifications não suportadas');
       return null;
+    }
+
+    // Verificar se já tem token salvo
+    const existingToken = localStorage.getItem('fcm_token');
+    if (existingToken) {
+      console.log('[FCM] Token já existe:', existingToken.substring(0, 20) + '...');
+      return existingToken;
     }
 
     // Solicitar permissão
     const permission = await Notification.requestPermission();
+    console.log('[FCM] Permissão:', permission);
+    
     if (permission !== 'granted') {
-      console.log('Permissão de notificação negada');
+      console.log('[FCM] Permissão de notificação negada');
+      return null;
+    }
+
+    // Carregar configuração do Firebase
+    const firebaseConfig = getFirebaseConfig();
+    const vapidKey = getVapidKey();
+    
+    console.log('[FCM] Config carregada:', { 
+      projectId: firebaseConfig.projectId,
+      hasVapidKey: vapidKey !== 'YOUR_VAPID_KEY'
+    });
+
+    // Verificar se a configuração está válida
+    if (firebaseConfig.apiKey === 'YOUR_FIREBASE_API_KEY' || vapidKey === 'YOUR_VAPID_KEY') {
+      console.warn('[FCM] Firebase não configurado! Configure em "Notificações Push"');
       return null;
     }
 
@@ -30,21 +90,26 @@ export const initializeFCM = async (userId: string) => {
     const { getMessaging, getToken } = await import('firebase/messaging');
 
     // Inicializar Firebase
-    const app = initializeApp(FIREBASE_CONFIG);
+    const app = initializeApp(firebaseConfig);
     const messaging = getMessaging(app);
+    console.log('[FCM] Firebase inicializado');
 
     // Registrar service worker
     const registration = await navigator.serviceWorker.register('/sw.js');
-    console.log('Service Worker registrado');
+    console.log('[FCM] Service Worker registrado');
 
     // Obter token FCM
+    console.log('[FCM] Obtendo token...');
     const token = await getToken(messaging, {
-      vapidKey: 'YOUR_VAPID_KEY', // Gere em Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
+      vapidKey,
       serviceWorkerRegistration: registration
     });
 
     if (token) {
-      console.log('Token FCM obtido:', token);
+      console.log('[FCM] Token FCM obtido:', token.substring(0, 20) + '...');
+      
+      // Salvar no localStorage
+      localStorage.setItem('fcm_token', token);
       
       // Salvar token no banco
       const { error } = await supabase
@@ -58,17 +123,18 @@ export const initializeFCM = async (userId: string) => {
         });
 
       if (error) {
-        console.error('Erro ao salvar token:', error);
+        console.error('[FCM] Erro ao salvar token:', error);
       } else {
-        console.log('Token FCM salvo com sucesso');
+        console.log('[FCM] Token FCM salvo com sucesso no banco');
       }
 
       return token;
     }
 
+    console.log('[FCM] Nenhum token obtido');
     return null;
   } catch (error) {
-    console.error('Erro ao inicializar FCM:', error);
+    console.error('[FCM] Erro ao inicializar FCM:', error);
     return null;
   }
 };
