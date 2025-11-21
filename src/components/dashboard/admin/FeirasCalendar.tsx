@@ -185,20 +185,25 @@ export const FeirasCalendar = () => {
           {daysInMonth.map((day, index) => {
             const event = getEventForDay(day);
             const isToday = format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+            const tooltipText = event ? event.feiras.map(f => `${f.nome} - ${f.cidade}`).join('\n') : '';
             
             return (
               <div
                 key={index}
                 className={`
                   w-7 h-7 rounded-md flex items-center justify-center 
-                  text-[10px] font-medium transition-all cursor-pointer
+                  text-[10px] font-medium transition-all cursor-pointer relative group
                   ${event ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-muted/40'}
                   ${isToday && !event ? 'bg-accent text-accent-foreground' : ''}
                   ${!event && !isToday ? 'text-foreground/80' : ''}
                 `}
-                title={event ? event.feiras.map(f => `${f.nome} - ${f.cidade}`).join('\n') : undefined}
               >
                 {format(day, "d")}
+                {event && tooltipText && (
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-popover text-popover-foreground text-[10px] rounded shadow-lg whitespace-pre-line opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 min-w-[120px] text-center">
+                    {tooltipText}
+                  </div>
+                )}
               </div>
             );
           })}
