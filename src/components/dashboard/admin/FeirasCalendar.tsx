@@ -115,17 +115,17 @@ export const FeirasCalendar = () => {
   }
 
   return (
-    <Card className="p-4 bg-gradient-to-br from-accent/5 to-primary/5 border-border shadow-sm">
-      <div className="space-y-3">
+    <Card className="p-4 bg-gradient-to-br from-accent/5 to-primary/5 border-border shadow-sm h-fit">
+      <div className="space-y-2.5">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold capitalize">
+          <h3 className="text-xs font-semibold capitalize">
             {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
           </h3>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-6 w-6 hover:bg-muted rounded-md" 
+              className="h-5 w-5 hover:bg-muted rounded-md" 
               onClick={handlePreviousMonth}
             >
               <ChevronLeft className="w-3 h-3" />
@@ -133,7 +133,7 @@ export const FeirasCalendar = () => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-6 w-6 hover:bg-muted rounded-md" 
+              className="h-5 w-5 hover:bg-muted rounded-md" 
               onClick={handleNextMonth}
             >
               <ChevronRight className="w-3 h-3" />
@@ -146,9 +146,9 @@ export const FeirasCalendar = () => {
           {weekDays.map((day, index) => (
             <div 
               key={index} 
-              className="text-center text-[9px] font-semibold text-muted-foreground uppercase tracking-tight"
+              className="text-center text-[8px] font-semibold text-muted-foreground uppercase"
             >
-              {day}
+              {day.substring(0, 3)}
             </div>
           ))}
         </div>
@@ -156,7 +156,7 @@ export const FeirasCalendar = () => {
         {/* Grid do calendário */}
         <div className="grid grid-cols-7 gap-0.5">
           {emptyDays.map((_, index) => (
-            <div key={`empty-${index}`} className="aspect-square" />
+            <div key={`empty-${index}`} className="w-7 h-7" />
           ))}
           
           {daysInMonth.map((day, index) => {
@@ -167,8 +167,8 @@ export const FeirasCalendar = () => {
               <div
                 key={index}
                 className={`
-                  aspect-square rounded-md flex items-center justify-center 
-                  text-[11px] font-medium transition-all cursor-pointer
+                  w-7 h-7 rounded-md flex items-center justify-center 
+                  text-[10px] font-medium transition-all cursor-pointer
                   ${event ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-muted/40'}
                   ${isToday && !event ? 'bg-accent text-accent-foreground' : ''}
                   ${!event && !isToday ? 'text-foreground/80' : ''}
