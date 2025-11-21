@@ -22,6 +22,7 @@ import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { AdminSidebar } from "./AdminSidebar";
 import { DraggableStatsCards } from "./admin/DraggableStatsCards";
+import SendNotifications from "./admin/SendNotifications";
 
 interface AdminDashboardProps {
   user: User;
@@ -202,6 +203,10 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             <div className="max-w-4xl mx-auto">
               <ChangePassword />
             </div>
+          )}
+
+          {activeSection === "notificacoes" && (
+            <SendNotifications />
           )}
 
           {activeSection === "suporte" && (

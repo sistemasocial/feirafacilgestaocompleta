@@ -8,7 +8,8 @@ import {
   UserCog,
   HelpCircle,
   Store,
-  KeyRound
+  KeyRound,
+  Bell
 } from "lucide-react";
 
 const menuItems = [
@@ -17,6 +18,7 @@ const menuItems = [
   { title: "Feiras Cadastradas", url: "#feiras", icon: Calendar },
   { title: "Feirantes", url: "#feirantes", icon: Users },
   { title: "Pagamentos", url: "#pagamentos", icon: DollarSign },
+  { title: "Enviar Notificações", url: "#notificacoes", icon: Bell },
   { title: "Configurações", url: "#config", icon: Settings },
   { title: "Perfil do Administrador", url: "#perfil", icon: UserCog },
   { title: "Alterar Senha", url: "#senha", icon: KeyRound },
