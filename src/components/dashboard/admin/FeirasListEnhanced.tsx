@@ -179,7 +179,7 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
           const feirantesConfirmados = inscricoesCount[feira.id] || 0;
           
           return (
-            <Card key={feira.id} className="flex flex-col h-full relative">
+            <Card key={feira.id} className="flex flex-col h-full relative bg-gradient-to-br from-primary/5 to-accent/5 border-border">
               <div className="p-4 space-y-3">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
