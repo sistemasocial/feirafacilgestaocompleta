@@ -26,8 +26,6 @@ import SendNotifications from "./admin/SendNotifications";
 import { SendPushNotification } from "./admin/SendPushNotification";
 import { NotificationPermission } from "@/components/notifications/NotificationPermission";
 import { useNotifications } from "@/hooks/useNotifications";
-import { FirebaseSetup } from "./admin/FirebaseSetup";
-import { ConfigureFirebase } from "./admin/ConfigureFirebase";
 
 interface AdminDashboardProps {
   user: User;
@@ -228,11 +226,10 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             <div className="space-y-6">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Notificações Push</h1>
-                <p className="text-muted-foreground">Configure e envie notificações push para os usuários</p>
+                <p className="text-muted-foreground">Envie notificações push para os feirantes</p>
               </div>
               
               <NotificationPermission />
-              <ConfigureFirebase />
               <SendPushNotification />
               <SendNotifications />
             </div>

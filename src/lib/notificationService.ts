@@ -1,13 +1,9 @@
 import { supabase } from "@/integrations/supabase/client";
 import { initializeFCM } from "./fcmService";
-import { setupForegroundMessaging } from "./firebaseMessaging";
 
 export const setupNotificationListener = (userId: string) => {
   // Inicializar FCM para push notifications
   initializeFCM(userId).catch(console.error);
-  
-  // Configurar listener de mensagens em foreground
-  setupForegroundMessaging();
   // Criar listener de notificações em tempo real
   const channel = supabase
     .channel(`notifications-${userId}`)
