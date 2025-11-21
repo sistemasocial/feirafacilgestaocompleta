@@ -87,7 +87,7 @@ export const FinancialGoalsCard = ({ userId, onGoalUpdated }: FinancialGoalsCard
   const margemLucro = revenueGoal > 0 ? ((lucroLiquido / revenueGoal) * 100).toFixed(1) : 0;
 
   return (
-    <Card className="p-6">
+    <Card className="h-full p-6 flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
