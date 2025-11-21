@@ -154,13 +154,13 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "config" && (
-            <div className="mx-auto space-y-6 max-w-3xl">
+            <div className="mx-auto space-y-6">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Configurações</h1>
                 <p className="text-muted-foreground">Gerencie suas metas e despesas</p>
               </div>
               
-              <DraggableStatsCards layout="vertical">
+              <DraggableStatsCards layout="config">
                 {[
                   <FinancialGoalsCard key="financial-goals" userId={user.id} onGoalUpdated={loadStats} />,
                   <FeirasCalendar key="calendar-config" />,

@@ -58,7 +58,7 @@ const DraggableCard = ({ id, children }: DraggableCardProps) => {
 
 interface DraggableStatsCardsProps {
   children: React.ReactElement[];
-  layout?: "grid" | "vertical";
+  layout?: "grid" | "vertical" | "config";
 }
 
 export const DraggableStatsCards = ({ children, layout = "grid" }: DraggableStatsCardsProps) => {
@@ -102,6 +102,8 @@ export const DraggableStatsCards = ({ children, layout = "grid" }: DraggableStat
 
   const gridClass = layout === "vertical" 
     ? "grid grid-cols-1 gap-6 auto-rows-fr" 
+    : layout === "config"
+    ? "grid grid-cols-1 lg:grid-cols-2 gap-6 auto-rows-fr"
     : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr";
 
   if (items.length === 0) {
