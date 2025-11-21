@@ -92,7 +92,7 @@ export const ExpensesSettings = ({ userId }: ExpensesSettingsProps) => {
   const totalExpenses = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-orange-500/5 via-red-500/5 to-pink-500/5 border-border">
+    <Card className="h-full p-6 bg-gradient-to-br from-orange-500/5 via-red-500/5 to-pink-500/5 border-border flex flex-col">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
           <Receipt className="w-5 h-5 text-white" />

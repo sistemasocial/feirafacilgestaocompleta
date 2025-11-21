@@ -3,7 +3,7 @@ import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { LogOut, Users, DollarSign, Calendar } from "lucide-react";
+import { LogOut, Users, DollarSign, Calendar, MessageCircle, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FeiraForm } from "./admin/FeiraForm";
@@ -21,7 +21,7 @@ import ChangePassword from "@/components/profile/ChangePassword";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { ProfileHeader } from "./ProfileHeader";
 import { AdminSidebar } from "./AdminSidebar";
-import { MessageCircle, Mail } from "lucide-react";
+import { DraggableStatsCards } from "./admin/DraggableStatsCards";
 
 interface AdminDashboardProps {
   user: User;
@@ -155,11 +155,18 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
           {activeSection === "config" && (
             <div className="max-w-5xl mx-auto space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-                <FinancialGoalsCard userId={user.id} onGoalUpdated={loadStats} />
-                <FeirasCalendar />
+              <div>
+                <h1 className="text-3xl font-bold mb-2">Configurações</h1>
+                <p className="text-muted-foreground">Gerencie suas metas e despesas</p>
               </div>
-              <ExpensesSettings userId={user.id} />
+              
+              <DraggableStatsCards layout="vertical">
+                {[
+                  <FinancialGoalsCard key="financial-goals" userId={user.id} onGoalUpdated={loadStats} />,
+                  <FeirasCalendar key="calendar-config" />,
+                  <ExpensesSettings key="expenses" userId={user.id} />
+                ]}
+              </DraggableStatsCards>
             </div>
           )}
 

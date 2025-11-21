@@ -58,9 +58,10 @@ const DraggableCard = ({ id, children }: DraggableCardProps) => {
 
 interface DraggableStatsCardsProps {
   children: React.ReactElement[];
+  layout?: "grid" | "vertical";
 }
 
-export const DraggableStatsCards = ({ children }: DraggableStatsCardsProps) => {
+export const DraggableStatsCards = ({ children, layout = "grid" }: DraggableStatsCardsProps) => {
   const [items, setItems] = useState<string[]>([]);
 
   const sensors = useSensors(
@@ -99,8 +100,12 @@ export const DraggableStatsCards = ({ children }: DraggableStatsCardsProps) => {
     }
   };
 
+  const gridClass = layout === "vertical" 
+    ? "grid grid-cols-1 gap-6 auto-rows-fr" 
+    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr";
+
   if (items.length === 0) {
-    return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">{children}</div>;
+    return <div className={gridClass}>{children}</div>;
   }
 
   // Reordenar children baseado na ordem salva
@@ -116,7 +121,7 @@ export const DraggableStatsCards = ({ children }: DraggableStatsCardsProps) => {
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={items} strategy={rectSortingStrategy}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
+        <div className={gridClass}>
           {orderedChildren.map((child, index) => (
             <DraggableCard key={items[index]} id={items[index]}>
               {child}
