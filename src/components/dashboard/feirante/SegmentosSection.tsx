@@ -6,6 +6,7 @@ import { MapPin, Users, Tag } from "lucide-react";
 import { Tables } from "@/integrations/supabase/types";
 import { AdminInfo } from "./AdminInfo";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DraggableStatsCards } from "../admin/DraggableStatsCards";
 
 type Feira = Tables<"feiras">;
 
@@ -67,6 +68,48 @@ export const SegmentosSection = () => {
 
   const groupedFeiras = groupByCity(feiras);
 
+  const cards = Object.entries(groupedFeiras).map(([cidade, cityFeiras]) => (
+    <Card key={cidade} className="overflow-hidden">
+      <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-4 border-b">
+        <div className="flex items-center gap-2">
+          <MapPin className="w-5 h-5 text-primary" />
+          <h3 className="text-xl font-bold">{cidade}</h3>
+          <Badge variant="outline" className="ml-auto">
+            <Users className="w-3 h-3 mr-1" />
+            {cityFeiras.length} {cityFeiras.length === 1 ? "feira" : "feiras"}
+          </Badge>
+        </div>
+      </div>
+
+      <div className="p-6 space-y-4">
+        {cityFeiras.map((feira) => (
+          <div key={feira.id} className="border rounded-lg p-4 space-y-3 hover:border-primary/50 transition-colors">
+            <div className="flex items-start justify-between">
+              <div>
+                <h4 className="font-semibold text-lg">{feira.nome}</h4>
+                <p className="text-sm text-muted-foreground">{feira.bairro}</p>
+              </div>
+              {feira.segmento_exclusivo && (
+                <Badge className="bg-accent text-accent-foreground">
+                  Segmento Exclusivo
+                </Badge>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <Tag className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium">Aceita todos os segmentos</span>
+            </div>
+
+            <div className="pt-3 border-t">
+              {feira.created_by && <AdminInfo adminId={feira.created_by} />}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  ));
+
   return (
     <div className="space-y-6">
       <div>
@@ -76,49 +119,9 @@ export const SegmentosSection = () => {
         </p>
       </div>
 
-      <div className="space-y-6">
-        {Object.entries(groupedFeiras).map(([cidade, cityFeiras]) => (
-          <Card key={cidade} className="overflow-hidden">
-            <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-4 border-b">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-primary" />
-                <h3 className="text-xl font-bold">{cidade}</h3>
-                <Badge variant="outline" className="ml-auto">
-                  <Users className="w-3 h-3 mr-1" />
-                  {cityFeiras.length} {cityFeiras.length === 1 ? "feira" : "feiras"}
-                </Badge>
-              </div>
-            </div>
-
-            <div className="p-6 space-y-4">
-              {cityFeiras.map((feira) => (
-                <div key={feira.id} className="border rounded-lg p-4 space-y-3 hover:border-primary/50 transition-colors">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h4 className="font-semibold text-lg">{feira.nome}</h4>
-                      <p className="text-sm text-muted-foreground">{feira.bairro}</p>
-                    </div>
-                    {feira.segmento_exclusivo && (
-                      <Badge className="bg-accent text-accent-foreground">
-                        Segmento Exclusivo
-                      </Badge>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Tag className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Aceita todos os segmentos</span>
-                  </div>
-
-                  <div className="pt-3 border-t">
-                    {feira.created_by && <AdminInfo adminId={feira.created_by} />}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-        ))}
-      </div>
+      <DraggableStatsCards layout="vertical" storageKey="segmentosCardsOrder">
+        {cards}
+      </DraggableStatsCards>
     </div>
   );
 };
