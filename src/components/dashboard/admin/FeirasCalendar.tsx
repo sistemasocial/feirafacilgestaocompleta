@@ -39,12 +39,21 @@ export const FeirasCalendar = () => {
       // Mapear dias da semana para números (0 = Domingo, 1 = Segunda, etc)
       const diaSemanaMapa: { [key: string]: number } = {
         'domingo': 0,
+        '0': 0,
         'segunda': 1,
+        '1': 1,
         'terca': 2,
+        'terça': 2,
+        '2': 2,
         'quarta': 3,
+        '3': 3,
         'quinta': 4,
+        '4': 4,
         'sexta': 5,
+        '5': 5,
         'sabado': 6,
+        'sábado': 6,
+        '6': 6,
       };
 
       // Criar mapa de eventos por data
@@ -62,7 +71,8 @@ export const FeirasCalendar = () => {
         // Verificar quais feiras acontecem neste dia da semana
         data?.forEach((feira) => {
           const feiraHappenToday = feira.dias_semana.some((dia: string) => {
-            return diaSemanaMapa[dia.toLowerCase()] === dayOfWeek;
+            const diaKey = dia.toString().toLowerCase();
+            return diaSemanaMapa[diaKey] === dayOfWeek;
           });
 
           if (feiraHappenToday) {
