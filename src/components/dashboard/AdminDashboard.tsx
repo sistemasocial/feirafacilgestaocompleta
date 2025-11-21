@@ -15,7 +15,6 @@ import { EnhancedStatsCards } from "./admin/EnhancedStatsCards";
 import { FeirasCalendar } from "./admin/FeirasCalendar";
 import { FeirasConsolidatedCard } from "./admin/FeirasConsolidatedCard";
 import { RevenueGoalSettings } from "./admin/RevenueGoalSettings";
-import { FeirasWeeklyStats } from "./admin/FeirasWeeklyStats";
 import { FinancialGoalsCard } from "./admin/FinancialGoalsCard";
 import { ExpensesSettings } from "./admin/ExpensesSettings";
 import CompleteProfileAdmin from "@/components/profile/CompleteProfileAdmin";
@@ -145,7 +144,6 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
               <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 mt-6">
                 <FeirasConsolidatedCard />
                 <div className="space-y-6">
-                  <FeirasWeeklyStats />
                   <FeirasCalendar />
                 </div>
               </div>
