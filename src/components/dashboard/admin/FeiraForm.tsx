@@ -234,32 +234,33 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
   const formCards = [
     // Card 1: Informações Básicas
     <Card key="info-basicas" className="h-full">
-      <CardHeader>
-        <CardTitle>Informações Básicas</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg">Informações Básicas</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         <div>
-          <Label htmlFor="nome">Nome da Feira *</Label>
+          <Label htmlFor="nome" className="text-sm">Nome da Feira *</Label>
           <Input
             id="nome"
             value={formData.nome}
             onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
             placeholder="Ex: Feira do Setor Bueno"
             required
+            className="h-9"
           />
-          {errors.nome && <p className="text-sm text-destructive mt-1">{errors.nome}</p>}
+          {errors.nome && <p className="text-xs text-destructive mt-0.5">{errors.nome}</p>}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label htmlFor="estado">Estado *</Label>
+            <Label htmlFor="estado" className="text-sm">Estado *</Label>
             <Select 
               value={formData.estado} 
               onValueChange={(value) => setFormData({ ...formData, estado: value })}
               disabled={loadingEstados}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione o estado" />
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
                 {estados.map((estado) => (
@@ -269,11 +270,11 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
                 ))}
               </SelectContent>
             </Select>
-            {errors.estado && <p className="text-sm text-destructive mt-1">{errors.estado}</p>}
+            {errors.estado && <p className="text-xs text-destructive mt-0.5">{errors.estado}</p>}
           </div>
 
           <div>
-            <Label htmlFor="cidade">Cidade *</Label>
+            <Label htmlFor="cidade" className="text-sm">Cidade *</Label>
             <Select 
               value={formData.cidade} 
               onValueChange={(value) => {
@@ -282,8 +283,8 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
               }}
               disabled={!formData.estado || loadingCidades}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione a cidade" />
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
                 {cidades.map((cidade) => (
@@ -293,77 +294,81 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
                 ))}
               </SelectContent>
             </Select>
-            {errors.cidade && <p className="text-sm text-destructive mt-1">{errors.cidade}</p>}
+            {errors.cidade && <p className="text-xs text-destructive mt-0.5">{errors.cidade}</p>}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label htmlFor="bairro" className="text-sm">Bairro *</Label>
+            {bairros.length > 0 ? (
+              <Select
+                value={formData.bairro}
+                onValueChange={(value) => setFormData({ ...formData, bairro: value })}
+                disabled={!formData.cidade || loadingBairros}
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder={loadingBairros ? "Carregando..." : "Selecione"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {bairros.map((bairro) => (
+                    <SelectItem key={bairro} value={bairro}>
+                      {bairro}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input
+                id="bairro"
+                value={formData.bairro}
+                onChange={(e) => setFormData({ ...formData, bairro: e.target.value })}
+                placeholder="Digite o bairro"
+                disabled={loadingBairros}
+                className="h-9"
+              />
+            )}
+            {errors.bairro && <p className="text-xs text-destructive mt-0.5">{errors.bairro}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="tipo_feira" className="text-sm">Tipo de Feira *</Label>
+            <Select value={formData.tipo_feira} onValueChange={(value) => setFormData({ ...formData, tipo_feira: value })}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="publica">Feira Pública</SelectItem>
+                <SelectItem value="condominio">Condomínio</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
         <div>
-          <Label htmlFor="bairro">Bairro *</Label>
-          {bairros.length > 0 ? (
-            <Select
-              value={formData.bairro}
-              onValueChange={(value) => setFormData({ ...formData, bairro: value })}
-              disabled={!formData.cidade || loadingBairros}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={loadingBairros ? "Carregando..." : "Selecione o bairro"} />
-              </SelectTrigger>
-              <SelectContent>
-                {bairros.map((bairro) => (
-                  <SelectItem key={bairro} value={bairro}>
-                    {bairro}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          ) : (
-            <Input
-              id="bairro"
-              value={formData.bairro}
-              onChange={(e) => setFormData({ ...formData, bairro: e.target.value })}
-              placeholder="Digite o bairro"
-              disabled={loadingBairros}
-            />
-          )}
-          {errors.bairro && <p className="text-sm text-destructive mt-1">{errors.bairro}</p>}
-        </div>
-
-        <div>
-          <Label htmlFor="endereco">Endereço Completo *</Label>
+          <Label htmlFor="endereco" className="text-sm">Endereço Completo *</Label>
           <Input
             id="endereco"
             value={formData.endereco}
             onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
             placeholder="Rua, número, complemento"
             required
+            className="h-9"
           />
-          {errors.endereco && <p className="text-sm text-destructive mt-1">{errors.endereco}</p>}
-        </div>
-
-        <div>
-          <Label htmlFor="tipo_feira">Tipo de Feira *</Label>
-          <Select value={formData.tipo_feira} onValueChange={(value) => setFormData({ ...formData, tipo_feira: value })}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="publica">Feira Pública</SelectItem>
-              <SelectItem value="condominio">Condomínio</SelectItem>
-            </SelectContent>
-          </Select>
+          {errors.endereco && <p className="text-xs text-destructive mt-0.5">{errors.endereco}</p>}
         </div>
       </CardContent>
     </Card>,
 
     // Card 2: Valores e Taxas
     <Card key="valores-taxas" className="h-full">
-      <CardHeader>
-        <CardTitle>Valores e Taxas</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg">Valores e Taxas</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+      <CardContent className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label htmlFor="valor_participacao">Valor de Participação (R$)</Label>
+            <Label htmlFor="valor_participacao" className="text-sm">Valor de Participação (R$)</Label>
             <Input
               id="valor_participacao"
               type="number"
@@ -372,12 +377,26 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
               value={formData.valor_participacao}
               onChange={(e) => setFormData({ ...formData, valor_participacao: e.target.value })}
               placeholder="0.00"
+              className="h-9"
             />
-            {errors.valor_participacao && <p className="text-sm text-destructive mt-1">{errors.valor_participacao}</p>}
+            {errors.valor_participacao && <p className="text-xs text-destructive mt-0.5">{errors.valor_participacao}</p>}
           </div>
 
           <div>
-            <Label htmlFor="taxa_energia">Taxa de Energia (R$)</Label>
+            <Label htmlFor="prazo_pagamento_dias" className="text-sm">Prazo Pagamento (dias)</Label>
+            <Input
+              id="prazo_pagamento_dias"
+              type="number"
+              min="1"
+              value={formData.prazo_pagamento_dias}
+              onChange={(e) => setFormData({ ...formData, prazo_pagamento_dias: parseInt(e.target.value) || 3 })}
+              placeholder="3"
+              className="h-9"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="taxa_energia" className="text-sm">Taxa de Energia (R$)</Label>
             <Input
               id="taxa_energia"
               type="number"
@@ -386,12 +405,13 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
               value={formData.taxa_energia}
               onChange={(e) => setFormData({ ...formData, taxa_energia: e.target.value })}
               placeholder="0.00"
+              className="h-9"
             />
-            {errors.taxa_energia && <p className="text-sm text-destructive mt-1">{errors.taxa_energia}</p>}
+            {errors.taxa_energia && <p className="text-xs text-destructive mt-0.5">{errors.taxa_energia}</p>}
           </div>
 
           <div>
-            <Label htmlFor="taxa_limpeza">Taxa de Limpeza (R$)</Label>
+            <Label htmlFor="taxa_limpeza" className="text-sm">Taxa de Limpeza (R$)</Label>
             <Input
               id="taxa_limpeza"
               type="number"
@@ -400,12 +420,13 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
               value={formData.taxa_limpeza}
               onChange={(e) => setFormData({ ...formData, taxa_limpeza: e.target.value })}
               placeholder="0.00"
+              className="h-9"
             />
-            {errors.taxa_limpeza && <p className="text-sm text-destructive mt-1">{errors.taxa_limpeza}</p>}
+            {errors.taxa_limpeza && <p className="text-xs text-destructive mt-0.5">{errors.taxa_limpeza}</p>}
           </div>
 
           <div>
-            <Label htmlFor="taxa_seguranca">Taxa de Segurança (R$)</Label>
+            <Label htmlFor="taxa_seguranca" className="text-sm">Taxa de Segurança (R$)</Label>
             <Input
               id="taxa_seguranca"
               type="number"
@@ -414,23 +435,9 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
               value={formData.taxa_seguranca}
               onChange={(e) => setFormData({ ...formData, taxa_seguranca: e.target.value })}
               placeholder="0.00"
+              className="h-9"
             />
-            {errors.taxa_seguranca && <p className="text-sm text-destructive mt-1">{errors.taxa_seguranca}</p>}
-          </div>
-
-          <div>
-            <Label htmlFor="prazo_pagamento_dias">Prazo de Pagamento (dias antes)</Label>
-            <Input
-              id="prazo_pagamento_dias"
-              type="number"
-              min="1"
-              value={formData.prazo_pagamento_dias}
-              onChange={(e) => setFormData({ ...formData, prazo_pagamento_dias: parseInt(e.target.value) || 3 })}
-              placeholder="3"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Feirantes devem pagar até X dias antes da feira
-            </p>
+            {errors.taxa_seguranca && <p className="text-xs text-destructive mt-0.5">{errors.taxa_seguranca}</p>}
           </div>
         </div>
       </CardContent>
@@ -438,107 +445,113 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
 
     // Card 3: Horários e Dias
     <Card key="horarios-dias" className="h-full">
-      <CardHeader>
-        <CardTitle>Horários e Dias</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg">Horários e Dias</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         <div>
-          <Label>Dias da Semana *</Label>
-          <div className="grid grid-cols-4 gap-2 mt-2">
+          <Label className="text-sm">Dias da Semana *</Label>
+          <div className="grid grid-cols-4 gap-2 mt-1.5">
             {DIAS_SEMANA.map((dia) => (
-              <div key={dia.id} className="flex items-center space-x-2">
+              <div key={dia.id} className="flex items-center space-x-1.5">
                 <Checkbox
                   id={`dia-${dia.id}`}
                   checked={formData.dias_semana.includes(dia.id)}
                   onCheckedChange={() => handleDiaChange(dia.id)}
+                  className="h-4 w-4"
                 />
-                <Label htmlFor={`dia-${dia.id}`} className="text-sm cursor-pointer">
+                <Label htmlFor={`dia-${dia.id}`} className="text-xs cursor-pointer">
                   {dia.label}
                 </Label>
               </div>
             ))}
           </div>
-          {errors.dias_semana && <p className="text-sm text-destructive mt-1">{errors.dias_semana}</p>}
+          {errors.dias_semana && <p className="text-xs text-destructive mt-0.5">{errors.dias_semana}</p>}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           <div>
-            <Label htmlFor="horario_inicio">Horário de Início *</Label>
+            <Label htmlFor="horario_inicio" className="text-sm">Horário Início *</Label>
             <Input
               id="horario_inicio"
               type="time"
               value={formData.horario_inicio}
               onChange={(e) => setFormData({ ...formData, horario_inicio: e.target.value })}
               required
+              className="h-9"
             />
-            {errors.horario_inicio && <p className="text-sm text-destructive mt-1">{errors.horario_inicio}</p>}
+            {errors.horario_inicio && <p className="text-xs text-destructive mt-0.5">{errors.horario_inicio}</p>}
           </div>
 
           <div>
-            <Label htmlFor="horario_fim">Horário de Término *</Label>
+            <Label htmlFor="horario_fim" className="text-sm">Horário Fim *</Label>
             <Input
               id="horario_fim"
               type="time"
               value={formData.horario_fim}
               onChange={(e) => setFormData({ ...formData, horario_fim: e.target.value })}
               required
+              className="h-9"
             />
-            {errors.horario_fim && <p className="text-sm text-destructive mt-1">{errors.horario_fim}</p>}
+            {errors.horario_fim && <p className="text-xs text-destructive mt-0.5">{errors.horario_fim}</p>}
           </div>
-        </div>
 
-        <div>
-          <Label htmlFor="tempo_antecedencia">Tempo de Antecedência (minutos)</Label>
-          <Input
-            id="tempo_antecedencia"
-            type="number"
-            min="0"
-            value={formData.tempo_antecedencia_minutos}
-            onChange={(e) => setFormData({ ...formData, tempo_antecedencia_minutos: parseInt(e.target.value) || 0 })}
-          />
+          <div>
+            <Label htmlFor="tempo_antecedencia" className="text-sm">Antecedência (min)</Label>
+            <Input
+              id="tempo_antecedencia"
+              type="number"
+              min="0"
+              value={formData.tempo_antecedencia_minutos}
+              onChange={(e) => setFormData({ ...formData, tempo_antecedencia_minutos: parseInt(e.target.value) || 0 })}
+              className="h-9"
+            />
+          </div>
         </div>
       </CardContent>
     </Card>,
 
     // Card 4: Formas de Pagamento e Políticas
     <Card key="pagamento-politicas" className="h-full">
-      <CardHeader>
-        <CardTitle>Formas de Pagamento e Políticas</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg">Pagamento e Políticas</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         <div>
-          <Label>Formas de Pagamento Aceitas *</Label>
-          <div className="grid grid-cols-3 gap-2 mt-2">
+          <Label className="text-sm">Formas de Pagamento *</Label>
+          <div className="grid grid-cols-3 gap-2 mt-1.5">
             {FORMAS_PAGAMENTO.map((forma) => (
-              <div key={forma.id} className="flex items-center space-x-2">
+              <div key={forma.id} className="flex items-center space-x-1.5">
                 <Checkbox
                   id={`pagamento-${forma.id}`}
                   checked={formData.formas_pagamento.includes(forma.id)}
                   onCheckedChange={() => handlePagamentoChange(forma.id)}
+                  className="h-4 w-4"
                 />
-                <Label htmlFor={`pagamento-${forma.id}`} className="text-sm cursor-pointer">
+                <Label htmlFor={`pagamento-${forma.id}`} className="text-xs cursor-pointer">
                   {forma.label}
                 </Label>
               </div>
             ))}
           </div>
-          {errors.formas_pagamento && <p className="text-sm text-destructive mt-1">{errors.formas_pagamento}</p>}
+          {errors.formas_pagamento && <p className="text-xs text-destructive mt-0.5">{errors.formas_pagamento}</p>}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label htmlFor="horas_cancelamento">Horas p/ Cancelamento sem Multa</Label>
+            <Label htmlFor="horas_cancelamento" className="text-sm">Horas Cancelamento</Label>
             <Input
               id="horas_cancelamento"
               type="number"
               min="0"
               value={formData.horas_cancelamento_sem_multa}
               onChange={(e) => setFormData({ ...formData, horas_cancelamento_sem_multa: parseInt(e.target.value) || 0 })}
+              className="h-9"
             />
           </div>
 
           <div>
-            <Label htmlFor="taxa_cancelamento">Taxa de Cancelamento (R$)</Label>
+            <Label htmlFor="taxa_cancelamento" className="text-sm">Taxa Cancelamento (R$)</Label>
             <Input
               id="taxa_cancelamento"
               type="number"
@@ -547,86 +560,95 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
               value={formData.taxa_cancelamento}
               onChange={(e) => setFormData({ ...formData, taxa_cancelamento: e.target.value })}
               placeholder="0.00"
+              className="h-9"
             />
-            {errors.taxa_cancelamento && <p className="text-sm text-destructive mt-1">{errors.taxa_cancelamento}</p>}
+            {errors.taxa_cancelamento && <p className="text-xs text-destructive mt-0.5">{errors.taxa_cancelamento}</p>}
           </div>
         </div>
 
         <div>
-          <Label htmlFor="regras_evento">Regras do Evento</Label>
+          <Label htmlFor="regras_evento" className="text-sm">Regras do Evento</Label>
           <Textarea
             id="regras_evento"
             value={formData.regras_evento}
             onChange={(e) => setFormData({ ...formData, regras_evento: e.target.value })}
-            rows={3}
-            placeholder="Descreva as regras do evento"
+            rows={2}
+            placeholder="Descreva as regras"
+            className="text-sm"
           />
         </div>
 
         <div>
-          <Label htmlFor="politica_cancelamento">Política de Cancelamento</Label>
+          <Label htmlFor="politica_cancelamento" className="text-sm">Política de Cancelamento</Label>
           <Textarea
             id="politica_cancelamento"
             value={formData.politica_cancelamento}
             onChange={(e) => setFormData({ ...formData, politica_cancelamento: e.target.value })}
-            rows={3}
-            placeholder="Descreva a política de cancelamento"
+            rows={2}
+            placeholder="Descreva a política"
+            className="text-sm"
           />
         </div>
 
-        <div>
-          <Label htmlFor="avisos">Avisos</Label>
-          <Textarea
-            id="avisos"
-            value={formData.avisos}
-            onChange={(e) => setFormData({ ...formData, avisos: e.target.value })}
-            rows={2}
-            placeholder="Avisos importantes"
-          />
-        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label htmlFor="avisos" className="text-sm">Avisos</Label>
+            <Textarea
+              id="avisos"
+              value={formData.avisos}
+              onChange={(e) => setFormData({ ...formData, avisos: e.target.value })}
+              rows={2}
+              placeholder="Avisos importantes"
+              className="text-sm"
+            />
+          </div>
 
-        <div>
-          <Label htmlFor="observacoes">Observações</Label>
-          <Textarea
-            id="observacoes"
-            value={formData.observacoes}
-            onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-            rows={2}
-            placeholder="Observações adicionais"
-          />
+          <div>
+            <Label htmlFor="observacoes" className="text-sm">Observações</Label>
+            <Textarea
+              id="observacoes"
+              value={formData.observacoes}
+              onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
+              rows={2}
+              placeholder="Observações adicionais"
+              className="text-sm"
+            />
+          </div>
         </div>
       </CardContent>
     </Card>,
 
     // Card 5: Configurações da Feira
     <Card key="configuracoes" className="h-full">
-      <CardHeader>
-        <CardTitle>Configurações da Feira</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg">Configurações</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center space-x-2">
+      <CardContent className="space-y-3">
+        <div className="flex items-center space-x-2 p-3 rounded-lg border border-border bg-muted/30">
           <Checkbox
             id="recorrente"
             checked={formData.recorrente}
             onCheckedChange={(checked) => 
               setFormData(prev => ({ ...prev, recorrente: checked as boolean }))
             }
+            className="h-4 w-4"
           />
-          <Label htmlFor="recorrente" className="cursor-pointer">
-            Feira Recorrente (reaparece automaticamente nas próximas datas)
+          <Label htmlFor="recorrente" className="cursor-pointer text-sm">
+            Feira Recorrente (reaparece automaticamente)
           </Label>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 p-3 rounded-lg border border-border bg-muted/30">
           <Checkbox
             id="segmento_exclusivo"
             checked={formData.segmento_exclusivo}
             onCheckedChange={(checked) => 
               setFormData(prev => ({ ...prev, segmento_exclusivo: checked as boolean }))
             }
+            className="h-4 w-4"
           />
-          <Label htmlFor="segmento_exclusivo" className="cursor-pointer">
-            Segmento Exclusivo (apenas um feirante por segmento)
+          <Label htmlFor="segmento_exclusivo" className="cursor-pointer text-sm">
+            Segmento Exclusivo (um feirante por segmento)
           </Label>
         </div>
       </CardContent>
