@@ -188,13 +188,13 @@ export const FeirasListEnhanced = ({ onAddNew }: FeirasListEnhancedProps) => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
         {feiras.map((feira, index) => {
           const feirantesConfirmados = inscricoesCount[feira.id] || 0;
           const gradientClass = cardGradients[index % cardGradients.length];
           
           return (
-            <Card key={feira.id} className={`flex flex-col h-full relative border-border ${gradientClass}`}>
+            <Card key={feira.id} className={`flex flex-col min-h-[500px] relative border-border ${gradientClass}`}>
               <div className="p-4 space-y-3">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
