@@ -661,7 +661,7 @@ export const FeiraForm = ({ onSuccess, onCancel }: FeiraFormProps) => {
         {formCards}
       </DraggableStatsCards>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 pt-2">
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
           Cancelar
         </Button>

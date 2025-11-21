@@ -173,14 +173,20 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           {(activeSection === "criar" || activeSection === "feiras") && (
             <div className="space-y-6">
               {activeSection === "criar" && (
-                <FeiraForm 
-                  onSuccess={() => {
-                    setActiveSection("feiras");
-                  }}
-                  onCancel={() => {
-                    setActiveSection("feiras");
-                  }}
-                />
+                <div className="space-y-6">
+                  <div>
+                    <h1 className="text-3xl font-bold mb-2">Criar Nova Feira</h1>
+                    <p className="text-muted-foreground">Preencha as informações abaixo para cadastrar uma nova feira</p>
+                  </div>
+                  <FeiraForm 
+                    onSuccess={() => {
+                      setActiveSection("feiras");
+                    }}
+                    onCancel={() => {
+                      setActiveSection("feiras");
+                    }}
+                  />
+                </div>
               )}
               {activeSection === "feiras" && (
                 <FeirasListEnhanced onAddNew={() => setActiveSection("criar")} />
