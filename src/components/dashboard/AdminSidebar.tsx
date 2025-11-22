@@ -11,16 +11,6 @@ import {
   KeyRound,
   Bell
 } from "lucide-react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
 
 const menuItems = [
   { title: "Visão Geral", url: "overview", icon: LayoutDashboard },
@@ -41,45 +31,38 @@ interface AdminSidebarProps {
 }
 
 export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarProps) {
-  const { open } = useSidebar();
-
   return (
-    <Sidebar collapsible="icon" className="border-r">
-      <SidebarContent>
-        <div className="border-b pb-4 pt-4 px-3">
-          <div className="flex items-center gap-2">
-            <div className={`${open ? 'w-10 h-10' : 'w-8 h-8'} bg-primary/10 rounded-lg flex items-center justify-center shrink-0`}>
-              <Store className={`${open ? 'w-6 h-6' : 'w-5 h-5'} text-primary`} />
-            </div>
-            {open && (
-              <div className="min-w-0">
-                <h2 className="text-sm font-semibold truncate">FeiraFácil!</h2>
-                <p className="text-xs text-muted-foreground truncate">Painel Admin</p>
-              </div>
-            )}
+    <aside className="w-[260px] border-r bg-background h-screen fixed left-0 top-0 flex flex-col">
+      <div className="border-b pb-6 pt-6 px-6">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+            <Store className="w-7 h-7 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">FeiraFácil!</h2>
+            <p className="text-sm text-muted-foreground">Painel Administrativo</p>
           </div>
         </div>
+      </div>
 
-        <SidebarGroup className="py-4">
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    onClick={() => onSectionChange(item.url)}
-                    isActive={activeSection === item.url}
-                    tooltip={item.title}
-                    className="h-10"
-                  >
-                    <item.icon className="w-5 h-5 shrink-0" />
-                    {open && <span className="truncate">{item.title}</span>}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+      <div className="flex-1 overflow-auto py-6">
+        <nav className="space-y-2 px-4">
+          {menuItems.map((item) => (
+            <button
+              key={item.title}
+              onClick={() => onSectionChange(item.url)}
+              className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                activeSection === item.url
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <item.icon className="w-5 h-5 shrink-0" />
+              <span>{item.title}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
+    </aside>
   );
 }
