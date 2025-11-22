@@ -78,6 +78,13 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
 
   useEffect(() => {
     // Carregar ordem salva do localStorage de forma segura
+    if (typeof window === "undefined" || !("localStorage" in window)) {
+      // Em ambientes onde localStorage não está disponível (por exemplo, alguns contextos de PWA),
+      // apenas marcamos como carregado e usamos a ordem padrão em memória
+      setIsLoaded(true);
+      return;
+    }
+
     try {
       const savedOrder = localStorage.getItem(storageKey);
       if (savedOrder) {
@@ -104,10 +111,12 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
         const newOrder = arrayMove(items, oldIndex, newIndex);
         
         // Salvar nova ordem no localStorage de forma segura
-        try {
-          localStorage.setItem(storageKey, JSON.stringify(newOrder));
-        } catch (error) {
-          console.error('Erro ao salvar ordem dos cards:', error);
+        if (typeof window !== "undefined" && "localStorage" in window) {
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(newOrder));
+          } catch (error) {
+            console.error('Erro ao salvar ordem dos cards:', error);
+          }
         }
         
         return newOrder;
@@ -120,6 +129,12 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
     : layout === "config"
     ? "grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch"
     : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-stretch";
+
+  // Se ainda não carregou a configuração (especialmente em contexto de PWA),
+  // renderiza apenas os cards na ordem padrão para evitar qualquer erro de inicialização
+  if (!isLoaded) {
+    return <div className={gridClass}>{children}</div>;
+  }
 
   // Reordenar children baseado na ordem salva
   const orderedChildren = items.map((id) => {
