@@ -6,6 +6,7 @@ import AdminDashboard from "@/components/dashboard/AdminDashboard";
 import FeiranteDashboard from "@/components/dashboard/FeiranteDashboard";
 import { Loader2 } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
+import { NotificationOnboarding } from "@/components/notifications/NotificationOnboarding";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -112,10 +113,20 @@ const Dashboard = () => {
   }
 
   if (userRole === "admin") {
-    return <AdminDashboard user={user!} />;
+    return (
+      <>
+        <NotificationOnboarding userId={user!.id} userRole="admin" />
+        <AdminDashboard user={user!} />
+      </>
+    );
   }
 
-  return <FeiranteDashboard user={user!} />;
+  return (
+    <>
+      <NotificationOnboarding userId={user!.id} userRole="feirante" />
+      <FeiranteDashboard user={user!} />
+    </>
+  );
 };
 
 export default Dashboard;
