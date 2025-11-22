@@ -133,46 +133,49 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-gradient-hero">
+    <div className="min-h-screen w-full flex bg-gradient-hero overflow-x-hidden">
       {/* Desktop Sidebar */}
       {!isMobile && <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} />}
       
       {/* Mobile Sidebar Sheet */}
-      <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <SheetContent side="left" className="p-0 w-[280px]">
-          <AdminSidebar 
-            activeSection={activeSection} 
-            onSectionChange={(section) => {
-              setActiveSection(section);
-              setSidebarOpen(false);
-            }} 
-          />
-        </SheetContent>
+      {isMobile && (
+        <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+          <SheetContent side="left" className="p-0 w-[280px]">
+            <AdminSidebar 
+              activeSection={activeSection} 
+              onSectionChange={(section) => {
+                setActiveSection(section);
+                setSidebarOpen(false);
+              }} 
+            />
+          </SheetContent>
+        </Sheet>
+      )}
       
-        <div className={`flex-1 flex flex-col w-full ${!isMobile ? 'md:ml-[280px]' : ''}`}>
-          <header className="border-b bg-card sticky top-0 z-10">
-            <div className="px-4 py-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  {isMobile && (
-                    <SheetTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Menu className="w-5 h-5" />
-                      </Button>
-                    </SheetTrigger>
-                  )}
+      <div className={`flex-1 flex flex-col min-w-0 ${!isMobile ? 'md:ml-[280px]' : ''}`}>
+        <header className="border-b bg-card sticky top-0 z-10">
+          <div className="px-4 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4 min-w-0 flex-1">
+                {isMobile && (
+                  <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
+                    <Menu className="w-5 h-5" />
+                  </Button>
+                )}
+                <div className="min-w-0 flex-1">
                   <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
                 </div>
-                <div className="flex items-center gap-2 md:gap-4">
-                  <NotificationBell userId={user.id} onNavigate={setActiveSection} />
-                  <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={handleLogout}>
-                    <LogOut className="w-4 h-4 md:mr-2" />
-                    <span className="hidden md:inline">Sair</span>
-                  </Button>
-                </div>
+              </div>
+              <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                <NotificationBell userId={user.id} onNavigate={setActiveSection} />
+                <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={handleLogout}>
+                  <LogOut className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Sair</span>
+                </Button>
               </div>
             </div>
-          </header>
+          </div>
+        </header>
 
         <main className="flex-1 px-4 md:px-6 py-6 md:py-8 overflow-auto">
           {activeSection === "overview" && (
@@ -301,7 +304,6 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
         </main>
       </div>
-      </Sheet>
     </div>
   );
 };
