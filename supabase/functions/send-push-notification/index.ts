@@ -263,16 +263,28 @@ Deno.serve(async (req) => {
           const text = await response.text();
           console.error('[FCM] Erro HTTP ao enviar push:', response.status, response.statusText);
           console.error('[FCM] Corpo da resposta:', text);
-          return { error: `HTTP ${response.status}` };
+
+          // Limpar tokens inválidos do banco automaticamente
+          if (response.status === 404 || response.status === 403) {
+            console.log('[FCM] Removendo token inválido do banco:', token.substring(0, 25) + '...');
+            try {
+              await supabase.from('fcm_tokens').delete().eq('token', token);
+              console.log('[FCM] ✓ Token inválido removido');
+            } catch (deleteError) {
+              console.error('[FCM] Erro ao remover token:', deleteError);
+            }
+          }
+
+          return { error: `HTTP ${response.status}`, token };
         }
 
         const result = await response.json();
         console.log('[FCM] ✓ Push enviado com sucesso:', result.name || 'sem id');
-        return { success: true };
+        return { success: true, token };
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Erro desconhecido';
         console.error('[FCM] Exceção ao enviar push:', errorMsg);
-        return { error: errorMsg };
+        return { error: errorMsg, token };
       }
     });
 
