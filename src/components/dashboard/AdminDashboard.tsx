@@ -148,32 +148,31 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             }} 
           />
         </SheetContent>
-      </Sheet>
       
-      <div className={`flex-1 flex flex-col w-full ${!isMobile ? 'md:ml-[280px]' : ''}`}>
-        <header className="border-b bg-card sticky top-0 z-10">
-          <div className="px-4 py-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                {isMobile && (
-                  <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Menu className="w-5 h-5" />
-                    </Button>
-                  </SheetTrigger>
-                )}
-                <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
-              </div>
-              <div className="flex items-center gap-2 md:gap-4">
-                <NotificationBell userId={user.id} onNavigate={setActiveSection} />
-                <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={handleLogout}>
-                  <LogOut className="w-4 h-4 md:mr-2" />
-                  <span className="hidden md:inline">Sair</span>
-                </Button>
+        <div className={`flex-1 flex flex-col w-full ${!isMobile ? 'md:ml-[280px]' : ''}`}>
+          <header className="border-b bg-card sticky top-0 z-10">
+            <div className="px-4 py-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  {isMobile && (
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <Menu className="w-5 h-5" />
+                      </Button>
+                    </SheetTrigger>
+                  )}
+                  <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
+                </div>
+                <div className="flex items-center gap-2 md:gap-4">
+                  <NotificationBell userId={user.id} onNavigate={setActiveSection} />
+                  <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={handleLogout}>
+                    <LogOut className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">Sair</span>
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </header>
+          </header>
 
         <main className="flex-1 px-4 md:px-6 py-6 md:py-8 overflow-auto">
           {activeSection === "overview" && (
@@ -302,6 +301,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
         </main>
       </div>
+      </Sheet>
     </div>
   );
 };
