@@ -3,7 +3,7 @@ import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { LogOut, Users, DollarSign, Calendar, MessageCircle, Mail } from "lucide-react";
+import { LogOut, Users, DollarSign, Calendar, MessageCircle, Mail, Menu } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FeiraForm } from "./admin/FeiraForm";
@@ -26,6 +26,8 @@ import SendNotifications from "./admin/SendNotifications";
 import { SendPushNotification } from "./admin/SendPushNotification";
 import { NotificationPermission } from "@/components/notifications/NotificationPermission";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface AdminDashboardProps {
   user: User;
@@ -34,6 +36,7 @@ interface AdminDashboardProps {
 const AdminDashboard = ({ user }: AdminDashboardProps) => {
   const [activeSection, setActiveSection] = useState("overview");
   const [profileKey, setProfileKey] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stats, setStats] = useState({
     totalFeiras: 0,
     feirasAtivas: 0,
@@ -43,6 +46,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
     pagamentosRecebidos: 0,
   });
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   // Inicializar notificações
   useNotifications(user.id);
@@ -130,25 +134,52 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
   return (
     <div className="min-h-screen w-full flex bg-gradient-hero">
-      <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+      {/* Desktop Sidebar */}
+      {!isMobile && <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} />}
       
-      <div className="flex-1 flex flex-col ml-[280px]">
+      {/* Mobile Sidebar */}
+      {isMobile && (
+        <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+          <SheetContent side="left" className="p-0 w-[280px]">
+            <AdminSidebar 
+              activeSection={activeSection} 
+              onSectionChange={(section) => {
+                setActiveSection(section);
+                setSidebarOpen(false);
+              }} 
+            />
+          </SheetContent>
+        </Sheet>
+      )}
+      
+      <div className={`flex-1 flex flex-col ${!isMobile ? 'ml-[280px]' : ''}`}>
         <header className="border-b bg-card sticky top-0 z-10">
           <div className="px-4 py-4">
             <div className="flex items-center justify-between gap-4">
-              <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
               <div className="flex items-center gap-4">
+                {isMobile && (
+                  <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <Menu className="w-5 h-5" />
+                      </Button>
+                    </SheetTrigger>
+                  </Sheet>
+                )}
+                <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
+              </div>
+              <div className="flex items-center gap-2 md:gap-4">
                 <NotificationBell userId={user.id} onNavigate={setActiveSection} />
-                <Button variant="outline" onClick={handleLogout}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sair
+                <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={handleLogout}>
+                  <LogOut className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Sair</span>
                 </Button>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-8 overflow-auto">
+        <main className="flex-1 px-4 md:px-6 py-6 md:py-8 overflow-auto">
           {activeSection === "overview" && (
             <div className="space-y-6">
               <div>
