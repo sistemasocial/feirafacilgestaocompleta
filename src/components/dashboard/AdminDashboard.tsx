@@ -134,7 +134,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-gradient-hero overflow-x-hidden">
+    <div className="min-h-screen w-full flex bg-gradient-hero overflow-x-auto">
       <AdminSidebar
         activeSection={activeSection}
         onSectionChange={setActiveSection}
