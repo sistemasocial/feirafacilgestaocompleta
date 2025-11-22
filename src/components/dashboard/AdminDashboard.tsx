@@ -134,43 +134,21 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
   return (
     <div className="min-h-screen w-full flex bg-gradient-hero overflow-x-hidden">
-      {/* Desktop Sidebar */}
-      {!isMobile && <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} />}
+      {/* Fixed Sidebar for all screens */}
+      <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
       
-      {/* Mobile Sidebar Sheet */}
-      {isMobile && (
-        <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetContent side="left" className="p-0 w-[280px] z-50">
-            <AdminSidebar 
-              activeSection={activeSection} 
-              onSectionChange={(section) => {
-                setActiveSection(section);
-                setSidebarOpen(false);
-              }} 
-            />
-          </SheetContent>
-        </Sheet>
-      )}
-      
-      <div className={`flex-1 flex flex-col min-w-0 ${!isMobile ? 'md:ml-[280px]' : ''}`}>
+      <div className="flex-1 flex flex-col min-w-0 md:ml-[280px]">
         <header className="border-b bg-card sticky top-0 z-40">
           <div className="px-4 py-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4 min-w-0 flex-1">
-                {isMobile && (
-                  <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
-                    <Menu className="w-5 h-5" />
-                  </Button>
-                )}
-                <div className="min-w-0 flex-1">
-                  <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
-                </div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
               </div>
-              <div className="flex items-center gap-2 md:gap-4 shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <NotificationBell userId={user.id} onNavigate={setActiveSection} />
-                <Button variant="outline" size={isMobile ? "sm" : "default"} onClick={handleLogout}>
-                  <LogOut className="w-4 h-4 md:mr-2" />
-                  <span className="hidden md:inline">Sair</span>
+                <Button variant="outline" size="sm" onClick={handleLogout}>
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden sm:inline ml-2">Sair</span>
                 </Button>
               </div>
             </div>
