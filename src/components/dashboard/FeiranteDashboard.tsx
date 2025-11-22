@@ -62,34 +62,30 @@ const FeiranteDashboard = ({
       {/* Desktop Sidebar */}
       {!isMobile && <FeiranteSidebar activeSection={activeSection} onSectionChange={setActiveSection} />}
       
-      {/* Mobile Sidebar */}
-      {isMobile && (
-        <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetContent side="left" className="p-0 w-[280px]">
-            <FeiranteSidebar 
-              activeSection={activeSection} 
-              onSectionChange={(section) => {
-                setActiveSection(section);
-                setSidebarOpen(false);
-              }} 
-            />
-          </SheetContent>
-        </Sheet>
-      )}
+      {/* Mobile Sidebar Sheet */}
+      <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+        <SheetContent side="left" className="p-0 w-[280px]">
+          <FeiranteSidebar 
+            activeSection={activeSection} 
+            onSectionChange={(section) => {
+              setActiveSection(section);
+              setSidebarOpen(false);
+            }} 
+          />
+        </SheetContent>
+      </Sheet>
       
-      <div className={`flex-1 flex flex-col ${!isMobile ? 'ml-[280px]' : ''}`}>
+      <div className={`flex-1 flex flex-col w-full ${!isMobile ? 'md:ml-[280px]' : ''}`}>
         <header className="border-b bg-card sticky top-0 z-10">
           <div className="px-4 py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 {isMobile && (
-                  <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-                    <SheetTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Menu className="w-5 h-5" />
-                      </Button>
-                    </SheetTrigger>
-                  </Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Menu className="w-5 h-5" />
+                    </Button>
+                  </SheetTrigger>
                 )}
                 <ProfileHeader key={profileKey} userId={user.id} role="feirante" compact />
               </div>
