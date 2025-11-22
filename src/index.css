@@ -123,6 +123,13 @@ All colors MUST be HSL.
   html,
   body {
     @apply bg-background text-foreground overflow-x-hidden;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
   }
 }
 
