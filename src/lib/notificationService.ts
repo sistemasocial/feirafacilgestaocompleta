@@ -60,20 +60,20 @@ const playTone = (audioContext: AudioContext) => {
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
-    // Tom de notificação agradável (dois bipes)
-    oscillator.frequency.value = 800;
+    // Tom de notificação mais alto e perceptível
+    oscillator.frequency.value = 1000; // Aumentado de 800 para 1000Hz
     oscillator.type = "sine";
 
-    // Primeiro bipe
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+    // Primeiro bipe (mais forte)
+    gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); // Aumentado de 0.3 para 0.5
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
     
-    // Segundo bipe
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + 0.3);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    // Segundo bipe (mais forte)
+    gainNode.gain.setValueAtTime(0.5, audioContext.currentTime + 0.25);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
 
     oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.5);
+    oscillator.stop(audioContext.currentTime + 0.4);
     
     console.log("[Som] ✓ Som tocado com sucesso!");
   } catch (error) {

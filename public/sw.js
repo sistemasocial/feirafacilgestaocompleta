@@ -67,8 +67,8 @@ self.addEventListener('push', (event) => {
     vibrate: [300, 100, 300, 100, 300],
     tag: notificationData.id || 'notification-' + Date.now(),
     requireInteraction: false,
-    silent: false, // Garante que toca o som do sistema
-    sound: '/notification.mp3', // Adiciona som customizado se disponível
+    silent: false, // CRÍTICO: permite som do sistema
+    renotify: true, // CRÍTICO: força som mesmo se notificação com mesmo tag existe
     data: notificationData,
     actions: [],
     timestamp: Date.now()
@@ -128,6 +128,7 @@ self.addEventListener('message', async (event) => {
       tag: id || 'notification-' + Date.now(),
       requireInteraction: false,
       silent: false,
+      renotify: true, // Força som
       data: event.data
     };
 
