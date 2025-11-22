@@ -1,8 +1,20 @@
 // Service Worker para notificações push em background
-// O cache e o roteamento de navegação (incluindo PWA) são gerenciados pelo Workbox
-// configurado no VitePWA. Este arquivo foca apenas em notificações.
-
 // IMPORTANTE: Este arquivo roda em um contexto separado do app principal
+
+self.addEventListener('install', (event) => {
+  console.log('[SW] Service Worker instalando...');
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  console.log('[SW] Service Worker ativado');
+  event.waitUntil(self.clients.claim());
+});
+
+// Manter o service worker ativo - necessário para push notifications
+self.addEventListener('fetch', (event) => {
+  // Deixar passar todas as requisições normalmente
+});
 
 // Escutar mensagens push do Firebase (background)
 self.addEventListener('push', (event) => {
@@ -115,4 +127,3 @@ self.addEventListener('message', async (event) => {
     await self.registration.showNotification(title, options);
   }
 });
-

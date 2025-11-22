@@ -29,9 +29,7 @@ export default defineConfig(({ mode }) => ({
         theme_color: "#10b981",
         background_color: "#ffffff",
         display: "standalone",
-        scope: "/",
-        start_url: "/?source=pwa",
-        orientation: "portrait-primary",
+        start_url: "/",
         icons: [
           {
             src: "/pwa-192x192.png",
@@ -52,9 +50,7 @@ export default defineConfig(({ mode }) => ({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,woff,woff2}"],
-        navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/api/],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg}"],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
