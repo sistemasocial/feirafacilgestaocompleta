@@ -129,9 +129,9 @@ const AdminDashboard = ({
     setActiveSection("overview");
   };
   return <div className="min-h-screen w-full flex bg-gradient-hero overflow-x-hidden">
-      <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} className="my-[32px] mx-0 mr-0 mb-0 px-0 py-0 pr-[5px] pb-[38px] rounded-none" />
+      <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} className="mx-0 my-0 rounded-none ml-[7px] mt-0 px-0 py-0 pb-0 pr-[17px] mr-0 mb-0 pl-0 pt-0" />
 
-      <div className="flex-1 flex flex-col min-w-0 ml-[260px]">
+      <div className="flex-1 min-w-0 items-start justify-start flex flex-col ml-[240px] mt-[56px] px-[78px]">
         <header className="border-b bg-card sticky top-0 z-40">
           <div className="px-4 py-4">
             <div className="flex items-center justify-between gap-4">
