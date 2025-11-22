@@ -102,10 +102,10 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
   };
 
   const gridClass = layout === "vertical" 
-    ? "grid grid-cols-1 gap-4 items-stretch"
+    ? "grid grid-cols-1 gap-3 items-stretch"
     : layout === "config"
-    ? "grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch"
-    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch";
+    ? "grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch"
+    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-stretch";
 
   if (items.length === 0) {
     return <div className={gridClass}>{children}</div>;
