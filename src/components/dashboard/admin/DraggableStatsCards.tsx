@@ -45,9 +45,9 @@ const DraggableCard = ({ id, children }: DraggableCardProps) => {
       <div
         {...attributes}
         {...listeners}
-        className="absolute top-2 right-2 z-10 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-background/80 rounded-md border border-border"
+        className="absolute top-1 left-1 z-[5] cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-background/90 rounded-md border border-border shadow-sm"
       >
-        <GripVertical className="w-4 h-4 text-muted-foreground" />
+        <GripVertical className="w-3 h-3 text-muted-foreground" />
       </div>
       <div className="h-full">
         {children}
