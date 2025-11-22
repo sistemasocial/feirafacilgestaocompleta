@@ -27,16 +27,16 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const firebaseServerKey = Deno.env.get('FIREBASE_SERVER_KEY');
+    const firebaseServiceAccount = Deno.env.get('FIREBASE_SERVICE_ACCOUNT');
 
     console.log('Variáveis de ambiente:', {
       supabaseUrl: !!supabaseUrl,
       supabaseKey: !!supabaseKey,
-      firebaseServerKey: !!firebaseServerKey
+      firebaseServiceAccount: !!firebaseServiceAccount
     });
 
-    if (!firebaseServerKey) {
-      console.warn('FIREBASE_SERVER_KEY não configurada - notificações push não serão enviadas');
+    if (!firebaseServiceAccount) {
+      console.warn('FIREBASE_SERVICE_ACCOUNT não configurado - notificações push não serão enviadas');
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -122,8 +122,8 @@ Deno.serve(async (req) => {
       console.error('Erro ao criar notificações:', notifError);
     }
 
-    // Se não houver FIREBASE_SERVER_KEY, retornar apenas com as notificações criadas
-    if (!firebaseServerKey) {
+    // Se não houver FIREBASE_SERVICE_ACCOUNT, retornar apenas com as notificações criadas
+    if (!firebaseServiceAccount) {
       return new Response(
         JSON.stringify({
           message: 'Notificações criadas no banco (Firebase não configurado)',
@@ -133,71 +133,135 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Enviar notificação push via Firebase para cada token
+    // Parse service account
+    let serviceAccount;
+    try {
+      serviceAccount = JSON.parse(firebaseServiceAccount);
+    } catch (error) {
+      console.error('Erro ao fazer parse do service account:', error);
+      return new Response(
+        JSON.stringify({ error: 'Service account JSON inválido' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Obter access token OAuth 2.0
+    const getAccessToken = async () => {
+      const jwtHeader = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+      const now = Math.floor(Date.now() / 1000);
+      const jwtClaimSet = btoa(JSON.stringify({
+        iss: serviceAccount.client_email,
+        scope: 'https://www.googleapis.com/auth/firebase.messaging',
+        aud: 'https://oauth2.googleapis.com/token',
+        exp: now + 3600,
+        iat: now,
+      }));
+
+      const signatureInput = `${jwtHeader}.${jwtClaimSet}`;
+      
+      // Import private key
+      const privateKey = await crypto.subtle.importKey(
+        'pkcs8',
+        new TextEncoder().encode(serviceAccount.private_key),
+        { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+        false,
+        ['sign']
+      );
+
+      const signature = await crypto.subtle.sign(
+        'RSASSA-PKCS1-v1_5',
+        privateKey,
+        new TextEncoder().encode(signatureInput)
+      );
+
+      const jwt = `${signatureInput}.${btoa(String.fromCharCode(...new Uint8Array(signature)))}`;
+
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
+      });
+
+      const tokenData = await tokenResponse.json();
+      return tokenData.access_token;
+    };
+
+    let accessToken;
+    try {
+      accessToken = await getAccessToken();
+    } catch (error) {
+      console.error('Erro ao obter access token:', error);
+      return new Response(
+        JSON.stringify({ error: 'Falha na autenticação OAuth 2.0' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Enviar notificação push via Firebase FCM v1 API para cada token
     const pushPromises = tokens.map(async ({ token }) => {
       try {
         console.log('[Push] Enviando para token:', token.substring(0, 20) + '...');
         
-        const response = await fetch('https://fcm.googleapis.com/fcm/send', {
+        const fcmUrl = `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`;
+        
+        const response = await fetch(fcmUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `key=${firebaseServerKey}`,
+            'Authorization': `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
-            to: token,
-            priority: 'high',
-            notification: {
-              title,
-              body: message,
-              icon: '/pwa-192x192.png',
-              badge: '/pwa-192x192.png',
-              click_action: 'https://f890b9d8-fa05-428f-8739-0ccf652f8fd7.lovableproject.com/dashboard',
-            },
-            data: {
-              type: type || 'geral',
-              relatedId: relatedId || '',
-              title,
-              message,
+            message: {
+              token: token,
+              notification: {
+                title,
+                body: message,
+              },
+              data: {
+                type: type || 'geral',
+                relatedId: relatedId || '',
+                title,
+                message,
+              },
+              android: {
+                priority: 'high',
+                notification: {
+                  icon: '/pwa-192x192.png',
+                  click_action: 'https://f890b9d8-fa05-428f-8739-0ccf652f8fd7.lovableproject.com/dashboard',
+                },
+              },
+              webpush: {
+                notification: {
+                  icon: '/pwa-192x192.png',
+                  badge: '/pwa-192x192.png',
+                },
+                fcm_options: {
+                  link: 'https://f890b9d8-fa05-428f-8739-0ccf652f8fd7.lovableproject.com/dashboard',
+                },
+              },
             },
           }),
         });
 
-        // Verificar se a resposta é válida antes de fazer parse
-        const contentType = response.headers.get('content-type');
         if (!response.ok) {
-          console.error('[Push] Resposta HTTP não OK:', response.status, response.statusText);
           const text = await response.text();
-          console.error('[Push] Resposta completa:', text);
+          console.error('[Push] Erro HTTP:', response.status, text);
           return { error: `HTTP ${response.status}: ${text.substring(0, 200)}` };
         }
 
-        if (!contentType || !contentType.includes('application/json')) {
-          const text = await response.text();
-          console.error('[Push] Resposta não é JSON:', text.substring(0, 200));
-          return { error: 'Firebase retornou HTML em vez de JSON - verifique o FIREBASE_SERVER_KEY' };
-        }
-
         const result = await response.json();
-        console.log('[Push] Resposta Firebase:', result);
-        
-        if (result.success === 1) {
-          console.log('[Push] ✓ Enviado com sucesso');
-        } else if (result.failure === 1) {
-          console.error('[Push] ✗ Falha no envio:', result);
-        }
-        
-        return result;
+        console.log('[Push] ✓ Enviado com sucesso:', result);
+        return { success: true, result };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error('[Push] Erro ao enviar para token:', token.substring(0, 20) + '...', error);
+        console.error('[Push] Erro ao enviar:', error);
         return { error: errorMessage };
       }
     });
 
     const results = await Promise.all(pushPromises);
-    const successCount = results.filter(r => r.success === 1 || (r.success !== undefined && r.success >= 1) || (!r.error && !r.failure)).length;
-    const failureCount = results.filter(r => r.failure === 1 || r.error).length;
+    const successCount = results.filter(r => r.success).length;
+    const failureCount = results.filter(r => r.error).length;
 
     console.log(`[Push] Resumo: ${successCount} enviadas, ${failureCount} falharam`);
 
