@@ -4,7 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, RefreshCcw, Smartphone, Bell, Database } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Loader2, RefreshCcw, Smartphone, Bell, Database, AlertCircle, XCircle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface FcmDiagnosticsProps {
@@ -31,6 +32,12 @@ export const FcmDiagnostics = ({ userId }: FcmDiagnosticsProps) => {
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [sendingTest, setSendingTest] = useState(false);
+  const [lastTestResult, setLastTestResult] = useState<{
+    sent: number;
+    failed: number;
+    total: number;
+    results?: Array<{ error?: string; success?: boolean }>;
+  } | null>(null);
 
   const loadStatus = async () => {
     try {
@@ -89,6 +96,7 @@ export const FcmDiagnostics = ({ userId }: FcmDiagnosticsProps) => {
 
   const handleSendTest = async () => {
     setSendingTest(true);
+    setLastTestResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("send-push-notification", {
         body: {
@@ -104,7 +112,16 @@ export const FcmDiagnostics = ({ userId }: FcmDiagnosticsProps) => {
         toast.error("Erro ao enviar notificação de teste");
       } else {
         console.log("[FCM] Resultado envio teste:", data);
-        toast.success("Notificação de teste enviada. Verifique o celular.");
+        setLastTestResult(data);
+        
+        if (data.sent > 0) {
+          toast.success(`${data.sent} notificação(ões) enviada(s). Verifique o celular.`);
+        } else if (data.failed > 0) {
+          toast.warning(`Todas as ${data.failed} tentativas falharam. Veja detalhes abaixo.`);
+        } else {
+          toast.info("Notificação criada no banco, mas push não foi enviado.");
+        }
+        
         loadStatus();
       }
     } catch (e) {
@@ -172,6 +189,85 @@ export const FcmDiagnostics = ({ userId }: FcmDiagnosticsProps) => {
           </div>
         </div>
       </div>
+
+      {/* Alertas de problemas detectados */}
+      {permission === "denied" && (
+        <Alert variant="destructive">
+          <XCircle className="h-4 w-4" />
+          <AlertTitle>⚠️ Permissão de notificação NEGADA no navegador</AlertTitle>
+          <AlertDescription className="space-y-2 mt-2">
+            <p className="font-medium">O navegador deste dispositivo bloqueou as notificações.</p>
+            <p className="text-sm">Para corrigir:</p>
+            <ol className="text-sm list-decimal list-inside space-y-1 ml-2">
+              <li>Toque no ícone de <strong>cadeado</strong> ou <strong>"i"</strong> na barra de endereço do navegador</li>
+              <li>Procure por <strong>"Notificações"</strong> ou <strong>"Permissões"</strong></li>
+              <li>Altere de <strong>"Bloquear"</strong> para <strong>"Permitir"</strong></li>
+              <li>Atualize esta página e faça login novamente</li>
+            </ol>
+            <p className="text-sm mt-2 italic">
+              ⚠️ Enquanto estiver bloqueado, NENHUMA notificação push chegará neste dispositivo.
+            </p>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {permission === "granted" && tokens.length === 0 && (
+        <Alert variant="default" className="border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/20">
+          <AlertCircle className="h-4 w-4 text-yellow-600" />
+          <AlertTitle>Permissão concedida, mas sem token FCM</AlertTitle>
+          <AlertDescription className="text-sm">
+            A permissão está OK, mas nenhum token FCM foi registrado ainda. Recarregue a página ou faça logout/login novamente.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {lastTestResult && lastTestResult.failed > 0 && lastTestResult.results && (
+        <Alert variant="destructive">
+          <XCircle className="h-4 w-4" />
+          <AlertTitle>❌ Erro ao enviar notificações push para o Firebase</AlertTitle>
+          <AlertDescription className="space-y-2 mt-2">
+            <p className="font-medium">
+              {lastTestResult.failed} de {lastTestResult.total} tentativa(s) falharam com erro da API do Firebase.
+            </p>
+            
+            {lastTestResult.results.some(r => r.error?.includes("404")) && (
+              <div className="space-y-2 mt-3 p-3 bg-destructive/10 rounded-md">
+                <p className="font-semibold text-sm">🔥 Erro HTTP 404 detectado (Firebase)</p>
+                <p className="text-sm">
+                  O backend tentou enviar para o Firebase, mas recebeu <strong>404 Not Found</strong>. 
+                  Isso geralmente significa:
+                </p>
+                <ul className="text-sm list-disc list-inside space-y-1 ml-2">
+                  <li>O <code>project_id</code> no segredo <code>FIREBASE_SERVICE_ACCOUNT</code> está incorreto</li>
+                  <li>O projeto Firebase não tem o Cloud Messaging (FCM) habilitado</li>
+                  <li>A conta de serviço JSON não pertence ao mesmo projeto do app web</li>
+                </ul>
+                <p className="text-sm mt-2 font-medium">
+                  ✅ Solução: Verifique no Firebase Console se o projeto está correto e gere um novo JSON de conta de serviço.
+                </p>
+              </div>
+            )}
+
+            <details className="text-xs mt-2">
+              <summary className="cursor-pointer font-medium">Ver detalhes técnicos</summary>
+              <pre className="mt-2 p-2 bg-muted rounded text-[10px] overflow-auto max-h-32">
+                {JSON.stringify(lastTestResult.results, null, 2)}
+              </pre>
+            </details>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {lastTestResult && lastTestResult.sent > 0 && lastTestResult.failed === 0 && (
+        <Alert className="border-green-500/50 bg-green-50 dark:bg-green-950/20">
+          <CheckCircle2 className="h-4 w-4 text-green-600" />
+          <AlertTitle>✅ Push enviado com sucesso!</AlertTitle>
+          <AlertDescription className="text-sm">
+            {lastTestResult.sent} notificação(ões) foram enviadas para o Firebase sem erros. 
+            Verifique o celular em até 1–2 minutos.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="flex items-center justify-between gap-4 border-t pt-4">
         <div className="text-sm text-muted-foreground max-w-xl">
