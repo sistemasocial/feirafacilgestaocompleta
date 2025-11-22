@@ -144,7 +144,11 @@ Deno.serve(async (req) => {
       throw tokensError;
     }
 
-    console.log(`[FCM] Tokens encontrados: ${tokens?.length || 0}`);
+    console.log(`[FCM] Tokens encontrados (incluindo possíveis duplicados): ${tokens?.length || 0}`);
+
+    // Remover tokens duplicados para evitar notificações em duplicidade
+    const uniqueTokens = Array.from(new Set((tokens || []).map((t) => t.token)));
+    console.log(`[FCM] Tokens únicos para envio: ${uniqueTokens.length}`);
 
     // Criar notificações no banco (para o sininho e histórico)
     const notifications = targetUserIds.map((uid) => ({
@@ -210,7 +214,7 @@ Deno.serve(async (req) => {
 
     console.log('[FCM] Enviando via endpoint v1:', `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`);
 
-    const pushPromises = tokens.map(async ({ token }) => {
+    const pushPromises = uniqueTokens.map(async (token) => {
       try {
         console.log('[FCM] Enviando para token:', token.substring(0, 25) + '...');
 
@@ -283,7 +287,7 @@ Deno.serve(async (req) => {
         message: 'Notificações processadas',
         sent: successCount,
         failed: failureCount,
-        total: tokens.length,
+        total: uniqueTokens.length,
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
