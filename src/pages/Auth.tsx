@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PRODUCT_CATEGORIES, CATEGORY_LABELS } from "@/lib/productCategories";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import vendedoraHero from "@/assets/vendedora-hero.jpg";
 
 const loginSchema = z.object({
@@ -44,6 +45,9 @@ const Auth = () => {
   const [media_feirantes, setMediaFeirantes] = useState<number>();
   const [selectedCategories, setSelectedCategories] = useState<Record<string, string[]>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -169,6 +173,35 @@ const Auth = () => {
       toast.error(error.message || "Erro ao processar solicitação");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetLoading(true);
+
+    try {
+      const emailValidation = z.string().email({ message: "Email inválido" }).safeParse(resetEmail);
+      
+      if (!emailValidation.success) {
+        toast.error("Por favor, insira um email válido");
+        setResetLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim().toLowerCase(), {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) throw error;
+
+      toast.success("Link de recuperação enviado! Verifique seu email.");
+      setShowForgotPassword(false);
+      setResetEmail("");
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao enviar email de recuperação");
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -419,6 +452,19 @@ const Auth = () => {
               {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
 
+            {isLogin && (
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  variant="link"
+                  className="px-0 text-sm text-primary"
+                  onClick={() => setShowForgotPassword(true)}
+                >
+                  Esqueceu a senha?
+                </Button>
+              </div>
+            )}
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Processando..." : isLogin ? "Entrar" : "Criar conta"}
             </Button>
@@ -437,6 +483,51 @@ const Auth = () => {
           </div>
         </div>
       </div>
+
+      <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Recuperar senha</DialogTitle>
+            <DialogDescription>
+              Digite seu email para receber um link de recuperação de senha
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="reset-email">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="reset-email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  className="pl-10"
+                  required
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setShowForgotPassword(false);
+                  setResetEmail("");
+                }}
+                disabled={resetLoading}
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" className="flex-1" disabled={resetLoading}>
+                {resetLoading ? "Enviando..." : "Enviar link"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
