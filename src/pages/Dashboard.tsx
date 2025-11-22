@@ -18,22 +18,7 @@ const Dashboard = () => {
   useNotifications(user?.id);
 
   useEffect(() => {
-    
-    // Timeout de segurança: se após 10s ainda estiver carregando, redireciona com erro
-    const safetyTimeout = setTimeout(() => {
-      if (loading) {
-        console.error("Timeout ao carregar sessão");
-        setLoading(false);
-        toast({
-          title: "Erro ao carregar",
-          description: "Sua sessão expirou. Faça login novamente.",
-          variant: "destructive",
-        });
-        navigate("/auth", { replace: true });
-      }
-    }, 10000);
-
-    // Helper to fetch or create the user's role
+    // Helper para buscar ou criar o papel do usuário
     const fetchOrCreateRole = async (session: Session) => {
       try {
         const { data: roleData, error } = await supabase
@@ -69,88 +54,77 @@ const Dashboard = () => {
       } catch (e) {
         console.error("Error resolving role:", e);
         toast({
-          title: "Erro de autenticação",
-          description: "Não foi possível carregar seu perfil. Faça login novamente.",
+          title: "Erro ao carregar perfil",
+          description: "Não foi possível carregar seus dados. Faça login novamente.",
           variant: "destructive",
         });
         setUserRole(null);
-        setLoading(false);
         navigate("/auth", { replace: true });
       } finally {
         setLoading(false);
       }
     };
 
-    // Set up auth listener FIRST
+    // Ouve mudanças de autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state change:', event, session);
-        
-        if (event === 'SIGNED_OUT') {
+        console.log("Auth state change:", event, session);
+
+        if (event === "SIGNED_OUT") {
           setUser(null);
           setUserRole(null);
           setLoading(false);
           navigate("/auth", { replace: true });
           return;
         }
-        
+
         if (session?.user) {
           setUser(session.user);
+          // Buscar papel de forma assíncrona (evita travar callback)
           setTimeout(() => {
             fetchOrCreateRole(session);
           }, 0);
-        } else if (event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
-          // Sessão atualizada mas sem usuário = erro
-          if (!session) {
-            console.error("Session refresh failed");
-            toast({
-              title: "Sessão expirada",
-              description: "Faça login novamente.",
-              variant: "destructive",
-            });
-            setLoading(false);
-            navigate("/auth", { replace: true });
-          }
         }
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error("Error getting session:", error);
+    // Verifica sessão atual ao montar (inclusive no PWA)
+    supabase.auth.getSession()
+      .then(({ data: { session }, error }) => {
+        if (error) {
+          console.error("Error getting session:", error);
+          toast({
+            title: "Erro de sessão",
+            description: "Não foi possível recuperar sua sessão. Faça login novamente.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          navigate("/auth", { replace: true });
+          return;
+        }
+
+        if (!session) {
+          setLoading(false);
+          navigate("/auth", { replace: true });
+          return;
+        }
+
+        setUser(session.user);
+        fetchOrCreateRole(session);
+      })
+      .catch((err) => {
+        console.error("Unexpected error getting session:", err);
         toast({
-          title: "Erro de sessão",
-          description: "Não foi possível recuperar sua sessão. Faça login novamente.",
+          title: "Erro inesperado",
+          description: "Ocorreu um erro ao verificar sua sessão. Tente novamente.",
           variant: "destructive",
         });
         setLoading(false);
         navigate("/auth", { replace: true });
-        return;
-      }
-      
-      if (!session) {
-        setLoading(false);
-        navigate("/auth", { replace: true });
-        return;
-      }
-      
-      setUser(session.user);
-      fetchOrCreateRole(session);
-    }).catch((err) => {
-      console.error("Unexpected error getting session:", err);
-      toast({
-        title: "Erro inesperado",
-        description: "Ocorreu um erro ao verificar sua sessão. Tente novamente.",
-        variant: "destructive",
       });
-      setLoading(false);
-      navigate("/auth", { replace: true });
-    });
 
     return () => {
       subscription.unsubscribe();
-      clearTimeout(safetyTimeout);
     };
   }, [navigate]);
 
