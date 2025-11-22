@@ -32,6 +32,7 @@ export function FcmTokensDiagnostics() {
   const [feirantes, setFeirantes] = useState<FeiranteWithToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [clearing, setClearing] = useState(false);
+  const [clearingOld, setClearingOld] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -116,6 +117,44 @@ export function FcmTokensDiagnostics() {
     }
   };
 
+  const handleClearOldTokens = async () => {
+    if (!confirm('Limpar tokens antigos do projeto feira-facil-1d3bf? Isso não afetará tokens novos válidos.')) {
+      return;
+    }
+
+    setClearingOld(true);
+    try {
+      // Buscar tokens que começam com prefixos antigos
+      const { data: oldTokens, error: fetchError } = await supabase
+        .from('fcm_tokens')
+        .select('id, token')
+        .or('token.like.f_EgywJE%,token.like.fdiluLHMXrEA%');
+
+      if (fetchError) throw fetchError;
+
+      if (!oldTokens || oldTokens.length === 0) {
+        toast.info('Nenhum token antigo encontrado');
+        return;
+      }
+
+      const tokenIds = oldTokens.map(t => t.id);
+      const { error: deleteError } = await supabase
+        .from('fcm_tokens')
+        .delete()
+        .in('id', tokenIds);
+
+      if (deleteError) throw deleteError;
+
+      toast.success(`${oldTokens.length} token(s) antigo(s) removido(s)`);
+      loadData();
+    } catch (error: any) {
+      console.error('Erro ao limpar tokens antigos:', error);
+      toast.error(`Erro: ${error.message}`);
+    } finally {
+      setClearingOld(false);
+    }
+  };
+
   const feirantesWithTokens = feirantes.filter(f => f.has_token);
   const feirantesWithoutTokens = feirantes.filter(f => !f.has_token);
 
@@ -141,6 +180,16 @@ export function FcmTokensDiagnostics() {
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Atualizar
+            </Button>
+            <Button 
+              onClick={handleClearOldTokens}
+              disabled={clearingOld || tokens.length === 0}
+              variant="outline"
+              size="sm"
+              className="text-orange-600 hover:text-orange-700"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Limpar Antigos
             </Button>
             <Button 
               onClick={handleClearInvalidTokens}
