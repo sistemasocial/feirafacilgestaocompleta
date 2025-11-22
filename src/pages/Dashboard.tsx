@@ -18,7 +18,6 @@ const Dashboard = () => {
   useNotifications(user?.id);
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
     
     // Timeout de segurança: se após 10s ainda estiver carregando, redireciona com erro
     const safetyTimeout = setTimeout(() => {
@@ -153,7 +152,7 @@ const Dashboard = () => {
       subscription.unsubscribe();
       clearTimeout(safetyTimeout);
     };
-  }, [navigate, loading]);
+  }, [navigate]);
 
   if (loading) {
     return (
