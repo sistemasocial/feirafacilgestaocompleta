@@ -14,11 +14,10 @@ interface NotificationPayload {
   relatedId?: string;
 }
 
-// Função para obter access token OAuth 2.0
+// Gera um access token OAuth 2.0 para o Firebase Messaging usando o service account
 async function getAccessToken(serviceAccountJson: string): Promise<string> {
   const serviceAccount = JSON.parse(serviceAccountJson);
-  
-  // Criar JWT para autenticação
+
   const now = Math.floor(Date.now() / 1000);
   const payload = {
     iss: serviceAccount.client_email,
@@ -28,12 +27,11 @@ async function getAccessToken(serviceAccountJson: string): Promise<string> {
     exp: now + 3600,
   };
 
-  // Encode header e payload
   const header = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' }))
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=/g, '');
-  
+
   const encodedPayload = btoa(JSON.stringify(payload))
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
@@ -41,16 +39,13 @@ async function getAccessToken(serviceAccountJson: string): Promise<string> {
 
   const unsignedToken = `${header}.${encodedPayload}`;
 
-  // Preparar chave privada
   const privateKeyPem = serviceAccount.private_key
     .replace(/-----BEGIN PRIVATE KEY-----/, '')
     .replace(/-----END PRIVATE KEY-----/, '')
     .replace(/\s/g, '');
 
-  // Decodificar base64 para ArrayBuffer
-  const binaryKey = Uint8Array.from(atob(privateKeyPem), c => c.charCodeAt(0));
+  const binaryKey = Uint8Array.from(atob(privateKeyPem), (c) => c.charCodeAt(0));
 
-  // Importar chave privada
   const cryptoKey = await crypto.subtle.importKey(
     'pkcs8',
     binaryKey,
@@ -62,14 +57,12 @@ async function getAccessToken(serviceAccountJson: string): Promise<string> {
     ['sign']
   );
 
-  // Assinar o token
   const signature = await crypto.subtle.sign(
     'RSASSA-PKCS1-v1_5',
     cryptoKey,
     new TextEncoder().encode(unsignedToken)
   );
 
-  // Converter signature para base64url
   const signatureBase64 = btoa(String.fromCharCode(...new Uint8Array(signature)))
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
@@ -77,7 +70,6 @@ async function getAccessToken(serviceAccountJson: string): Promise<string> {
 
   const jwt = `${unsignedToken}.${signatureBase64}`;
 
-  // Trocar JWT por access token
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -102,27 +94,31 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log('=== Início do envio de notificação ===');
+    console.log('=== Início do envio de notificação (v1 FCM) ===');
 
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     const firebaseServiceAccount = Deno.env.get('FIREBASE_SERVICE_ACCOUNT');
 
-    console.log('Variáveis:', {
+    console.log('Variáveis de ambiente (send-push-notification):', {
       supabaseUrl: !!supabaseUrl,
       supabaseKey: !!supabaseKey,
-      firebaseServiceAccount: !!firebaseServiceAccount
+      firebaseServiceAccount: !!firebaseServiceAccount,
     });
 
-    if (!firebaseServiceAccount) {
-      console.warn('FIREBASE_SERVICE_ACCOUNT não configurado');
+    if (!supabaseUrl || !supabaseKey) {
+      return new Response(
+        JSON.stringify({ error: 'Backend não configurado corretamente (SUPABASE_URL/SERVICE_ROLE_KEY ausentes)' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const body = await req.json();
-    const { title, message, userId, userIds, type, relatedId }: NotificationPayload = body;
 
-    console.log('Payload:', { title, message, userId, userIds, type });
+    const body = (await req.json()) as NotificationPayload;
+    const { title, message, userId, userIds, type, relatedId } = body;
+
+    console.log('Payload recebido:', body);
 
     // Determinar usuários alvo
     let targetUserIds: string[] = [];
@@ -144,20 +140,20 @@ Deno.serve(async (req) => {
       .in('user_id', targetUserIds);
 
     if (tokensError) {
-      console.error('Erro ao buscar tokens:', tokensError);
+      console.error('Erro ao buscar tokens FCM:', tokensError);
       throw tokensError;
     }
 
-    console.log(`Tokens encontrados: ${tokens?.length || 0}`);
+    console.log(`[FCM] Tokens encontrados: ${tokens?.length || 0}`);
 
-    // Criar notificações no banco
-    const notifications = targetUserIds.map(uid => ({
+    // Criar notificações no banco (para o sininho e histórico)
+    const notifications = targetUserIds.map((uid) => ({
       user_id: uid,
       title,
       message,
       type: type || 'geral',
       related_id: relatedId,
-      read: false
+      read: false,
     }));
 
     const { error: notifError } = await supabase
@@ -165,45 +161,58 @@ Deno.serve(async (req) => {
       .insert(notifications);
 
     if (notifError) {
-      console.error('Erro ao criar notificações:', notifError);
+      console.error('Erro ao criar notificações no banco:', notifError);
     }
 
-    // Se não houver tokens ou Firebase não configurado
+    // Se não houver tokens ou Firebase não configurado, apenas registra no banco
     if (!tokens || tokens.length === 0 || !firebaseServiceAccount) {
+      if (!firebaseServiceAccount) {
+        console.warn('[FCM] FIREBASE_SERVICE_ACCOUNT não configurado, pulando envio push');
+      }
+
       return new Response(
         JSON.stringify({
-          message: 'Notificações criadas no banco',
+          message: 'Notificações criadas no banco, mas push não enviado',
           notificationsCreated: targetUserIds.length,
-          pushSent: false
+          pushSent: false,
+          tokens: tokens?.length || 0,
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Obter access token
+    // Obter access token OAuth para o FCM v1
     let accessToken: string;
     try {
       accessToken = await getAccessToken(firebaseServiceAccount);
-      console.log('✓ Access token obtido');
+      console.log('[FCM] ✓ Access token obtido com sucesso');
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Erro desconhecido';
-      console.error('Erro OAuth:', error);
+      console.error('[FCM] Erro ao obter access token:', errorMsg);
       return new Response(
         JSON.stringify({
-          message: 'Notificações criadas, mas falha no envio push',
-          error: errorMsg
+          message: 'Notificações criadas no banco, mas falha ao autenticar no Firebase',
+          error: errorMsg,
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Enviar push notifications
     const serviceAccount = JSON.parse(firebaseServiceAccount);
     const projectId = serviceAccount.project_id;
 
+    if (!projectId) {
+      return new Response(
+        JSON.stringify({ error: 'project_id ausente no FIREBASE_SERVICE_ACCOUNT' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('[FCM] Enviando via endpoint v1:', `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`);
+
     const pushPromises = tokens.map(async ({ token }) => {
       try {
-        console.log('[Push] Enviando:', token.substring(0, 20) + '...');
+        console.log('[FCM] Enviando para token:', token.substring(0, 25) + '...');
 
         const response = await fetch(
           `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
@@ -211,11 +220,11 @@ Deno.serve(async (req) => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
               message: {
-                token: token,
+                token,
                 notification: {
                   title,
                   body: message,
@@ -228,7 +237,6 @@ Deno.serve(async (req) => {
                   priority: 'high',
                   notification: {
                     sound: 'default',
-                    click_action: 'FLUTTER_NOTIFICATION_CLICK',
                   },
                 },
                 webpush: {
@@ -248,26 +256,27 @@ Deno.serve(async (req) => {
         );
 
         if (!response.ok) {
-          const error = await response.text();
-          console.error('[Push] Erro:', response.status, error);
+          const text = await response.text();
+          console.error('[FCM] Erro HTTP ao enviar push:', response.status, response.statusText);
+          console.error('[FCM] Corpo da resposta:', text);
           return { error: `HTTP ${response.status}` };
         }
 
         const result = await response.json();
-        console.log('[Push] ✓ Sucesso');
+        console.log('[FCM] ✓ Push enviado com sucesso:', result.name || 'sem id');
         return { success: true };
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Erro desconhecido';
-        console.error('[Push] Exceção:', error);
+        console.error('[FCM] Exceção ao enviar push:', errorMsg);
         return { error: errorMsg };
       }
     });
 
     const results = await Promise.all(pushPromises);
-    const successCount = results.filter(r => r.success).length;
-    const failureCount = results.filter(r => r.error).length;
+    const successCount = results.filter((r) => (r as any).success).length;
+    const failureCount = results.filter((r) => (r as any).error).length;
 
-    console.log(`[Push] Resumo: ${successCount} enviadas, ${failureCount} falharam`);
+    console.log(`[FCM] Resumo envio push: ${successCount} sucesso(s), ${failureCount} falha(s)`);
 
     return new Response(
       JSON.stringify({
@@ -280,7 +289,7 @@ Deno.serve(async (req) => {
     );
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Erro desconhecido';
-    console.error('Erro geral:', error);
+    console.error('[FCM] Erro geral na função send-push-notification:', errorMsg);
     return new Response(
       JSON.stringify({ error: errorMsg }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
