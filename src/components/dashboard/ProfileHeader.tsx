@@ -140,10 +140,10 @@ export const ProfileHeader = ({ userId, role, compact = false }: ProfileHeaderPr
                 </p>
               </div>
               {email && (
-                <div className="flex items-center gap-1.5 text-xs">
-                  <Mail className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-muted-foreground">Email:</span>
-                  <span className="font-medium">{email}</span>
+                <div className="flex items-center gap-1.5 text-xs min-w-0">
+                  <Mail className="w-3.5 h-3.5 text-primary shrink-0" />
+                  <span className="text-muted-foreground shrink-0">Email:</span>
+                  <span className="font-medium truncate">{email}</span>
                 </div>
               )}
             </div>
@@ -178,25 +178,11 @@ export const ProfileHeader = ({ userId, role, compact = false }: ProfileHeaderPr
               </p>
             </div>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-              <div className="flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-primary" />
-                <span className="text-muted-foreground">Email:</span>
-                <span className="font-medium">{email}</span>
+              <div className="flex items-center gap-1.5 min-w-0">
+                <Mail className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span className="text-muted-foreground shrink-0">Email:</span>
+                <span className="font-medium truncate">{email}</span>
               </div>
-              {feirante?.cpf_cnpj && (
-                <div className="flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-muted-foreground">CPF/CNPJ:</span>
-                  <span className="font-medium">{feirante.cpf_cnpj}</span>
-                </div>
-              )}
-              {feirante?.segmento && (
-                <div className="flex items-center gap-1.5">
-                  <Tag className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-muted-foreground">Segmento:</span>
-                  <span className="font-medium">{formatSegmento(feirante.segmento)}</span>
-                </div>
-              )}
             </div>
           </div>
         </div>

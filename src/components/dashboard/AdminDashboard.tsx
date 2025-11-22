@@ -140,7 +140,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
       {/* Mobile Sidebar Sheet */}
       {isMobile && (
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetContent side="left" className="p-0 w-[280px]">
+          <SheetContent side="left" className="p-0 w-[280px] z-50">
             <AdminSidebar 
               activeSection={activeSection} 
               onSectionChange={(section) => {
@@ -153,7 +153,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
       )}
       
       <div className={`flex-1 flex flex-col min-w-0 ${!isMobile ? 'md:ml-[280px]' : ''}`}>
-        <header className="border-b bg-card sticky top-0 z-10">
+        <header className="border-b bg-card sticky top-0 z-40">
           <div className="px-4 py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4 min-w-0 flex-1">
