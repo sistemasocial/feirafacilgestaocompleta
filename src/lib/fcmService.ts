@@ -1,23 +1,17 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// IMPORTANTE: Substitua com suas credenciais reais do Firebase
-// Acesse: https://console.firebase.google.com
-// 1. Vá em Configurações do Projeto → Geral
-// 2. Em "Seus apps", selecione o app Web
-// 3. Copie as credenciais abaixo
+// Credenciais do Firebase (projeto feira-facil-brasil)
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAJOp6dgp46kcmUb2e9DbPUMaXyWlQ13JY",
-  authDomain: "feira-facil-1d3bf.firebaseapp.com",
-  projectId: "feira-facil-1d3bf",
-  storageBucket: "feira-facil-1d3bf.firebasestorage.app",
-  messagingSenderId: "1099183570340",
-  appId: "1:1099183570340:web:d07edf2922e2fbbcd5d531"
+  apiKey: "AIzaSyCuAWCSOBeJUaiEVFUXO4sFUsZTT-Izhhc",
+  authDomain: "feira-facil-brasil.firebaseapp.com",
+  projectId: "feira-facil-brasil",
+  storageBucket: "feira-facil-brasil.firebasestorage.app",
+  messagingSenderId: "990861940740",
+  appId: "1:990861940740:web:2ae5ada5ab497c3b4a3d51"
 };
 
-// VAPID Key (Web Push Certificate)
-// Acesse: Firebase Console → Configurações do Projeto → Cloud Messaging
-// Em "Web Push certificates", clique em "Gerar par de chaves"
-const VAPID_KEY = "BHq6gocWa_b9xlZCl0gcWlnDpeB1jd0X_FjM0zMvG4j_j65nQz0hZsvlUKAVbRBgQN_7xPfMEuZvkNHpWjxWr04";
+// VAPID Key do projeto feira-facil-brasil
+const VAPID_KEY = "BOc69NhyrPzDM_FEjVGxHBKThZh_kQClRfnuSSU8aZ-Zhp27hzWK2REaMDvzWMJA3d_ReFfvZkc9vjpZunawRFE";
 
 export const initializeFCM = async (userId: string) => {
   try {
