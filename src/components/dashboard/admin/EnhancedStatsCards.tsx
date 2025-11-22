@@ -127,13 +127,13 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     // Card 1: Meta de Receita - VERDE ESMERALDA
     <Card
       key="meta-receita"
-      className="h-full p-4 bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white border-0 relative overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group"
+      className="h-full p-4 bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white border-0 relative overflow-hidden flex flex-col shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-emerald-200" />
+            <DollarSign className="w-5 h-5 text-emerald-200 group-hover:scale-110 transition-transform duration-300" />
             <h3 className="text-xs font-bold text-emerald-100">Meta de Receita</h3>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
@@ -230,10 +230,10 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     // Card 3: Status das Feiras - AZUL INDIGO
     <Card
       key="status-feiras"
-      className="h-full p-4 bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200 flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group"
+      className="h-full p-4 bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200 flex flex-col shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
     >
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
           <Calendar className="w-5 h-5 text-white" />
         </div>
         <h3 className="text-sm font-bold text-indigo-900">Status das Feiras</h3>
@@ -252,11 +252,11 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center justify-between p-2 rounded-lg bg-indigo-100/50">
+        <div className="flex items-center justify-between p-2 rounded-lg bg-indigo-100/50 hover:bg-indigo-100 hover:scale-105 transition-all duration-200">
           <span className="text-xs text-indigo-700 font-medium">Ativas</span>
           <Badge className="bg-blue-500 text-white text-xs font-bold">{stats.feirasAtivas}</Badge>
         </div>
-        <div className="flex items-center justify-between p-2 rounded-lg bg-cyan-100/50">
+        <div className="flex items-center justify-between p-2 rounded-lg bg-cyan-100/50 hover:bg-cyan-100 hover:scale-105 transition-all duration-200">
           <span className="text-xs text-cyan-700 font-medium">Feirantes</span>
           <span className="text-lg font-bold text-indigo-900">{stats.totalFeirantes}</span>
         </div>
@@ -266,11 +266,11 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     // Card 4: Pagamentos - VERDE LIMA/ESMERALDA
     <Card
       key="pagamentos"
-      className="h-full p-4 bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group"
+      className="h-full p-4 bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 flex flex-col shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-md">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
             <DollarSign className="w-4 h-4 text-white" />
           </div>
           <h3 className="text-sm font-bold text-emerald-900">Pagamentos</h3>
@@ -278,14 +278,14 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
       </div>
 
       <div className="space-y-2 flex-1">
-        <div className="p-3 rounded-xl bg-emerald-100/50 border border-emerald-200">
+        <div className="p-3 rounded-xl bg-emerald-100/50 border border-emerald-200 hover:bg-emerald-100 hover:scale-105 transition-all duration-200">
           <span className="text-xs text-emerald-700 font-medium block mb-1">Recebido</span>
           <div className="text-xl font-bold text-emerald-900">
             R${" "}
             {stats.pagamentosRecebidos.toLocaleString("pt-BR", { minimumFractionDigits: 0 })}
           </div>
         </div>
-        <div className="p-3 rounded-xl bg-orange-100/50 border border-orange-200">
+        <div className="p-3 rounded-xl bg-orange-100/50 border border-orange-200 hover:bg-orange-100 hover:scale-105 transition-all duration-200">
           <span className="text-xs text-orange-700 font-medium block mb-1">Pendente</span>
           <div className="text-xl font-bold text-orange-900">
             R${" "}
@@ -298,12 +298,12 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     // Card 5: Feiras da Semana - ROXO/AZUL VIBRANTE
     <Card
       key="feiras-semana"
-      className="h-full p-4 bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 text-white border-0 relative overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group"
+      className="h-full p-4 bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 text-white border-0 relative overflow-hidden flex flex-col shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div>
@@ -323,7 +323,7 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
               return (
                 <div
                   key={feira.id}
-                  className="p-3 rounded-lg bg-background text-foreground border border-purple-200 hover:border-purple-400 transition-all duration-300"
+                  className="p-3 rounded-lg bg-background text-foreground border border-purple-200 hover:border-purple-400 hover:scale-105 transition-all duration-300"
                 >
                   <h4 className="font-bold text-xs truncate text-foreground mb-1">{feira.nome}</h4>
                   <p className="text-[10px] text-muted-foreground truncate">
@@ -343,12 +343,12 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     // Card 7: Participações Confirmadas - CINZA ESCURO ELEGANTE
     <Card
       key="participacoes"
-      className="h-full p-4 bg-gradient-to-br from-slate-800 via-slate-900 to-gray-900 text-white border-0 relative overflow-hidden flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group"
+      className="h-full p-4 bg-gradient-to-br from-slate-800 via-slate-900 to-gray-900 text-white border-0 relative overflow-hidden flex flex-col shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
             <CheckCircle2 className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1">
@@ -357,11 +357,11 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
         </div>
 
         <div className="grid grid-cols-2 gap-2 mb-3 flex-1">
-          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 hover:scale-105 transition-all duration-200">
             <span className="text-[10px] text-slate-300 font-medium block mb-1">Confirmadas</span>
             <div className="text-2xl font-bold text-emerald-400">{stats.participacoesConfirmadas}</div>
           </div>
-          <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
+          <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 hover:scale-105 transition-all duration-200">
             <span className="text-[10px] text-slate-300 font-medium block mb-1">Feirantes</span>
             <div className="text-2xl font-bold text-blue-400">{stats.totalFeirantes}</div>
           </div>
@@ -380,17 +380,17 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     // Card 8: Estatísticas Rápidas - NEUTRO MODERNO
     <Card
       key="estatisticas-rapidas"
-      className="h-full p-4 bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200 flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group"
+      className="h-full p-4 bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200 flex flex-col shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
     >
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
           <Activity className="w-4 h-4 text-white" />
         </div>
         <h3 className="text-sm font-bold text-slate-900">Estatísticas</h3>
       </div>
 
       <div className="space-y-2 flex-1">
-        <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-indigo-100 to-blue-100 border border-indigo-200">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-indigo-100 to-blue-100 border border-indigo-200 hover:scale-105 transition-transform duration-200">
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-indigo-600" />
             <span className="text-xs text-indigo-700 font-medium">Feiras Ativas</span>
@@ -398,7 +398,7 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
           <div className="text-lg font-bold text-indigo-900">{stats.feirasAtivas}</div>
         </div>
 
-        <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-emerald-100 to-green-100 border border-emerald-200">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-emerald-100 to-green-100 border border-emerald-200 hover:scale-105 transition-transform duration-200">
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-emerald-600" />
             <span className="text-xs text-emerald-700 font-medium">Feirantes</span>
@@ -406,12 +406,45 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
           <div className="text-lg font-bold text-emerald-900">{stats.totalFeirantes}</div>
         </div>
 
-        <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-orange-100 to-amber-100 border border-orange-200">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-orange-100 to-amber-100 border border-orange-200 hover:scale-105 transition-transform duration-200">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-orange-600" />
             <span className="text-xs text-orange-700 font-medium">Conversão</span>
           </div>
           <div className="text-lg font-bold text-orange-900">{percentualConfirmado}%</div>
+        </div>
+      </div>
+    </Card>,
+
+    // Card 9: Atividade dos Feirantes - LARANJA VIBRANTE
+    <Card
+      key="atividade-feirantes"
+      className="h-full p-6 bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 text-white border-0 relative overflow-hidden flex flex-col shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 group"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-bold text-white">Atividade dos Feirantes</h3>
+          <Users className="w-5 h-5 text-white/80 group-hover:scale-110 transition-transform duration-300" />
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-center mb-4">
+          <div className="text-6xl font-bold mb-2 animate-fade-in">{percentualConfirmado}%</div>
+          <div className="text-sm text-white/90 font-medium">Taxa de conversão</div>
+          <Badge className="bg-white/20 text-white text-xs font-bold px-3 py-1 mt-2 hover:bg-white/30 transition-colors duration-200">
+            +12%
+          </Badge>
+        </div>
+
+        <div className="space-y-3 pt-3 border-t border-white/20">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-white/90 font-medium">Total de inscrições</span>
+            <span className="text-2xl font-bold">{stats.participacoesConfirmadas}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-white/90 font-medium">Feirantes ativos</span>
+            <span className="text-2xl font-bold">{stats.totalFeirantes}</span>
+          </div>
         </div>
       </div>
     </Card>,
