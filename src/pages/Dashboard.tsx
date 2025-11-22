@@ -6,7 +6,6 @@ import AdminDashboard from "@/components/dashboard/AdminDashboard";
 import FeiranteDashboard from "@/components/dashboard/FeiranteDashboard";
 import { Loader2 } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
-import { toast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -18,7 +17,7 @@ const Dashboard = () => {
   useNotifications(user?.id);
 
   useEffect(() => {
-    // Helper para buscar ou criar o papel do usuário
+    // Helper to fetch or create the user's role to avoid "Perfil não configurado"
     const fetchOrCreateRole = async (session: Session) => {
       try {
         const { data: roleData, error } = await supabase
@@ -29,10 +28,10 @@ const Dashboard = () => {
 
         if (error) {
           console.error("Error fetching role:", error);
-          throw error;
         }
 
         if (!roleData) {
+          // Prefer role from user metadata if present, else default to "feirante"
           const rawRole = (session.user.user_metadata as any)?.role;
           const metaRole = rawRole === "admin" || rawRole === "feirante" ? rawRole : null;
           const roleToAssign: "admin" | "feirante" = (metaRole ?? "feirante") as "admin" | "feirante";
@@ -45,42 +44,38 @@ const Dashboard = () => {
 
           if (insertError) {
             console.error("Error creating role:", insertError);
-            throw insertError;
+            setUserRole(null);
+          } else {
+            setUserRole(inserted.role);
           }
-          setUserRole(inserted.role);
         } else {
           setUserRole(roleData.role);
         }
       } catch (e) {
-        console.error("Error resolving role:", e);
-        toast({
-          title: "Erro ao carregar perfil",
-          description: "Não foi possível carregar seus dados. Faça login novamente.",
-          variant: "destructive",
-        });
+        console.error("Unexpected error resolving role:", e);
         setUserRole(null);
-        navigate("/auth", { replace: true });
       } finally {
         setLoading(false);
       }
     };
 
-    // Ouve mudanças de autenticação
+    // 1) Set up auth listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log("Auth state change:", event, session);
-
-        if (event === "SIGNED_OUT") {
+        console.log('Auth state change:', event, session);
+        
+        // Apenas redireciona para auth se for um evento de SIGN_OUT explícito
+        if (event === 'SIGNED_OUT') {
           setUser(null);
           setUserRole(null);
-          setLoading(false);
-          navigate("/auth", { replace: true });
+          navigate("/auth");
           return;
         }
-
+        
+        // Se temos uma sessão válida, atualiza o usuário
         if (session?.user) {
           setUser(session.user);
-          // Buscar papel de forma assíncrona (evita travar callback)
+          // Defer DB calls to avoid deadlocks in the callback
           setTimeout(() => {
             fetchOrCreateRole(session);
           }, 0);
@@ -88,44 +83,19 @@ const Dashboard = () => {
       }
     );
 
-    // Verifica sessão atual ao montar (inclusive no PWA)
-    supabase.auth.getSession()
-      .then(({ data: { session }, error }) => {
-        if (error) {
-          console.error("Error getting session:", error);
-          toast({
-            title: "Erro de sessão",
-            description: "Não foi possível recuperar sua sessão. Faça login novamente.",
-            variant: "destructive",
-          });
-          setLoading(false);
-          navigate("/auth", { replace: true });
-          return;
-        }
-
-        if (!session) {
-          setLoading(false);
-          navigate("/auth", { replace: true });
-          return;
-        }
-
-        setUser(session.user);
-        fetchOrCreateRole(session);
-      })
-      .catch((err) => {
-        console.error("Unexpected error getting session:", err);
-        toast({
-          title: "Erro inesperado",
-          description: "Ocorreu um erro ao verificar sua sessão. Tente novamente.",
-          variant: "destructive",
-        });
+    // 2) THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        // Apenas redireciona se realmente não houver sessão após verificação completa
         setLoading(false);
-        navigate("/auth", { replace: true });
-      });
+        navigate("/auth");
+        return;
+      }
+      setUser(session.user);
+      fetchOrCreateRole(session);
+    });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   if (loading) {
