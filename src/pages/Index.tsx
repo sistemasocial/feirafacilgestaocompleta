@@ -211,13 +211,20 @@ const Index = () => {
               Contato
             </a>
           </nav>
-          <div className="flex items-center space-x-3">
-            <button onClick={() => navigate("/auth")} className="text-gray-600 hover:text-emerald-600 transition-colors whitespace-nowrap">
+          <div className="flex items-center gap-2 lg:gap-3">
+            <Button 
+              onClick={() => navigate("/auth")} 
+              variant="ghost"
+              className="text-gray-600 hover:text-emerald-600 transition-colors whitespace-nowrap text-sm lg:text-base px-3 lg:px-4 py-2"
+            >
               Já tenho conta
-            </button>
-            <button onClick={() => navigate("/auth")} className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-xl transition-all duration-300 hover:shadow-lg whitespace-nowrap">
+            </Button>
+            <Button 
+              onClick={() => navigate("/auth")} 
+              className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-all duration-300 hover:shadow-lg whitespace-nowrap text-sm lg:text-base px-4 lg:px-6 py-2"
+            >
               Criar Cadastro
-            </button>
+            </Button>
           </div>
         </div>
       </header>
@@ -243,12 +250,21 @@ const Index = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button onClick={() => navigate("/auth")} className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-2xl text-lg font-medium transition-all duration-300 hover:shadow-xl hover:scale-105 whitespace-nowrap">
+                <Button 
+                  onClick={() => navigate("/auth")} 
+                  className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-2xl text-base lg:text-lg font-medium transition-all duration-300 hover:shadow-xl hover:scale-105 whitespace-nowrap active:scale-95"
+                  size="lg"
+                >
                   Criar Cadastro
-                </button>
-                <button onClick={() => navigate("/auth")} className="border-2 border-gray-200 hover:border-emerald-300 text-gray-700 px-8 py-4 rounded-2xl text-lg font-medium transition-all duration-300 hover:shadow-lg whitespace-nowrap">
+                </Button>
+                <Button 
+                  onClick={() => navigate("/auth")} 
+                  variant="outline"
+                  className="border-2 border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 text-gray-700 px-8 py-4 rounded-2xl text-base lg:text-lg font-medium transition-all duration-300 hover:shadow-lg whitespace-nowrap active:scale-95"
+                  size="lg"
+                >
                   Já tenho conta
-                </button>
+                </Button>
               </div>
               
               {installCount > 0 && (
