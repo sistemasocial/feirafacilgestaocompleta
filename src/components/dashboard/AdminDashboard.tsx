@@ -151,7 +151,7 @@ const AdminDashboard = ({
           </div>
         </header>
 
-        <main className="flex-1 px-4 md:px-6 py-6 md:py-8 overflow-auto">
+        <main className="flex-1 md:px-6 md:py-8 overflow-auto mx-0 my-0 mr-0 mb-[39px] px-0 py-0 pr-0 pb-0">
           {activeSection === "overview" && <div className="space-y-6">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Visão Geral</h1>

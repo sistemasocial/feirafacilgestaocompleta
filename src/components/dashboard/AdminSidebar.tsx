@@ -62,7 +62,7 @@ export function AdminSidebar({
       </div>
 
       <div className="flex-1 overflow-auto my-0 mx-0 px-0 py-0 pr-0 pb-0 mb-0 mr-0">
-        <nav className="space-y-2 px-4">
+        <nav className="space-y-2 px-4 ml-0 mt-0 pl-0 pt-0 pb-0 pr-[11px] mb-0 mr-[97px]">
           {menuItems.map(item => <button key={item.title} onClick={() => onSectionChange(item.url)} className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium transition-colors ${activeSection === item.url ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
               <item.icon className="w-5 h-5 shrink-0" />
               <span>{item.title}</span>
