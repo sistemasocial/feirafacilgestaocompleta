@@ -1,25 +1,31 @@
 // Service Worker para notificações push em background
 // IMPORTANTE: Este arquivo roda em um contexto separado do app principal
 
+// Variável global para manter estado
+let isActive = true;
+
 self.addEventListener('install', (event) => {
   console.log('[SW] Service Worker instalando...');
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Service Worker ativado');
+  console.log('[SW] Service Worker ativado e pronto para receber push');
   event.waitUntil(self.clients.claim());
+  isActive = true;
 });
 
-// Manter o service worker ativo - necessário para push notifications
+// Manter o service worker ativo para receber push em background
 self.addEventListener('fetch', (event) => {
   // Deixar passar todas as requisições normalmente
+  // Mas manter SW ativo
 });
 
-// Escutar mensagens push do Firebase (background)
+// Escutar mensagens push do Firebase (background e foreground)
 self.addEventListener('push', (event) => {
-  console.log('[SW] ===== PUSH RECEBIDO =====');
-  console.log('[SW] Event data:', event.data);
+  console.log('[SW] ===== PUSH RECEBIDO (BACKGROUND) =====');
+  console.log('[SW] Timestamp:', new Date().toISOString());
+  console.log('[SW] SW está ativo:', isActive);
   
   let notificationTitle = 'FeiraFácil';
   let notificationBody = 'Você tem uma nova notificação';
@@ -64,7 +70,8 @@ self.addEventListener('push', (event) => {
     silent: false, // Garante que toca o som do sistema
     sound: '/notification.mp3', // Adiciona som customizado se disponível
     data: notificationData,
-    actions: []
+    actions: [],
+    timestamp: Date.now()
   };
 
   console.log('[SW] Mostrando notificação:', {
@@ -75,7 +82,7 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(notificationTitle, notificationOptions)
       .then(() => {
-        console.log('[SW] ✓ Notificação mostrada com sucesso');
+        console.log('[SW] ✓ Notificação mostrada com sucesso em background');
       })
       .catch((error) => {
         console.error('[SW] ✗ Erro ao mostrar notificação:', error);
