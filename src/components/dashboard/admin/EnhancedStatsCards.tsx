@@ -207,60 +207,60 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
     // Card 2: Calendário
     <FeirasCalendar key="calendario" />,
 
-    // Card 3: Status das Feiras - AZUL INDIGO
-    <Card key="status-feiras" className="h-full p-6 bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200 flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in hover-scale group">
+    // Card 3: Status das Feiras - VERDE AZULADO
+    <Card key="status-feiras" className="h-full p-6 bg-gradient-to-br from-cyan-50 to-teal-50 border-cyan-200 flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in hover-scale group">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
           <Calendar className="w-6 h-6 text-white" />
         </div>
-        <h3 className="text-base font-bold text-indigo-900">Status das Feiras</h3>
+        <h3 className="text-base font-bold text-cyan-900">Status das Feiras</h3>
       </div>
       
       <div className="mb-6 flex-1">
-        <div className="text-5xl font-extrabold mb-3 bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+        <div className="text-5xl font-extrabold mb-3 bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent">
           {stats.totalFeiras}
         </div>
-        <div className="h-3 bg-indigo-100 rounded-full overflow-hidden mb-4 shadow-inner">
+        <div className="h-3 bg-cyan-100 rounded-full overflow-hidden mb-4 shadow-inner">
           <div 
-            className="h-full bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500 transition-all duration-1000 shadow-lg animate-pulse"
+            className="h-full bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500 transition-all duration-1000 shadow-lg animate-pulse"
             style={{ width: `${(stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100}%` }}
           />
         </div>
       </div>
 
       <div className="space-y-3">
-        <div className="flex items-center justify-between p-3 rounded-lg bg-indigo-100/50 hover:bg-indigo-100 transition-colors">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-indigo-500 animate-pulse" />
-            <span className="text-sm text-indigo-700 font-medium">Total</span>
-          </div>
-          <span className="font-bold text-indigo-900">{stats.totalFeiras}</span>
-        </div>
-        <div className="flex items-center justify-between p-3 rounded-lg bg-blue-100/50 hover:bg-blue-100 transition-colors">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
-            <span className="text-sm text-blue-700 font-medium">Ativas</span>
-          </div>
-          <Badge className="bg-blue-500 text-white font-bold">{stats.feirasAtivas}</Badge>
-        </div>
         <div className="flex items-center justify-between p-3 rounded-lg bg-cyan-100/50 hover:bg-cyan-100 transition-colors">
           <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-cyan-600" />
-            <span className="text-sm text-cyan-700 font-medium">Taxa de ativação</span>
+            <div className="w-3 h-3 rounded-full bg-cyan-500 animate-pulse" />
+            <span className="text-sm text-cyan-700 font-medium">Total</span>
           </div>
-          <span className="font-bold text-cyan-900">
+          <span className="font-bold text-cyan-900">{stats.totalFeiras}</span>
+        </div>
+        <div className="flex items-center justify-between p-3 rounded-lg bg-teal-100/50 hover:bg-teal-100 transition-colors">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-teal-500 animate-pulse" />
+            <span className="text-sm text-teal-700 font-medium">Ativas</span>
+          </div>
+          <Badge className="bg-teal-500 text-white font-bold">{stats.feirasAtivas}</Badge>
+        </div>
+        <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-100/50 hover:bg-emerald-100 transition-colors">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-emerald-600" />
+            <span className="text-sm text-emerald-700 font-medium">Taxa de ativação</span>
+          </div>
+          <span className="font-bold text-emerald-900">
             {Math.round((stats.feirasAtivas / Math.max(stats.totalFeiras, 1)) * 100)}%
           </span>
         </div>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-indigo-200">
+      <div className="mt-6 pt-4 border-t border-cyan-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-indigo-500" />
-            <span className="text-sm text-indigo-700 font-medium">Total de feirantes</span>
+            <Users className="w-5 h-5 text-cyan-500" />
+            <span className="text-sm text-cyan-700 font-medium">Total de feirantes</span>
           </div>
-          <div className="text-3xl font-extrabold text-indigo-900">{stats.totalFeirantes}</div>
+          <div className="text-3xl font-extrabold text-cyan-900">{stats.totalFeirantes}</div>
         </div>
       </div>
     </Card>,
