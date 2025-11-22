@@ -29,7 +29,7 @@ interface FeiranteSidebarProps {
 
 export function FeiranteSidebar({ activeSection, onSectionChange }: FeiranteSidebarProps) {
   return (
-    <aside className="w-[280px] border-r bg-background h-screen fixed left-0 top-0 flex flex-col">
+    <aside className="w-full md:w-[280px] border-r bg-background h-screen md:fixed md:left-0 md:top-0 flex flex-col">
       <div className="border-b pb-6 pt-6 px-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">

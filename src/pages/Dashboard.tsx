@@ -61,11 +61,18 @@ const Dashboard = () => {
 
     // 1) Set up auth listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        if (!session) {
+      (event, session) => {
+        // Apenas redireciona para auth se for um evento de SIGN_OUT explícito
+        if (event === 'SIGNED_OUT') {
           navigate("/auth");
           return;
         }
+        
+        if (!session) {
+          // Não redireciona imediatamente, aguarda verificação inicial
+          return;
+        }
+        
         setUser(session.user);
         // Defer DB calls to avoid deadlocks in the callback
         setTimeout(() => {
