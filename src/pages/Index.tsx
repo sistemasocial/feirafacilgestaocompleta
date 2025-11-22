@@ -134,13 +134,6 @@ const Index = () => {
     };
   }, []);
 
-  // Quando estiver instalado como PWA, abrir automaticamente a tela de diagnóstico
-  useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      navigate("/diagnostics");
-    }
-  }, [navigate]);
-
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
       navigate("/install");
