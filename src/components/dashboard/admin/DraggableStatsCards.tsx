@@ -45,9 +45,9 @@ const DraggableCard = ({ id, children }: DraggableCardProps) => {
       <div
         {...attributes}
         {...listeners}
-        className="absolute top-1 left-1 z-[5] cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-background/90 rounded-md border border-border shadow-sm"
+        className="absolute top-2 right-2 z-10 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-background/80 rounded-md border border-border"
       >
-        <GripVertical className="w-3 h-3 text-muted-foreground" />
+        <GripVertical className="w-4 h-4 text-muted-foreground" />
       </div>
       <div className="h-full">
         {children}
@@ -63,11 +63,7 @@ interface DraggableStatsCardsProps {
 }
 
 export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "statsCardsOrder" }: DraggableStatsCardsProps) => {
-  // Inicializar com ordem padrão para evitar problemas no PWA
-  const [items, setItems] = useState<string[]>(() => {
-    return children.map((_, index) => `card-${index}`);
-  });
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [items, setItems] = useState<string[]>([]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -77,27 +73,14 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
   );
 
   useEffect(() => {
-    // Carregar ordem salva do localStorage de forma segura
-    if (typeof window === "undefined" || !("localStorage" in window)) {
-      // Em ambientes onde localStorage não está disponível (por exemplo, alguns contextos de PWA),
-      // apenas marcamos como carregado e usamos a ordem padrão em memória
-      setIsLoaded(true);
-      return;
-    }
-
-    try {
-      const savedOrder = localStorage.getItem(storageKey);
-      if (savedOrder) {
-        const parsed = JSON.parse(savedOrder);
-        // Verificar se a ordem salva é válida
-        if (Array.isArray(parsed) && parsed.length === children.length) {
-          setItems(parsed);
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao carregar ordem dos cards:', error);
-    } finally {
-      setIsLoaded(true);
+    // Carregar ordem salva do localStorage
+    const savedOrder = localStorage.getItem(storageKey);
+    if (savedOrder) {
+      setItems(JSON.parse(savedOrder));
+    } else {
+      // Ordem padrão
+      const defaultOrder = children.map((_, index) => `card-${index}`);
+      setItems(defaultOrder);
     }
   }, [children.length, storageKey]);
 
@@ -110,14 +93,8 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
         const newIndex = items.indexOf(over.id as string);
         const newOrder = arrayMove(items, oldIndex, newIndex);
         
-        // Salvar nova ordem no localStorage de forma segura
-        if (typeof window !== "undefined" && "localStorage" in window) {
-          try {
-            localStorage.setItem(storageKey, JSON.stringify(newOrder));
-          } catch (error) {
-            console.error('Erro ao salvar ordem dos cards:', error);
-          }
-        }
+        // Salvar nova ordem no localStorage
+        localStorage.setItem(storageKey, JSON.stringify(newOrder));
         
         return newOrder;
       });
@@ -125,14 +102,12 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
   };
 
   const gridClass = layout === "vertical" 
-    ? "grid grid-cols-1 gap-3 items-stretch"
+    ? "grid grid-cols-1 gap-4 items-stretch"
     : layout === "config"
-    ? "grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch"
-    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-stretch";
+    ? "grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch"
+    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch";
 
-  // Se ainda não carregou a configuração (especialmente em contexto de PWA),
-  // renderiza apenas os cards na ordem padrão para evitar qualquer erro de inicialização
-  if (!isLoaded) {
+  if (items.length === 0) {
     return <div className={gridClass}>{children}</div>;
   }
 
@@ -140,7 +115,7 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
   const orderedChildren = items.map((id) => {
     const index = parseInt(id.split("-")[1]);
     return children[index];
-  }).filter(Boolean);
+  });
 
   return (
     <DndContext

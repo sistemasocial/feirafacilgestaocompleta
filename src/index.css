@@ -120,19 +120,10 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  html,
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
-    scrollbar-width: none; /* Firefox */
-  }
-
-  html::-webkit-scrollbar,
-  body::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
+    @apply bg-background text-foreground;
   }
 }
-
 
 @layer utilities {
   .hover-scale {

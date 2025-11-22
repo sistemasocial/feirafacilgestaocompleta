@@ -1,43 +1,14 @@
 // Service Worker para notificações push em background
 // IMPORTANTE: Este arquivo roda em um contexto separado do app principal
-// Versão do App - atualiza isso a cada deploy para forçar atualização
-const APP_VERSION = 'v1.0.' + Date.now();
 
 self.addEventListener('install', (event) => {
-  console.log('[SW] Service Worker instalando... Versão:', APP_VERSION);
-  // Força instalação imediata da nova versão
+  console.log('[SW] Service Worker instalando...');
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Service Worker ativado - Versão:', APP_VERSION);
-  
-  // Limpa caches antigos
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName.startsWith('workbox-') || cacheName.startsWith('pwa-')) {
-            console.log('[SW] Limpando cache antigo:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      // Garante que o SW assume controle imediatamente
-      return self.clients.claim();
-    }).then(() => {
-      // Notifica todos os clientes para recarregar
-      return self.clients.matchAll().then(clients => {
-        clients.forEach(client => {
-          client.postMessage({
-            type: 'SW_UPDATED',
-            version: APP_VERSION
-          });
-        });
-      });
-    })
-  );
+  console.log('[SW] Service Worker ativado');
+  event.waitUntil(self.clients.claim());
 });
 
 // Manter o service worker ativo - necessário para push notifications
@@ -137,13 +108,6 @@ self.addEventListener('notificationclick', (event) => {
 // Escutar mensagens do cliente para mostrar notificações locais
 self.addEventListener('message', async (event) => {
   console.log('[SW] Mensagem recebida:', event.data);
-  
-  // Comando para pular waiting e ativar imediatamente
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    console.log('[SW] SKIP_WAITING recebido, ativando nova versão...');
-    self.skipWaiting();
-    return;
-  }
   
   if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
     const { title, message, id } = event.data;

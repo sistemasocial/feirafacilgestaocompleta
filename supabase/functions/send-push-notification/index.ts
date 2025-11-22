@@ -237,15 +237,6 @@ Deno.serve(async (req) => {
                   priority: 'high',
                   notification: {
                     sound: 'default',
-                    channel_id: 'default',
-                  },
-                },
-                apns: {
-                  payload: {
-                    aps: {
-                      sound: 'default',
-                      badge: 1,
-                    },
                   },
                 },
                 webpush: {
@@ -254,7 +245,6 @@ Deno.serve(async (req) => {
                     badge: '/pwa-192x192.png',
                     requireInteraction: true,
                     vibrate: [200, 100, 200],
-                    silent: false,
                   },
                   fcm_options: {
                     link: '/dashboard',

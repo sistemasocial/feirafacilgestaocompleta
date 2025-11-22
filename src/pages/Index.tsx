@@ -39,41 +39,34 @@ const Index = () => {
   useEffect(() => {
     if (installCount > previousCount && previousCount > 0) {
       setShouldPulse(true);
-
-      // Som de celebração (protegido para evitar erros em navegadores que bloqueiam áudio automático)
-      try {
-        const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
-        if (typeof AudioCtx === "function") {
-          const audioContext = new AudioCtx();
-          const playSound = (frequency: number, duration: number, delay: number = 0) => {
-            setTimeout(() => {
-              const oscillator = audioContext.createOscillator();
-              const gainNode = audioContext.createGain();
-
-              oscillator.connect(gainNode);
-              gainNode.connect(audioContext.destination);
-
-              oscillator.frequency.value = frequency;
-              oscillator.type = "sine";
-
-              gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-              gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-
-              oscillator.start(audioContext.currentTime);
-              oscillator.stop(audioContext.currentTime + duration);
-            }, delay);
-          };
-
-          // Tocar sequência de notas alegres
-          playSound(523.25, 0.15, 0); // C5
-          playSound(659.25, 0.15, 150); // E5
-          playSound(783.99, 0.15, 300); // G5
-          playSound(1046.5, 0.3, 450); // C6
-        }
-      } catch (error) {
-        console.warn("Áudio de celebração não pôde ser reproduzido:", error);
-      }
-
+      
+      // Som de celebração
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const playSound = (frequency: number, duration: number, delay: number = 0) => {
+        setTimeout(() => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.value = frequency;
+          oscillator.type = 'sine';
+          
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + duration);
+        }, delay);
+      };
+      
+      // Tocar sequência de notas alegres
+      playSound(523.25, 0.15, 0);    // C5
+      playSound(659.25, 0.15, 150);  // E5
+      playSound(783.99, 0.15, 300);  // G5
+      playSound(1046.50, 0.3, 450);  // C6
+      
       // Efeito de confetti
       const duration = 3000;
       const animationEnd = Date.now() + duration;
@@ -91,17 +84,17 @@ const Index = () => {
         }
 
         const particleCount = 50 * (timeLeft / duration);
-
+        
         // Lançar confetti de dois pontos
         confetti({
           ...defaults,
           particleCount,
-          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
         });
         confetti({
           ...defaults,
           particleCount,
-          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
         });
       }, 250);
 
@@ -109,7 +102,7 @@ const Index = () => {
         setShouldPulse(false);
         clearInterval(interval);
       }, duration);
-
+      
       return () => {
         clearTimeout(timer);
         clearInterval(interval);
@@ -133,14 +126,15 @@ const Index = () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
-
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
       navigate("/install");
       return;
     }
     deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    const {
+      outcome
+    } = await deferredPrompt.userChoice;
     if (outcome === "accepted") {
       setShowInstallButton(false);
       

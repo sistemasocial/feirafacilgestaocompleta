@@ -8,34 +8,26 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
-import Diagnostics from "./pages/Diagnostics";
-import { usePWAUpdate } from "./hooks/usePWAUpdate";
 
 const queryClient = new QueryClient();
 
-const App = () => {
-  // Hook para gerenciar atualizações automáticas do PWA
-  usePWAUpdate();
-  
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/install" element={<Install />} />
-            <Route path="/diagnostics" element={<Diagnostics />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-};
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/install" element={<Install />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
