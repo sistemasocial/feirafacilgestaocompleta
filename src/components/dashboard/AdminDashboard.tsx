@@ -26,12 +26,12 @@ import SendNotifications from "./admin/SendNotifications";
 import { SendPushNotification } from "./admin/SendPushNotification";
 import { NotificationPermission } from "@/components/notifications/NotificationPermission";
 import { useNotifications } from "@/hooks/useNotifications";
-
 interface AdminDashboardProps {
   user: User;
 }
-
-const AdminDashboard = ({ user }: AdminDashboardProps) => {
+const AdminDashboard = ({
+  user
+}: AdminDashboardProps) => {
   const [activeSection, setActiveSection] = useState("overview");
   const [profileKey, setProfileKey] = useState(0);
   const [stats, setStats] = useState({
@@ -40,7 +40,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
     totalFeirantes: 0,
     participacoesConfirmadas: 0,
     pagamentosPendentes: 0,
-    pagamentosRecebidos: 0,
+    pagamentosRecebidos: 0
   });
   const navigate = useNavigate();
 
@@ -50,95 +50,86 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
   // Inicializar FCM automaticamente quando o dashboard carregar
   useEffect(() => {
     if (user?.id) {
-      import("@/lib/fcmService").then(({ initializeFCM }) => {
-        initializeFCM(user.id).catch((err) => {
+      import("@/lib/fcmService").then(({
+        initializeFCM
+      }) => {
+        initializeFCM(user.id).catch(err => {
           console.log("FCM não inicializado:", err);
         });
       });
     }
   }, [user?.id]);
-
   useEffect(() => {
     loadStats();
   }, []);
-
   const loadStats = async () => {
     try {
       // Total de feiras
-      const { count: totalFeiras } = await supabase
-        .from("feiras")
-        .select("*", { count: "exact", head: true });
+      const {
+        count: totalFeiras
+      } = await supabase.from("feiras").select("*", {
+        count: "exact",
+        head: true
+      });
 
       // Feiras ativas (recorrentes)
-      const { count: feirasAtivas } = await supabase
-        .from("feiras")
-        .select("*", { count: "exact", head: true })
-        .eq("recorrente", true);
+      const {
+        count: feirasAtivas
+      } = await supabase.from("feiras").select("*", {
+        count: "exact",
+        head: true
+      }).eq("recorrente", true);
 
       // Total feirantes cadastrados
-      const { count: totalFeirantes } = await supabase
-        .from("feirantes")
-        .select("*", { count: "exact", head: true });
+      const {
+        count: totalFeirantes
+      } = await supabase.from("feirantes").select("*", {
+        count: "exact",
+        head: true
+      });
 
       // Participações confirmadas (status "aprovada")
-      const { count: participacoesConfirmadas } = await supabase
-        .from("inscricoes_feiras")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "aprovada");
+      const {
+        count: participacoesConfirmadas
+      } = await supabase.from("inscricoes_feiras").select("*", {
+        count: "exact",
+        head: true
+      }).eq("status", "aprovada");
 
       // Pagamentos - buscar todos os pagamentos
-      const { data: pagamentos } = await supabase
-        .from("pagamentos")
-        .select("status, valor_total");
-
+      const {
+        data: pagamentos
+      } = await supabase.from("pagamentos").select("status, valor_total");
       let valorPendente = 0;
       let valorRecebido = 0;
-
       if (pagamentos && pagamentos.length > 0) {
-        valorPendente = pagamentos
-          .filter(
-            (p) =>
-              p.status === "pendente" ||
-              p.status === "atrasado" ||
-              p.status === "aguardando_verificacao"
-          )
-          .reduce((acc, p) => acc + Number(p.valor_total), 0);
-        valorRecebido = pagamentos
-          .filter((p) => p.status === "pago")
-          .reduce((acc, p) => acc + Number(p.valor_total), 0);
+        valorPendente = pagamentos.filter(p => p.status === "pendente" || p.status === "atrasado" || p.status === "aguardando_verificacao").reduce((acc, p) => acc + Number(p.valor_total), 0);
+        valorRecebido = pagamentos.filter(p => p.status === "pago").reduce((acc, p) => acc + Number(p.valor_total), 0);
       }
-
       setStats({
         totalFeiras: totalFeiras || 0,
         feirasAtivas: feirasAtivas || 0,
         totalFeirantes: totalFeirantes || 0,
         participacoesConfirmadas: participacoesConfirmadas || 0,
         pagamentosPendentes: valorPendente,
-        pagamentosRecebidos: valorRecebido,
+        pagamentosRecebidos: valorRecebido
       });
     } catch (error) {
       console.error("Erro ao carregar estatísticas:", error);
     }
   };
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success("Logout realizado com sucesso");
     navigate("/auth");
   };
-
   const handleProfileUpdated = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setProfileKey((prev) => prev + 1);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setProfileKey(prev => prev + 1);
     setActiveSection("overview");
   };
-
-  return (
-    <div className="min-h-screen w-full flex bg-gradient-hero overflow-x-hidden">
-      <AdminSidebar
-        activeSection={activeSection}
-        onSectionChange={setActiveSection}
-      />
+  return <div className="min-h-screen w-full flex bg-gradient-hero overflow-x-hidden">
+      <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} className="my-[32px] mx-0 mr-0 mb-0 px-0 py-0 pr-[5px] pb-[38px] rounded-none" />
 
       <div className="flex-1 flex flex-col min-w-0 ml-[260px]">
         <header className="border-b bg-card sticky top-0 z-40">
@@ -146,21 +137,12 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4 min-w-0 flex-1">
                 <div className="min-w-0 flex-1">
-                  <ProfileHeader
-                    key={profileKey}
-                    userId={user.id}
-                    role="admin"
-                    compact
-                  />
+                  <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
                 </div>
               </div>
               <div className="flex items-center gap-2 md:gap-4 shrink-0">
                 <NotificationBell userId={user.id} onNavigate={setActiveSection} />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLogout}
-                >
+                <Button variant="outline" size="sm" onClick={handleLogout}>
                   <LogOut className="w-4 h-4 md:mr-2" />
                   <span className="hidden md:inline">Sair</span>
                 </Button>
@@ -170,8 +152,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
         </header>
 
         <main className="flex-1 px-4 md:px-6 py-6 md:py-8 overflow-auto">
-          {activeSection === "overview" && (
-            <div className="space-y-6">
+          {activeSection === "overview" && <div className="space-y-6">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Visão Geral</h1>
                 <p className="text-muted-foreground">
@@ -179,25 +160,17 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 </p>
               </div>
 
-              <EnhancedStatsCards
-                stats={stats}
-                userId={user.id}
-                storageKey="overviewCardsOrder"
-              />
-            </div>
-          )}
+              <EnhancedStatsCards stats={stats} userId={user.id} storageKey="overviewCardsOrder" />
+            </div>}
 
-          {activeSection === "feirantes" && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {activeSection === "feirantes" && <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <InscricoesList />
               <FeirantesAtivos />
-            </div>
-          )}
+            </div>}
 
           {activeSection === "pagamentos" && <PagamentosVerificacao />}
 
-          {activeSection === "config" && (
-            <div className="mx-auto space-y-6">
+          {activeSection === "config" && <div className="mx-auto space-y-6">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Configurações</h1>
                 <p className="text-muted-foreground">
@@ -206,23 +179,12 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
               </div>
 
               <DraggableStatsCards layout="config" storageKey="configCardsOrder">
-                {[
-                  <FinancialGoalsCard
-                    key="financial-goals"
-                    userId={user.id}
-                    onGoalUpdated={loadStats}
-                  />,
-                  <FeirasCalendar key="calendar-config" />,
-                  <ExpensesSettings key="expenses" userId={user.id} />,
-                ]}
+                {[<FinancialGoalsCard key="financial-goals" userId={user.id} onGoalUpdated={loadStats} />, <FeirasCalendar key="calendar-config" />, <ExpensesSettings key="expenses" userId={user.id} />]}
               </DraggableStatsCards>
-            </div>
-          )}
+            </div>}
 
-          {(activeSection === "criar" || activeSection === "feiras") && (
-            <div className="space-y-6">
-              {activeSection === "criar" && (
-                <div className="space-y-6">
+          {(activeSection === "criar" || activeSection === "feiras") && <div className="space-y-6">
+              {activeSection === "criar" && <div className="space-y-6">
                   <div>
                     <h1 className="text-3xl font-bold mb-2">Criar Nova Feira</h1>
                     <p className="text-muted-foreground">
@@ -230,39 +192,22 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                       feira
                     </p>
                   </div>
-                  <FeiraForm
-                    onSuccess={() => {
-                      setActiveSection("feiras");
-                    }}
-                    onCancel={() => {
-                      setActiveSection("feiras");
-                    }}
-                  />
-                </div>
-              )}
-              {activeSection === "feiras" && (
-                <FeirasListEnhanced
-                  onAddNew={() => setActiveSection("criar")}
-                />
-              )}
-            </div>
-          )}
+                  <FeiraForm onSuccess={() => {
+              setActiveSection("feiras");
+            }} onCancel={() => {
+              setActiveSection("feiras");
+            }} />
+                </div>}
+              {activeSection === "feiras" && <FeirasListEnhanced onAddNew={() => setActiveSection("criar")} />}
+            </div>}
 
-          {activeSection === "perfil" && (
-            <CompleteProfileAdmin
-              userId={user.id}
-              onProfileUpdated={handleProfileUpdated}
-            />
-          )}
+          {activeSection === "perfil" && <CompleteProfileAdmin userId={user.id} onProfileUpdated={handleProfileUpdated} />}
 
-          {activeSection === "senha" && (
-            <div className="max-w-4xl mx-auto">
+          {activeSection === "senha" && <div className="max-w-4xl mx-auto">
               <ChangePassword />
-            </div>
-          )}
+            </div>}
 
-          {activeSection === "notificacoes" && (
-            <div className="space-y-6">
+          {activeSection === "notificacoes" && <div className="space-y-6">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Notificações Push</h1>
                 <p className="text-muted-foreground">
@@ -273,11 +218,9 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
               <NotificationPermission />
               <SendPushNotification />
               <SendNotifications />
-            </div>
-          )}
+            </div>}
 
-          {activeSection === "suporte" && (
-            <Card className="p-6">
+          {activeSection === "suporte" && <Card className="p-6">
               <h2 className="text-xl font-semibold mb-6">Suporte</h2>
               <div className="space-y-4 max-w-md">
                 <div className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
@@ -286,12 +229,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">WhatsApp</p>
-                    <a
-                      href="https://wa.me/5562991429264"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-primary"
-                    >
+                    <a href="https://wa.me/5562991429264" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary">
                       +55 62 9 9142-9264
                     </a>
                   </div>
@@ -303,21 +241,15 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">E-mail</p>
-                    <a
-                      href="mailto:feirafacilbrasil@gmail.com"
-                      className="text-sm text-muted-foreground hover:text-primary"
-                    >
+                    <a href="mailto:feirafacilbrasil@gmail.com" className="text-sm text-muted-foreground hover:text-primary">
                       feirafacilbrasil@gmail.com
                     </a>
                   </div>
                 </div>
               </div>
-            </Card>
-          )}
+            </Card>}
         </main>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default AdminDashboard;
