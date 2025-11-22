@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Bell, AlertCircle, CheckCircle, RefreshCw, Trash2, Users } from "lucide-react";
+import { Bell, AlertCircle, CheckCircle, RefreshCw, Trash2, Users, Volume2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { playNotificationSound } from "@/lib/notificationService";
 
 interface FcmTokenData {
   id: string;
@@ -33,6 +34,12 @@ export function FcmTokensDiagnostics() {
   const [loading, setLoading] = useState(true);
   const [clearing, setClearing] = useState(false);
   const [clearingOld, setClearingOld] = useState(false);
+
+  const handleTestSound = () => {
+    console.log("[Teste] Tocando som de notificação...");
+    playNotificationSound();
+    toast.success("Som de notificação tocado!");
+  };
 
   const loadData = async () => {
     setLoading(true);
@@ -172,6 +179,15 @@ export function FcmTokensDiagnostics() {
             </CardDescription>
           </div>
           <div className="flex gap-2">
+            <Button 
+              onClick={handleTestSound}
+              variant="outline"
+              size="sm"
+              className="text-blue-600 hover:text-blue-700"
+            >
+              <Volume2 className="w-4 h-4 mr-2" />
+              Testar Som
+            </Button>
             <Button 
               onClick={loadData} 
               disabled={loading}
