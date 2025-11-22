@@ -58,10 +58,11 @@ self.addEventListener('push', (event) => {
     body: notificationBody,
     icon: '/pwa-192x192.png',
     badge: '/pwa-192x192.png',
-    vibrate: [300, 100, 300],
+    vibrate: [300, 100, 300, 100, 300],
     tag: notificationData.id || 'notification-' + Date.now(),
     requireInteraction: false,
-    silent: false,
+    silent: false, // Garante que toca o som do sistema
+    sound: '/notification.mp3', // Adiciona som customizado se disponível
     data: notificationData,
     actions: []
   };
