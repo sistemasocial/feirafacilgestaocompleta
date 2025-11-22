@@ -44,11 +44,15 @@ export const FeirasDisponiveisEnhanced = () => {
     const fetchData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: feiranteData } = await supabase
+        const { data: feiranteData, error: feiranteError } = await supabase
           .from("feirantes")
           .select("id, segmento")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
+        
+        if (feiranteError) {
+          console.error("Erro ao buscar feirante:", feiranteError);
+        }
         
         if (feiranteData) {
           setFeiranteId(feiranteData.id);
@@ -86,8 +90,8 @@ export const FeirasDisponiveisEnhanced = () => {
   }, []);
 
   const handleInscreverClick = async (feira: Feira) => {
-    if (!feiranteId) {
-      toast.error("Erro ao processar inscrição. Entre em contato com o administrador.");
+    if (!feiranteId || !feiranteSegmento) {
+      toast.error("Complete seu cadastro de feirante antes de se inscrever nas feiras. Vá em 'Perfil' no menu lateral.");
       return;
     }
 
