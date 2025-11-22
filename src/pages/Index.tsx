@@ -133,15 +133,21 @@ const Index = () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
+
+  // Quando estiver instalado como PWA, abrir automaticamente a tela de diagnóstico
+  useEffect(() => {
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      navigate("/diagnostics");
+    }
+  }, [navigate]);
+
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
       navigate("/install");
       return;
     }
     deferredPrompt.prompt();
-    const {
-      outcome
-    } = await deferredPrompt.userChoice;
+    const { outcome } = await deferredPrompt.userChoice;
     if (outcome === "accepted") {
       setShowInstallButton(false);
       

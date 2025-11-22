@@ -415,6 +415,38 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
         </div>
       </div>
     </Card>,
+
+    // Card 9: Cardápio Rápido - LARANJA
+    <Card
+      key="cardapio-rapido"
+      className="h-full p-4 bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 text-white border-0 flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 group"
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shadow-md">
+          <Activity className="w-4 h-4 text-white" />
+        </div>
+        <h3 className="text-sm font-bold text-white">Cardápio da Visão Geral</h3>
+      </div>
+
+      <div className="space-y-2 text-xs flex-1">
+        <div className="flex items-center justify-between p-2 rounded-xl bg-white/10 border border-white/20">
+          <span className="font-medium">Estatísticas</span>
+          <span className="text-white/80">Resumo das principais métricas da feira</span>
+        </div>
+        <div className="flex items-center justify-between p-2 rounded-xl bg-white/10 border border-white/20">
+          <span className="font-medium">Calendário</span>
+          <span className="text-white/80">Próximas datas e atividades</span>
+        </div>
+        <div className="flex items-center justify-between p-2 rounded-xl bg-white/10 border border-white/20">
+          <span className="font-medium">Pagamentos</span>
+          <span className="text-white/80">Valores recebidos e pendentes</span>
+        </div>
+        <div className="flex items-center justify-between p-2 rounded-xl bg-white/10 border border-white/20">
+          <span className="font-medium">Participações</span>
+          <span className="text-white/80">Feirantes confirmados e ativos</span>
+        </div>
+      </div>
+    </Card>,
   ];
 
   // Em modo PWA instalado (standalone), evitamos drag-and-drop para garantir máxima estabilidade
