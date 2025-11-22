@@ -8,7 +8,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
-import { InstallPrompt } from "@/components/InstallPrompt";
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{
@@ -472,18 +471,13 @@ const Index = () => {
         </div>
       </footer>
 
-      {/* Floating Install Button - Always visible */}
-      <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4">
-        <button 
-          onClick={() => showInstallButton ? handleInstallClick() : navigate("/install")}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-2 transition-all duration-300 hover:scale-105 font-medium"
-        >
-          <Download className="w-5 h-5" />
-          Instalar App
-        </button>
-      </div>
-      
-      <InstallPrompt />
+      {/* Floating Install Button */}
+      {showInstallButton && <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4">
+          <button onClick={handleInstallClick} className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-2 transition-all duration-300 hover:scale-105 font-medium">
+            <Download className="w-5 h-5" />
+            Instalar App
+          </button>
+        </div>}
     </div>;
 };
 export default Index;

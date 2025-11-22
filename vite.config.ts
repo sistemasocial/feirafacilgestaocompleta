@@ -21,9 +21,8 @@ export default defineConfig(({ mode }) => ({
       injectManifest: {
         injectionPoint: undefined
       },
-      includeAssets: ["favicon.png", "robots.txt", "apple-touch-icon.png"],
+      includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
       manifest: {
-        id: "/",
         name: "FeiraFácil! - Gestão Completa",
         short_name: "FeiraFácil",
         description: "Plataforma profissional para gestão completa de feiras livres",
@@ -31,7 +30,6 @@ export default defineConfig(({ mode }) => ({
         background_color: "#ffffff",
         display: "standalone",
         start_url: "/",
-        scope: "/",
         icons: [
           {
             src: "/pwa-192x192.png",
