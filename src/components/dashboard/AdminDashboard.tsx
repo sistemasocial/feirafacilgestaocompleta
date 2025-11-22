@@ -3,7 +3,7 @@ import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { LogOut, Users, DollarSign, Calendar, MessageCircle, Mail, Menu } from "lucide-react";
+import { LogOut, Users, DollarSign, Calendar, MessageCircle, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FeiraForm } from "./admin/FeiraForm";
@@ -26,8 +26,6 @@ import SendNotifications from "./admin/SendNotifications";
 import { SendPushNotification } from "./admin/SendPushNotification";
 import { NotificationPermission } from "@/components/notifications/NotificationPermission";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 interface AdminDashboardProps {
   user: User;
@@ -45,7 +43,6 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
     pagamentosRecebidos: 0,
   });
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
 
   // Inicializar notificações
   useNotifications(user.id);
@@ -53,9 +50,9 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
   // Inicializar FCM automaticamente quando o dashboard carregar
   useEffect(() => {
     if (user?.id) {
-      import('@/lib/fcmService').then(({ initializeFCM }) => {
-        initializeFCM(user.id).catch(err => {
-          console.log('FCM não inicializado:', err);
+      import("@/lib/fcmService").then(({ initializeFCM }) => {
+        initializeFCM(user.id).catch((err) => {
+          console.log("FCM não inicializado:", err);
         });
       });
     }
@@ -99,7 +96,12 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
 
       if (pagamentos && pagamentos.length > 0) {
         valorPendente = pagamentos
-          .filter((p) => p.status === "pendente" || p.status === "atrasado" || p.status === "aguardando_verificacao")
+          .filter(
+            (p) =>
+              p.status === "pendente" ||
+              p.status === "atrasado" ||
+              p.status === "aguardando_verificacao"
+          )
           .reduce((acc, p) => acc + Number(p.valor_total), 0);
         valorRecebido = pagamentos
           .filter((p) => p.status === "pago")
@@ -126,44 +128,62 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
   };
 
   const handleProfileUpdated = async () => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    setProfileKey(prev => prev + 1);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    setProfileKey((prev) => prev + 1);
     setActiveSection("overview");
   };
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen w-full flex bg-gradient-hero">
-        {/* Sidebar sempre visível - mini no mobile */}
-        <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
-        
-        <div className="flex-1 flex flex-col min-w-0">
-          <header className="border-b bg-card sticky top-0 z-40">
-            <div className="px-2 sm:px-4 py-3 sm:py-4">
-              <div className="flex items-center justify-between gap-2">
+    <div className="min-h-screen w-full flex bg-gradient-hero overflow-x-hidden">
+      <AdminSidebar
+        activeSection={activeSection}
+        onSectionChange={setActiveSection}
+      />
+
+      <div className="flex-1 flex flex-col min-w-0 ml-[260px]">
+        <header className="border-b bg-card sticky top-0 z-40">
+          <div className="px-4 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4 min-w-0 flex-1">
                 <div className="min-w-0 flex-1">
-                  <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
-                </div>
-                <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-                  <NotificationBell userId={user.id} onNavigate={setActiveSection} />
-                  <Button variant="outline" size="sm" onClick={handleLogout} className="h-8 px-2">
-                    <LogOut className="w-4 h-4" />
-                    <span className="hidden sm:inline ml-2">Sair</span>
-                  </Button>
+                  <ProfileHeader
+                    key={profileKey}
+                    userId={user.id}
+                    role="admin"
+                    compact
+                  />
                 </div>
               </div>
+              <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                <NotificationBell userId={user.id} onNavigate={setActiveSection} />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Sair</span>
+                </Button>
+              </div>
             </div>
-          </header>
+          </div>
+        </header>
 
         <main className="flex-1 px-4 md:px-6 py-6 md:py-8 overflow-auto">
           {activeSection === "overview" && (
             <div className="space-y-6">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Visão Geral</h1>
-                <p className="text-muted-foreground">Painel de controle das feiras</p>
+                <p className="text-muted-foreground">
+                  Painel de controle das feiras
+                </p>
               </div>
 
-              <EnhancedStatsCards stats={stats} userId={user.id} storageKey="overviewCardsOrder" />
+              <EnhancedStatsCards
+                stats={stats}
+                userId={user.id}
+                storageKey="overviewCardsOrder"
+              />
             </div>
           )}
 
@@ -174,22 +194,26 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             </div>
           )}
 
-          {activeSection === "pagamentos" && (
-            <PagamentosVerificacao />
-          )}
+          {activeSection === "pagamentos" && <PagamentosVerificacao />}
 
           {activeSection === "config" && (
             <div className="mx-auto space-y-6">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Configurações</h1>
-                <p className="text-muted-foreground">Gerencie suas metas e despesas</p>
+                <p className="text-muted-foreground">
+                  Gerencie suas metas e despesas
+                </p>
               </div>
-              
+
               <DraggableStatsCards layout="config" storageKey="configCardsOrder">
                 {[
-                  <FinancialGoalsCard key="financial-goals" userId={user.id} onGoalUpdated={loadStats} />,
+                  <FinancialGoalsCard
+                    key="financial-goals"
+                    userId={user.id}
+                    onGoalUpdated={loadStats}
+                  />,
                   <FeirasCalendar key="calendar-config" />,
-                  <ExpensesSettings key="expenses" userId={user.id} />
+                  <ExpensesSettings key="expenses" userId={user.id} />,
                 ]}
               </DraggableStatsCards>
             </div>
@@ -201,9 +225,12 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 <div className="space-y-6">
                   <div>
                     <h1 className="text-3xl font-bold mb-2">Criar Nova Feira</h1>
-                    <p className="text-muted-foreground">Preencha as informações abaixo para cadastrar uma nova feira</p>
+                    <p className="text-muted-foreground">
+                      Preencha as informações abaixo para cadastrar uma nova
+                      feira
+                    </p>
                   </div>
-                  <FeiraForm 
+                  <FeiraForm
                     onSuccess={() => {
                       setActiveSection("feiras");
                     }}
@@ -214,13 +241,18 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                 </div>
               )}
               {activeSection === "feiras" && (
-                <FeirasListEnhanced onAddNew={() => setActiveSection("criar")} />
+                <FeirasListEnhanced
+                  onAddNew={() => setActiveSection("criar")}
+                />
               )}
             </div>
           )}
 
           {activeSection === "perfil" && (
-            <CompleteProfileAdmin userId={user.id} onProfileUpdated={handleProfileUpdated} />
+            <CompleteProfileAdmin
+              userId={user.id}
+              onProfileUpdated={handleProfileUpdated}
+            />
           )}
 
           {activeSection === "senha" && (
@@ -233,9 +265,11 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             <div className="space-y-6">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Notificações Push</h1>
-                <p className="text-muted-foreground">Envie notificações push para os feirantes.</p>
+                <p className="text-muted-foreground">
+                  Envie notificações push para os feirantes.
+                </p>
               </div>
-              
+
               <NotificationPermission />
               <SendPushNotification />
               <SendNotifications />
@@ -252,9 +286,9 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">WhatsApp</p>
-                    <a 
-                      href="https://wa.me/5562991429264" 
-                      target="_blank" 
+                    <a
+                      href="https://wa.me/5562991429264"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-muted-foreground hover:text-primary"
                     >
@@ -269,7 +303,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">E-mail</p>
-                    <a 
+                    <a
                       href="mailto:feirafacilbrasil@gmail.com"
                       className="text-sm text-muted-foreground hover:text-primary"
                     >
@@ -281,9 +315,8 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
             </Card>
           )}
         </main>
-        </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
