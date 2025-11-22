@@ -7,8 +7,12 @@ import { registerSW } from "virtual:pwa-register";
 // Register service worker
 registerSW({ immediate: true });
 
+import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
+
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <GlobalErrorBoundary>
+      <App />
+    </GlobalErrorBoundary>
   </React.StrictMode>
 );
