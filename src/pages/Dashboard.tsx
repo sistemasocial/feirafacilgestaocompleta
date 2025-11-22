@@ -86,13 +86,16 @@ const Dashboard = () => {
     // 2) THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
-        // Apenas redireciona se realmente não houver sessão após verificação completa
         setLoading(false);
         navigate("/auth");
         return;
       }
       setUser(session.user);
       fetchOrCreateRole(session);
+    }).catch((error) => {
+      console.error("Error getting session:", error);
+      setLoading(false);
+      navigate("/auth");
     });
 
     return () => subscription.unsubscribe();
