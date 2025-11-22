@@ -29,23 +29,12 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [feiras, setFeiras] = useState<any[]>([]);
-  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
     loadRevenueGoal();
     loadFeiras();
   }, [userId]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && "matchMedia" in window) {
-      try {
-        const mq = window.matchMedia("(display-mode: standalone)");
-        setIsStandalone(mq.matches);
-      } catch (error) {
-        console.error("Erro ao detectar modo standalone:", error);
-      }
-    }
-  }, []);
 
   const loadRevenueGoal = async () => {
     try {
@@ -451,19 +440,6 @@ export const EnhancedStatsCards = ({ stats, userId, storageKey = "statsCardsOrde
 
   ];
 
-  // Em modo PWA instalado (standalone), evitamos drag-and-drop para garantir máxima estabilidade
-  // e renderizamos os cards em um grid fixo.
-  if (isStandalone) {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-stretch">
-        {cards.map((card, index) => (
-          <div key={index} className="h-full">
-            {card}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   return <DraggableStatsCards storageKey={storageKey}>{cards}</DraggableStatsCards>;
 };
+
