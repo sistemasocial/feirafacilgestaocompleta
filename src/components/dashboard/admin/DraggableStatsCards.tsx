@@ -41,17 +41,15 @@ const DraggableCard = ({ id, children }: DraggableCardProps) => {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="relative group h-full">
+    <div ref={setNodeRef} style={style} className="relative group">
       <div
         {...attributes}
         {...listeners}
-        className="absolute top-2 right-2 z-10 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-background/80 rounded-md border border-border"
+        className="absolute top-2 right-2 z-20 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-background/80 rounded-md border border-border"
       >
         <GripVertical className="w-4 h-4 text-muted-foreground" />
       </div>
-      <div className="h-full">
-        {children}
-      </div>
+      {children}
     </div>
   );
 };
@@ -102,10 +100,10 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
   };
 
   const gridClass = layout === "vertical" 
-    ? "grid grid-cols-1 gap-4 items-stretch"
+    ? "grid grid-cols-1 gap-4"
     : layout === "config"
-    ? "grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch"
-    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch";
+    ? "grid grid-cols-1 lg:grid-cols-2 gap-4"
+    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4";
 
   if (items.length === 0) {
     return <div className={gridClass}>{children}</div>;
