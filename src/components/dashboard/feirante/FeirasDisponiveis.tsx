@@ -30,11 +30,15 @@ export const FeirasDisponiveis = () => {
     const fetchData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: feiranteData } = await supabase
+        const { data: feiranteData, error: feiranteError } = await supabase
           .from("feirantes")
           .select("id")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
+        
+        if (feiranteError) {
+          console.error("Erro ao buscar feirante:", feiranteError);
+        }
         
         if (feiranteData) {
           setFeiranteId(feiranteData.id);
@@ -72,7 +76,7 @@ export const FeirasDisponiveis = () => {
 
   const handleInscrever = async (feiraId: string) => {
     if (!feiranteId) {
-      toast.error("Você precisa completar seu cadastro de feirante primeiro");
+      toast.error("Complete seu cadastro de feirante antes de se inscrever nas feiras. Vá em 'Perfil' no menu lateral.");
       return;
     }
 
@@ -97,6 +101,7 @@ export const FeirasDisponiveis = () => {
       if (error.code === "23505") {
         toast.error("Você já está inscrito nesta feira");
       } else {
+        console.error("Erro ao realizar inscrição:", error);
         toast.error("Erro ao realizar inscrição: " + error.message);
       }
     }
