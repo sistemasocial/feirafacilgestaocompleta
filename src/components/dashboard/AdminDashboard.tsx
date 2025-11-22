@@ -148,7 +148,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-8 overflow-auto">
+        <main className="flex-1 px-4 py-8 overflow-y-auto">
           {activeSection === "overview" && (
             <div className="space-y-6">
               <div>
