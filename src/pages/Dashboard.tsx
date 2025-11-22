@@ -62,28 +62,32 @@ const Dashboard = () => {
     // 1) Set up auth listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth state change:', event, session);
+        
         // Apenas redireciona para auth se for um evento de SIGN_OUT explícito
         if (event === 'SIGNED_OUT') {
+          setUser(null);
+          setUserRole(null);
           navigate("/auth");
           return;
         }
         
-        if (!session) {
-          // Não redireciona imediatamente, aguarda verificação inicial
-          return;
+        // Se temos uma sessão válida, atualiza o usuário
+        if (session?.user) {
+          setUser(session.user);
+          // Defer DB calls to avoid deadlocks in the callback
+          setTimeout(() => {
+            fetchOrCreateRole(session);
+          }, 0);
         }
-        
-        setUser(session.user);
-        // Defer DB calls to avoid deadlocks in the callback
-        setTimeout(() => {
-          fetchOrCreateRole(session);
-        }, 0);
       }
     );
 
     // 2) THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
+        // Apenas redireciona se realmente não houver sessão após verificação completa
+        setLoading(false);
         navigate("/auth");
         return;
       }
