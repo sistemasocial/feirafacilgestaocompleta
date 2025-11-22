@@ -140,10 +140,9 @@ export const ProfileHeader = ({ userId, role, compact = false }: ProfileHeaderPr
                 </p>
               </div>
               {email && (
-                <div className="flex items-center gap-1.5 text-xs min-w-0">
-                  <Mail className="w-3.5 h-3.5 text-primary shrink-0" />
-                  <span className="text-muted-foreground shrink-0">Email:</span>
-                  <span className="font-medium truncate">{email}</span>
+                <div className="flex items-center gap-1 text-xs min-w-0 max-w-[200px]">
+                  <Mail className="w-3 h-3 text-primary shrink-0" />
+                  <span className="font-medium truncate text-[10px]">{email}</span>
                 </div>
               )}
             </div>
@@ -178,10 +177,10 @@ export const ProfileHeader = ({ userId, role, compact = false }: ProfileHeaderPr
               </p>
             </div>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-              <div className="flex items-center gap-1.5 min-w-0">
+              <div className="flex items-center gap-1.5 min-w-0 max-w-full">
                 <Mail className="w-3.5 h-3.5 text-primary shrink-0" />
                 <span className="text-muted-foreground shrink-0">Email:</span>
-                <span className="font-medium truncate">{email}</span>
+                <span className="font-medium truncate max-w-[300px]">{email}</span>
               </div>
             </div>
           </div>
