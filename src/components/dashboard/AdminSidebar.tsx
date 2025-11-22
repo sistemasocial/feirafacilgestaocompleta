@@ -9,8 +9,13 @@ import {
   HelpCircle,
   Store,
   KeyRound,
-  Bell
+  Bell,
+  Menu,
+  X
 } from "lucide-react";
+import { useState } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 const menuItems = [
   { title: "Visão Geral", url: "#overview", icon: LayoutDashboard },
@@ -31,8 +36,10 @@ interface AdminSidebarProps {
 }
 
 export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarProps) {
-  return (
-    <aside className="w-[280px] border-r bg-background h-screen fixed left-0 top-0 flex flex-col">
+  const [open, setOpen] = useState(false);
+
+  const SidebarContent = () => (
+    <>
       <div className="border-b pb-6 pt-6 px-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -45,13 +52,14 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto py-6">
+      <div className="flex-1 overflow-y-auto py-6">
         <nav className="space-y-2 px-4">
           {menuItems.map((item) => (
             <button
               key={item.title}
               onClick={() => {
                 onSectionChange(item.url.replace('#', ''));
+                setOpen(false);
               }}
               className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
                 activeSection === item.url.replace('#', '')
@@ -65,6 +73,27 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
           ))}
         </nav>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger asChild className="lg:hidden fixed top-4 left-4 z-50">
+          <Button variant="outline" size="icon" className="bg-background">
+            <Menu className="w-5 h-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-[280px] p-0">
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex w-[280px] border-r bg-background h-screen fixed left-0 top-0 flex-col">
+        <SidebarContent />
+      </aside>
+    </>
   );
 }

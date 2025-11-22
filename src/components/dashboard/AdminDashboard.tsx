@@ -132,23 +132,25 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
     <div className="min-h-screen w-full flex bg-gradient-hero">
       <AdminSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
       
-      <div className="flex-1 flex flex-col ml-[280px]">
-        <header className="border-b bg-card sticky top-0 z-10">
-          <div className="px-4 py-4">
-            <div className="flex items-center justify-between gap-4">
-              <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
-              <div className="flex items-center gap-4">
+      <div className="flex-1 flex flex-col lg:ml-[280px]">
+        <header className="border-b bg-card sticky top-0 z-40">
+          <div className="px-4 lg:px-6 py-4">
+            <div className="flex items-center justify-between gap-2 lg:gap-4">
+              <div className="flex-1 min-w-0 lg:ml-0 ml-14">
+                <ProfileHeader key={profileKey} userId={user.id} role="admin" compact />
+              </div>
+              <div className="flex items-center gap-2 lg:gap-4">
                 <NotificationBell userId={user.id} onNavigate={setActiveSection} />
-                <Button variant="outline" onClick={handleLogout}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sair
+                <Button variant="outline" onClick={handleLogout} size="sm" className="lg:size-default">
+                  <LogOut className="w-4 h-4 lg:mr-2" />
+                  <span className="hidden lg:inline">Sair</span>
                 </Button>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-8 overflow-y-auto">
+        <main className="flex-1 px-4 lg:px-6 py-4 lg:py-8 overflow-y-auto">
           {activeSection === "overview" && (
             <div className="space-y-6">
               <div>
@@ -161,7 +163,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "feirantes" && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               <InscricoesList />
               <FeirantesAtivos />
             </div>
@@ -172,7 +174,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "config" && (
-            <div className="mx-auto space-y-6">
+            <div className="mx-auto space-y-6 w-full max-w-7xl">
               <div>
                 <h1 className="text-3xl font-bold mb-2">Configurações</h1>
                 <p className="text-muted-foreground">Gerencie suas metas e despesas</p>
@@ -217,7 +219,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "senha" && (
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-2xl mx-auto w-full">
               <ChangePassword />
             </div>
           )}
@@ -236,7 +238,7 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
           )}
 
           {activeSection === "suporte" && (
-            <Card className="p-6">
+            <Card className="p-6 max-w-2xl mx-auto w-full">
               <h2 className="text-xl font-semibold mb-6">Suporte</h2>
               <div className="space-y-4 max-w-md">
                 <div className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
