@@ -63,7 +63,11 @@ interface DraggableStatsCardsProps {
 }
 
 export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "statsCardsOrder" }: DraggableStatsCardsProps) => {
-  const [items, setItems] = useState<string[]>([]);
+  // Inicializar com ordem padrão para evitar problemas no PWA
+  const [items, setItems] = useState<string[]>(() => {
+    return children.map((_, index) => `card-${index}`);
+  });
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -73,14 +77,20 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
   );
 
   useEffect(() => {
-    // Carregar ordem salva do localStorage
-    const savedOrder = localStorage.getItem(storageKey);
-    if (savedOrder) {
-      setItems(JSON.parse(savedOrder));
-    } else {
-      // Ordem padrão
-      const defaultOrder = children.map((_, index) => `card-${index}`);
-      setItems(defaultOrder);
+    // Carregar ordem salva do localStorage de forma segura
+    try {
+      const savedOrder = localStorage.getItem(storageKey);
+      if (savedOrder) {
+        const parsed = JSON.parse(savedOrder);
+        // Verificar se a ordem salva é válida
+        if (Array.isArray(parsed) && parsed.length === children.length) {
+          setItems(parsed);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar ordem dos cards:', error);
+    } finally {
+      setIsLoaded(true);
     }
   }, [children.length, storageKey]);
 
@@ -93,8 +103,12 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
         const newIndex = items.indexOf(over.id as string);
         const newOrder = arrayMove(items, oldIndex, newIndex);
         
-        // Salvar nova ordem no localStorage
-        localStorage.setItem(storageKey, JSON.stringify(newOrder));
+        // Salvar nova ordem no localStorage de forma segura
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(newOrder));
+        } catch (error) {
+          console.error('Erro ao salvar ordem dos cards:', error);
+        }
         
         return newOrder;
       });
@@ -107,15 +121,11 @@ export const DraggableStatsCards = ({ children, layout = "grid", storageKey = "s
     ? "grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch"
     : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-stretch";
 
-  if (items.length === 0) {
-    return <div className={gridClass}>{children}</div>;
-  }
-
   // Reordenar children baseado na ordem salva
   const orderedChildren = items.map((id) => {
     const index = parseInt(id.split("-")[1]);
     return children[index];
-  });
+  }).filter(Boolean);
 
   return (
     <DndContext
